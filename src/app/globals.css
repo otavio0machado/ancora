@@ -1,26 +1,272 @@
 @import "tailwindcss";
 
+/* ============================================
+   Âncora Design System
+   Calm, intimate, premium, low-stimulation
+   ============================================ */
+
+/* --- Design Tokens --- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Background & Surface */
+  --background: #FAFAF8;
+  --surface: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-sunken: #F5F4F1;
+
+  /* Borders */
+  --border: #E8E5E0;
+  --border-subtle: #F0EDE8;
+
+  /* Text */
+  --text-primary: #1A1A18;
+  --text-secondary: #6B6960;
+  --text-muted: #9B978E;
+  --text-inverse: #FAFAF8;
+
+  /* Accent (Sage) */
+  --accent: #7C8B6F;
+  --accent-hover: #6B7A5E;
+  --accent-subtle: #E8EDE4;
+  --accent-foreground: #FFFFFF;
+
+  /* Semantic */
+  --warning: #B8860B;
+  --warning-subtle: #F5EDD6;
+  --alert: #C17C74;
+  --alert-subtle: #F5E0DE;
+  --success: #7C8B6F;
+  --success-subtle: #E8EDE4;
+
+  /* Rescue mode - slightly warm, not alarming */
+  --rescue: #A68B6B;
+  --rescue-hover: #957A5A;
+  --rescue-subtle: #F0E8DC;
+  --rescue-foreground: #FFFFFF;
+
+  /* Radii */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows - very subtle, warm-toned */
+  --shadow-xs: 0 1px 2px 0 rgba(26, 26, 24, 0.03);
+  --shadow-sm: 0 1px 3px 0 rgba(26, 26, 24, 0.04), 0 1px 2px -1px rgba(26, 26, 24, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(26, 26, 24, 0.04), 0 2px 4px -2px rgba(26, 26, 24, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(26, 26, 24, 0.04), 0 4px 6px -4px rgba(26, 26, 24, 0.02);
+
+  /* Transitions */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+
+  /* Ring (focus) */
+  --ring: #7C8B6F;
+  --ring-offset: #FAFAF8;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* --- Dark Mode --- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #141413;
+    --surface: #1E1E1C;
+    --surface-raised: #252523;
+    --surface-sunken: #0F0F0E;
+
+    --border: #2E2E2B;
+    --border-subtle: #232321;
+
+    --text-primary: #E8E5E0;
+    --text-secondary: #9B978E;
+    --text-muted: #6B6960;
+    --text-inverse: #1A1A18;
+
+    --accent: #8FA280;
+    --accent-hover: #9DB38E;
+    --accent-subtle: #1E261A;
+    --accent-foreground: #1A1A18;
+
+    --warning: #D4A017;
+    --warning-subtle: #2A2210;
+    --alert: #D4918A;
+    --alert-subtle: #2A1A18;
+    --success: #8FA280;
+    --success-subtle: #1E261A;
+
+    --rescue: #C0A580;
+    --rescue-hover: #D0B590;
+    --rescue-subtle: #2A2218;
+    --rescue-foreground: #1A1A18;
+
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.25), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+
+    --ring: #8FA280;
+    --ring-offset: #141413;
   }
 }
 
+/* --- Tailwind v4 Theme --- */
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-alert: var(--alert);
+  --color-alert-subtle: var(--alert-subtle);
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+
+  --color-rescue: var(--rescue);
+  --color-rescue-hover: var(--rescue-hover);
+  --color-rescue-subtle: var(--rescue-subtle);
+  --color-rescue-foreground: var(--rescue-foreground);
+
+  --color-ring: var(--ring);
+  --color-ring-offset: var(--ring-offset);
+
+  /* Typography */
+  --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  /* Border radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+
+  /* Shadows */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  /* Animation */
+  --animate-fade-in: fade-in var(--duration-normal) ease-out;
+  --animate-fade-out: fade-out var(--duration-normal) ease-in;
+  --animate-slide-up: slide-up var(--duration-slow) ease-out;
+  --animate-slide-down: slide-down var(--duration-slow) ease-out;
+  --animate-scale-in: scale-in var(--duration-normal) ease-out;
+}
+
+/* --- Keyframes --- */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* --- Base Styles --- */
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Focus Visible --- */
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Scrollbar (subtle) --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* --- Selection --- */
+::selection {
+  background: var(--accent-subtle);
+  color: var(--text-primary);
+}
+
+/* --- Utility Classes --- */
+.ancora-container {
+  width: 100%;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .ancora-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.ancora-card-glow {
+  box-shadow:
+    var(--shadow-sm),
+    0 0 0 1px var(--border-subtle);
+}
+
+.ancora-text-balance {
+  text-wrap: balance;
+}
+
+.ancora-transition {
+  transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: var(--duration-normal);
 }

@@ -1,0 +1,234 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Plus } from "lucide-react";
+import { cn } from "@/lib/utils/cn";
+
+const SABOTEUR_OPTIONS = [
+  "perfeccionismo",
+  "tudo-ou-nada",
+  "procrastinacao",
+  "comparacao",
+  "cansaco",
+] as const;
+
+const FREQUENCY_OPTIONS = [
+  { value: "daily" as const, label: "Diario" },
+  { value: "weekdays" as const, label: "Dias uteis" },
+  { value: "custom" as const, label: "Personalizado" },
+];
+
+interface AddHabitDialogProps {
+  identityId: string;
+  identityName: string;
+  onAdd: (habit: {
+    name: string;
+    ideal_version: string;
+    minimum_version: string;
+    common_saboteurs: string[];
+    frequency: "daily" | "weekdays" | "custom";
+  }) => void;
+}
+
+export function AddHabitDialog({
+  identityId,
+  identityName,
+  onAdd,
+}: AddHabitDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [idealVersion, setIdealVersion] = useState("");
+  const [minimumVersion, setMinimumVersion] = useState("");
+  const [saboteurs, setSaboteurs] = useState<string[]>([]);
+  const [frequency, setFrequency] = useState<"daily" | "weekdays" | "custom">(
+    "daily"
+  );
+
+  const toggleSaboteur = (saboteur: string) => {
+    setSaboteurs((prev) =>
+      prev.includes(saboteur)
+        ? prev.filter((s) => s !== saboteur)
+        : [...prev, saboteur]
+    );
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !idealVersion.trim() || !minimumVersion.trim()) return;
+
+    onAdd({
+      name: name.trim(),
+      ideal_version: idealVersion.trim(),
+      minimum_version: minimumVersion.trim(),
+      common_saboteurs: saboteurs,
+      frequency,
+    });
+
+    setName("");
+    setIdealVersion("");
+    setMinimumVersion("");
+    setSaboteurs([]);
+    setFrequency("daily");
+    setOpen(false);
+  };
+
+  const isValid = name.trim() && idealVersion.trim() && minimumVersion.trim();
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
+          <Plus className="w-3.5 h-3.5" />
+          Adicionar habito
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Novo habito</DialogTitle>
+          <DialogDescription>
+            Adicionar habito a &quot;{identityName}&quot;
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          {/* Name */}
+          <div className="space-y-2">
+            <label
+              htmlFor={`habit-name-${identityId}`}
+              className="text-sm font-medium text-text-primary"
+            >
+              Nome do habito
+            </label>
+            <Input
+              id={`habit-name-${identityId}`}
+              placeholder='Ex: "Estudar"'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoFocus
+            />
+          </div>
+
+          {/* Ideal version */}
+          <div className="space-y-2">
+            <label
+              htmlFor={`habit-ideal-${identityId}`}
+              className="text-sm font-medium text-text-primary"
+            >
+              Versao ideal
+            </label>
+            <p className="text-xs text-text-muted">
+              Como e esse habito no seu melhor dia?
+            </p>
+            <Input
+              id={`habit-ideal-${identityId}`}
+              placeholder='Ex: "2h de estudo focado"'
+              value={idealVersion}
+              onChange={(e) => setIdealVersion(e.target.value)}
+            />
+          </div>
+
+          {/* Minimum version */}
+          <div className="space-y-2">
+            <label
+              htmlFor={`habit-min-${identityId}`}
+              className="text-sm font-medium text-text-primary"
+            >
+              Versao minima
+            </label>
+            <p className="text-xs text-text-muted">
+              O minimo absoluto - para os dias dificeis.
+            </p>
+            <Input
+              id={`habit-min-${identityId}`}
+              placeholder='Ex: "Abrir o livro por 10 min"'
+              value={minimumVersion}
+              onChange={(e) => setMinimumVersion(e.target.value)}
+            />
+          </div>
+
+          {/* Saboteurs */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-text-primary">
+              Sabotadores comuns
+            </label>
+            <p className="text-xs text-text-muted">
+              O que costuma te impedir de fazer esse habito?
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {SABOTEUR_OPTIONS.map((saboteur) => {
+                const isSelected = saboteurs.includes(saboteur);
+                return (
+                  <button
+                    key={saboteur}
+                    type="button"
+                    onClick={() => toggleSaboteur(saboteur)}
+                    className={cn(
+                      "inline-flex items-center rounded-full border px-3 py-1.5",
+                      "text-xs font-medium transition-all duration-200",
+                      "cursor-pointer",
+                      isSelected
+                        ? "border-warning bg-warning-subtle text-warning"
+                        : "border-border bg-transparent text-text-secondary hover:bg-surface-sunken"
+                    )}
+                  >
+                    {saboteur}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Frequency */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-text-primary">
+              Frequencia
+            </label>
+            <div className="flex gap-2">
+              {FREQUENCY_OPTIONS.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setFrequency(option.value)}
+                  className={cn(
+                    "flex-1 rounded-xl border px-3 py-2",
+                    "text-xs font-medium transition-all duration-200",
+                    "cursor-pointer",
+                    frequency === option.value
+                      ? "border-accent bg-accent-subtle text-accent"
+                      : "border-border bg-transparent text-text-secondary hover:bg-surface-sunken"
+                  )}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={!isValid}>
+              Adicionar
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
