@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Zap } from "lucide-react";
+import Link from "next/link";
 import { useCheckInStore } from "@/lib/stores/checkin-store";
 import { useAppStore } from "@/lib/stores/app-store";
 import { getFallbackMicrocopy } from "@/lib/ai/fallbacks";
@@ -9,6 +11,10 @@ import { DayPriorities } from "@/components/hoje/day-priorities";
 import { DayOverview } from "@/components/hoje/day-overview";
 import { RescueMode } from "@/components/hoje/rescue-mode";
 import { AIDayAdjust } from "@/components/hoje/ai-day-adjust";
+import { OverloadAlert } from "@/components/hoje/overload-alert";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
+import type { OverloadRisk } from "@/lib/utils/patterns";
 
 // --------------- Greeting helper ---------------
 
@@ -19,12 +25,25 @@ function getGreetingPrefix(): string {
   return "Boa noite";
 }
 
+function getTimeMicrocopy(): string {
+  const hour = new Date().getHours();
+  if (hour < 6) return "Ainda esta cedo. Descansou o suficiente?";
+  if (hour < 9) return "Comece o dia com intencao.";
+  if (hour < 12) return "Manha e um bom momento pra se organizar.";
+  if (hour < 14) return "Ja fez uma pausa hoje?";
+  if (hour < 18) return "Tarde e tempo de ajustar o ritmo.";
+  if (hour < 21) return "Noite chegou. Como foi o dia?";
+  return "Hora de desacelerar. Amanha e um novo dia.";
+}
+
 // --------------- Page ---------------
 
 export default function HojePage() {
   const { todayCheckIn } = useCheckInStore();
-  const { user, rescueMode } = useAppStore();
+  const { user, rescueMode, toggleRescueMode } = useAppStore();
   const [checkInJustCompleted, setCheckInJustCompleted] = useState(false);
+  const [overloadRisk, setOverloadRisk] = useState<OverloadRisk | null>(null);
+  const [overloadAccepted, setOverloadAccepted] = useState(false);
 
   const hasCheckIn = !!todayCheckIn;
 
@@ -37,11 +56,37 @@ export default function HojePage() {
   }, [checkInJustCompleted]);
 
   const greetingPrefix = useMemo(() => getGreetingPrefix(), []);
+  const timeMicrocopy = useMemo(() => getTimeMicrocopy(), []);
   const userName = user?.name;
 
-  const handleCheckInComplete = () => {
+  const handleCheckInComplete = (risk: OverloadRisk) => {
     setCheckInJustCompleted(true);
+    setOverloadRisk(risk);
   };
+
+  const handleAcceptReduction = () => {
+    setOverloadAccepted(true);
+  };
+
+  const handleActivateRescue = () => {
+    toggleRescueMode();
+  };
+
+  // Determine if overload alert should show
+  const showOverloadAlert =
+    hasCheckIn &&
+    overloadRisk &&
+    (overloadRisk.risk === "medium" || overloadRisk.risk === "high" || overloadRisk.risk === "critical") &&
+    !overloadAccepted &&
+    !rescueMode;
+
+  // Determine anxiety level for day-priorities anti-obsession
+  const anxietyLevel = todayCheckIn?.anxiety ?? 3;
+
+  // Effective overload risk for components (only pass if accepted or auto)
+  const effectiveOverloadRisk = overloadRisk && (overloadAccepted || overloadRisk.autoReduce)
+    ? overloadRisk
+    : undefined;
 
   return (
     <main className="ancora-container py-8 pb-24">
@@ -53,7 +98,7 @@ export default function HojePage() {
             {userName ? `, ${userName}` : ""}
           </h1>
           <p className="text-sm text-text-secondary leading-relaxed ancora-text-balance">
-            {greeting.message}
+            {hasCheckIn ? greeting.message : timeMicrocopy}
           </p>
         </header>
 
@@ -74,7 +119,18 @@ export default function HojePage() {
         {/* ---- Post check-in content ---- */}
         {hasCheckIn && !rescueMode && (
           <>
-            {/* Day Overview */}
+            {/* Overload Alert - shown first if detected */}
+            {showOverloadAlert && (
+              <section aria-label="Alerta de sobrecarga" className="animate-scale-in">
+                <OverloadAlert
+                  overloadRisk={overloadRisk}
+                  onAcceptReduction={handleAcceptReduction}
+                  onActivateRescue={handleActivateRescue}
+                />
+              </section>
+            )}
+
+            {/* Day Overview with patterns */}
             <section aria-label="Visao do dia">
               <DayOverview
                 habitsCompleted={0}
@@ -83,15 +139,54 @@ export default function HojePage() {
               />
             </section>
 
-            {/* Day Priorities */}
-            <section aria-label="Prioridades do dia">
-              <DayPriorities />
-            </section>
+            {/* Day Priorities with anti-obsession */}
+            {(!overloadRisk || overloadRisk.risk !== "critical" || overloadAccepted) && (
+              <section aria-label="Prioridades do dia">
+                <DayPriorities
+                  overloadRisk={effectiveOverloadRisk}
+                  anxietyLevel={anxietyLevel}
+                />
+              </section>
+            )}
 
             {/* AI Day Adjustment */}
             <section aria-label="Sugestao da IA">
               <AIDayAdjust />
             </section>
+
+            {/* Quick access to impulse log if needed */}
+            {(anxietyLevel >= 4 || (todayCheckIn?.impulsivity ?? 3) >= 4) && (
+              <section aria-label="Acesso rapido a impulsos" className="animate-fade-in">
+                <Link href="/impulsos">
+                  <div
+                    className={cn(
+                      "flex items-center gap-3 rounded-2xl p-4",
+                      "border border-border-subtle bg-surface",
+                      "hover:bg-surface-sunken transition-colors duration-200",
+                      "active:scale-[0.98]"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "w-10 h-10 rounded-xl",
+                        "flex items-center justify-center",
+                        "bg-warning-subtle border border-warning/15"
+                      )}
+                    >
+                      <Zap size={16} className="text-warning" strokeWidth={1.5} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-text-primary">
+                        Registrar impulso
+                      </p>
+                      <p className="text-xs text-text-muted">
+                        Se sentir um impulso, registre aqui. Nao julgue, observe.
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              </section>
+            )}
           </>
         )}
 

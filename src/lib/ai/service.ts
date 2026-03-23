@@ -2,6 +2,8 @@
 // AI Service for Ancora
 // Orchestrates AI calls with validation and fallbacks
 // AI is a COPILOT - app works completely without it
+// Chain: AI call -> JSON parse -> Zod validation -> fallback
+// NEVER throws - always returns a valid response
 // ============================================================
 
 import type {
@@ -13,6 +15,10 @@ import type {
   AIWeeklyOutput,
   AIMicrocopyInput,
   AIMicrocopyOutput,
+  AIPatternInput,
+  AIPatternOutput,
+  AIRecoveryInput,
+  AIRecoveryOutput,
 } from "@/types/ai";
 
 import {
@@ -20,6 +26,8 @@ import {
   aiImpulseOutputSchema,
   aiWeeklyOutputSchema,
   aiMicrocopyOutputSchema,
+  aiPatternOutputSchema,
+  aiRecoveryOutputSchema,
 } from "@/lib/schemas";
 
 import { type AIProvider, GeminiProvider } from "./provider";
@@ -28,12 +36,15 @@ import {
   IMPULSE_PROTOCOL_PROMPT,
   WEEKLY_REFLECTION_PROMPT,
   MICROCOPY_PROMPT,
+  PATTERN_ANALYSIS_PROMPT,
+  RECOVERY_PROMPT,
 } from "./prompts";
 import {
   getFallbackDayAdjust,
   getFallbackImpulseProtocol,
   getFallbackMicrocopy,
-  FALLBACK_DAY_ADJUST,
+  getFallbackRecovery,
+  FALLBACK_PATTERN_ANALYSIS,
 } from "./fallbacks";
 
 // --------------- AI Service ---------------
@@ -52,10 +63,12 @@ class AIService {
     }
   }
 
-  // --- Day Adjustment ---
+  // =====================================================================
+  //  Day Adjustment
+  //  Considers sleep, habits, values, risk prediction
+  // =====================================================================
 
   async adjustDay(input: AIDayAdjustInput): Promise<AIDayAdjustOutput> {
-    // Always have a fallback ready based on check-in data
     const fallback = getFallbackDayAdjust(input.checkIn);
 
     if (!this.provider) {
@@ -83,7 +96,10 @@ class AIService {
     }
   }
 
-  // --- Impulse Protocol ---
+  // =====================================================================
+  //  Impulse Protocol
+  //  With defusion, values, alternatives, success probability
+  // =====================================================================
 
   async impulseProtocol(input: AIImpulseInput): Promise<AIImpulseOutput> {
     const fallback = getFallbackImpulseProtocol(
@@ -116,7 +132,10 @@ class AIService {
     }
   }
 
-  // --- Weekly Reflection ---
+  // =====================================================================
+  //  Weekly Reflection
+  //  With technique effectiveness, substitution detection, trajectory
+  // =====================================================================
 
   async weeklyReflection(input: AIWeeklyInput): Promise<AIWeeklyOutput> {
     const fallback: AIWeeklyOutput = {
@@ -132,6 +151,10 @@ class AIService {
       ],
       weekSummary:
         "Semana registrada. Cada semana de dados melhora o autoconhecimento. Continue observando sem julgar.",
+      techniqueEffectiveness: undefined,
+      substitutionAlert: undefined,
+      trajectoryInsight: undefined,
+      valueAlignment: undefined,
     };
 
     if (!this.provider) {
@@ -162,7 +185,10 @@ class AIService {
     }
   }
 
-  // --- Microcopy ---
+  // =====================================================================
+  //  Microcopy
+  //  All contexts including new ones (recovery_start, overload, etc.)
+  // =====================================================================
 
   async microcopy(input: AIMicrocopyInput): Promise<AIMicrocopyOutput> {
     const fallback = getFallbackMicrocopy(input.context);
@@ -192,11 +218,79 @@ class AIService {
     }
   }
 
-  // --------------- Prompt Builders ---------------
-  // Minimize context sent to AI - only send what's needed
+  // =====================================================================
+  //  Pattern Analysis (NEW)
+  //  Deep behavioral pattern detection over time
+  // =====================================================================
+
+  async analyzePatterns(input: AIPatternInput): Promise<AIPatternOutput> {
+    const fallback = FALLBACK_PATTERN_ANALYSIS;
+
+    if (!this.provider) {
+      return fallback;
+    }
+
+    try {
+      const prompt = this.buildPatternAnalysisPrompt(input);
+      const raw = await this.provider.generate(prompt, PATTERN_ANALYSIS_PROMPT);
+      const parsed = JSON.parse(raw);
+      const validated = aiPatternOutputSchema.safeParse(parsed);
+
+      if (!validated.success) {
+        console.error(
+          "[Ancora AI] Pattern analysis output validation failed:",
+          validated.error
+        );
+        return fallback;
+      }
+
+      return validated.data as AIPatternOutput;
+    } catch (error) {
+      console.error("[Ancora AI] Pattern analysis failed:", error);
+      return fallback;
+    }
+  }
+
+  // =====================================================================
+  //  Recovery Guidance (NEW)
+  //  Compassionate support after relapse
+  // =====================================================================
+
+  async recoveryGuidance(input: AIRecoveryInput): Promise<AIRecoveryOutput> {
+    const fallback = getFallbackRecovery(input.impulseType);
+
+    if (!this.provider) {
+      return fallback;
+    }
+
+    try {
+      const prompt = this.buildRecoveryPrompt(input);
+      const raw = await this.provider.generate(prompt, RECOVERY_PROMPT);
+      const parsed = JSON.parse(raw);
+      const validated = aiRecoveryOutputSchema.safeParse(parsed);
+
+      if (!validated.success) {
+        console.error(
+          "[Ancora AI] Recovery guidance output validation failed:",
+          validated.error
+        );
+        return fallback;
+      }
+
+      return validated.data as AIRecoveryOutput;
+    } catch (error) {
+      console.error("[Ancora AI] Recovery guidance failed:", error);
+      return fallback;
+    }
+  }
+
+  // =====================================================================
+  //  Prompt Builders
+  //  Minimize context sent to AI - only send what's needed
+  // =====================================================================
 
   private buildDayAdjustPrompt(input: AIDayAdjustInput): string {
-    const { checkIn, priorities, recentHabitLogs } = input;
+    const { checkIn, priorities, recentHabitLogs, userValues, habits } = input;
 
     const parts: string[] = [
       `Estado atual do usuario:`,
@@ -207,8 +301,21 @@ class AIService {
       `- Impulsividade: ${checkIn.impulsivity}/5`,
     ];
 
+    // Sleep data (critical for day planning)
+    if (checkIn.sleep_quality !== null && checkIn.sleep_quality !== undefined) {
+      parts.push(`- Qualidade do sono: ${checkIn.sleep_quality}/5`);
+    }
+    if (checkIn.sleep_hours !== null && checkIn.sleep_hours !== undefined) {
+      parts.push(`- Horas de sono: ${checkIn.sleep_hours}h`);
+    }
+
     if (checkIn.notes) {
       parts.push(`- Observacoes: "${checkIn.notes}"`);
+    }
+
+    // User values (ACT connection)
+    if (userValues && userValues.length > 0) {
+      parts.push(`\nValores do usuario (ACT): ${userValues.join(", ")}`);
     }
 
     if (priorities.length > 0) {
@@ -217,13 +324,20 @@ class AIService {
       );
     }
 
+    // Habits with names for skip suggestions
+    if (habits && habits.length > 0) {
+      parts.push(`\nHabitos configurados:`);
+      habits.forEach((h) => {
+        parts.push(`  - ${h.name} (ideal: ${h.ideal_version} | minimo: ${h.minimum_version})`);
+      });
+    }
+
     if (recentHabitLogs.length > 0) {
-      const summary = recentHabitLogs
-        .slice(0, 5)
-        .map((log) => `${log.version}`)
-        .join(", ");
+      const ideal = recentHabitLogs.filter((l) => l.version === "ideal").length;
+      const minimum = recentHabitLogs.filter((l) => l.version === "minimum").length;
+      const skipped = recentHabitLogs.filter((l) => l.version === "skipped").length;
       parts.push(
-        `\nUltimos logs de habitos: ${summary}`
+        `\nUltimos logs de habitos (7 dias): ${ideal} ideal, ${minimum} minimo, ${skipped} pulados`
       );
     }
 
@@ -231,7 +345,7 @@ class AIService {
   }
 
   private buildImpulsePrompt(input: AIImpulseInput): string {
-    const { impulse, recentImpulses } = input;
+    const { impulse, recentImpulses, userValues } = input;
 
     const parts: string[] = [
       `Impulso atual:`,
@@ -249,11 +363,40 @@ class AIService {
       parts.push(`- Emocao antes: "${impulse.emotion_before}"`);
     }
 
+    // User values for ACT connection
+    if (userValues && userValues.length > 0) {
+      parts.push(`\nValores do usuario (ACT): ${userValues.join(", ")}`);
+    }
+
     if (recentImpulses.length > 0) {
+      // Calculate resistance stats for success probability
+      const sameType = recentImpulses.filter((i) => i.type === impulse.type);
+      const resistedSameType = sameType.filter((i) => i.resisted).length;
+      const totalSameType = sameType.length;
+
       parts.push(`\nImpulsos recentes (ultimos 7 dias):`);
-      recentImpulses.slice(0, 10).forEach((imp) => {
+      parts.push(
+        `- Total: ${recentImpulses.length} impulsos, ${recentImpulses.filter((i) => i.resisted).length} resistidos`
+      );
+
+      if (totalSameType > 0) {
         parts.push(
-          `- ${imp.type} (intensidade ${imp.intensity}/10, ${imp.resisted ? "resistiu" : "cedeu"}) em ${imp.created_at}`
+          `- Mesmo tipo (${impulse.type}): ${totalSameType} impulsos, ${resistedSameType} resistidos (${Math.round((resistedSameType / totalSameType) * 100)}% de taxa de resistencia)`
+        );
+      }
+
+      // Show technique usage patterns
+      const techniquesUsed = recentImpulses
+        .filter((i) => i.technique_used)
+        .map((i) => i.technique_used);
+      if (techniquesUsed.length > 0) {
+        parts.push(`- Tecnicas usadas recentemente: ${[...new Set(techniquesUsed)].join(", ")}`);
+      }
+
+      // Recent impulse timeline
+      recentImpulses.slice(0, 5).forEach((imp) => {
+        parts.push(
+          `  - ${imp.type} (intensidade ${imp.intensity}/10, ${imp.resisted ? "resistiu" : "cedeu"}${imp.technique_used ? `, tecnica: ${imp.technique_used}` : ""}) em ${imp.created_at}`
         );
       });
     }
@@ -262,17 +405,27 @@ class AIService {
   }
 
   private buildWeeklyPrompt(input: AIWeeklyInput): string {
-    const { checkIns, habitLogs, impulses, focusSessions } = input;
+    const { checkIns, habitLogs, impulses, focusSessions, userValues } = input;
 
     const parts: string[] = ["Dados da semana:\n"];
 
-    // Check-ins summary
+    // User values
+    if (userValues && userValues.length > 0) {
+      parts.push(`Valores do usuario (ACT): ${userValues.join(", ")}\n`);
+    }
+
+    // Check-ins summary with sleep
     if (checkIns.length > 0) {
       parts.push("Check-ins:");
       checkIns.forEach((ci) => {
-        parts.push(
-          `  ${ci.date}: energia=${ci.energy} humor=${ci.mood} ansiedade=${ci.anxiety} foco=${ci.focus} impulsividade=${ci.impulsivity}`
-        );
+        let line = `  ${ci.date}: energia=${ci.energy} humor=${ci.mood} ansiedade=${ci.anxiety} foco=${ci.focus} impulsividade=${ci.impulsivity}`;
+        if (ci.sleep_quality !== null && ci.sleep_quality !== undefined) {
+          line += ` sono_qualidade=${ci.sleep_quality}`;
+        }
+        if (ci.sleep_hours !== null && ci.sleep_hours !== undefined) {
+          line += ` sono_horas=${ci.sleep_hours}`;
+        }
+        parts.push(line);
       });
     }
 
@@ -282,18 +435,63 @@ class AIService {
       const minimum = habitLogs.filter((l) => l.version === "minimum").length;
       const skipped = habitLogs.filter((l) => l.version === "skipped").length;
       parts.push(
-        `\nHabitos: ${ideal} ideal, ${minimum} minimo, ${skipped} pulados`
+        `\nHabitos: ${ideal} ideal, ${minimum} minimo, ${skipped} pulados (total: ${habitLogs.length})`
       );
     }
 
-    // Impulses summary
+    // Impulses detailed summary
     if (impulses.length > 0) {
       const resisted = impulses.filter((i) => i.resisted).length;
+      const gave_in = impulses.length - resisted;
       parts.push(
-        `\nImpulsos: ${impulses.length} total, ${resisted} resistidos`
+        `\nImpulsos: ${impulses.length} total, ${resisted} resistidos, ${gave_in} cedidos`
       );
       const types = [...new Set(impulses.map((i) => i.type))];
       parts.push(`  Tipos: ${types.join(", ")}`);
+
+      // Detect substitution patterns: did reducing one type lead to increase in another?
+      const typeGroups: Record<string, { resisted: number; total: number }> = {};
+      impulses.forEach((i) => {
+        if (!typeGroups[i.type]) typeGroups[i.type] = { resisted: 0, total: 0 };
+        typeGroups[i.type].total++;
+        if (i.resisted) typeGroups[i.type].resisted++;
+      });
+      parts.push(`  Por tipo:`);
+      Object.entries(typeGroups).forEach(([type, stats]) => {
+        parts.push(
+          `    ${type}: ${stats.total} impulsos, ${stats.resisted} resistidos`
+        );
+      });
+
+      // Technique usage
+      const techniques = impulses
+        .filter((i) => i.technique_used)
+        .map((i) => ({
+          technique: i.technique_used,
+          resisted: i.resisted,
+          effectiveness: i.technique_effectiveness,
+        }));
+      if (techniques.length > 0) {
+        parts.push(`  Tecnicas usadas esta semana:`);
+        const techMap: Record<string, { uses: number; successes: number; avgEff: number[] }> = {};
+        techniques.forEach((t) => {
+          const key = t.technique ?? "desconhecida";
+          if (!techMap[key]) techMap[key] = { uses: 0, successes: 0, avgEff: [] };
+          techMap[key].uses++;
+          if (t.resisted) techMap[key].successes++;
+          if (t.effectiveness !== null && t.effectiveness !== undefined) {
+            techMap[key].avgEff.push(t.effectiveness);
+          }
+        });
+        Object.entries(techMap).forEach(([tech, stats]) => {
+          const effStr = stats.avgEff.length > 0
+            ? `, eficacia media: ${(stats.avgEff.reduce((a, b) => a + b, 0) / stats.avgEff.length).toFixed(1)}/5`
+            : "";
+          parts.push(
+            `    ${tech}: ${stats.uses} usos, ${stats.successes} sucessos${effStr}`
+          );
+        });
+      }
     }
 
     // Focus sessions summary
@@ -301,8 +499,11 @@ class AIService {
       const completed = focusSessions.filter(
         (s) => s.status === "completed"
       ).length;
+      const abandoned = focusSessions.filter(
+        (s) => s.status === "abandoned"
+      ).length;
       parts.push(
-        `\nSessoes de foco: ${focusSessions.length} total, ${completed} completadas`
+        `\nSessoes de foco: ${focusSessions.length} total, ${completed} completadas, ${abandoned} abandonadas`
       );
     }
 
@@ -320,6 +521,137 @@ class AIService {
     }
     if (input.userData?.energy !== undefined) {
       parts.push(`Energia atual: ${input.userData.energy}/5`);
+    }
+
+    return parts.join("\n");
+  }
+
+  private buildPatternAnalysisPrompt(input: AIPatternInput): string {
+    const { checkIns, impulses, habitLogs, techniqueLogs, userValues, timeframe } = input;
+
+    const parts: string[] = [
+      `Periodo de analise: ${timeframe === "week" ? "ultima semana" : "ultimo mes"}`,
+      `Total de dados: ${checkIns.length} check-ins, ${impulses.length} impulsos, ${habitLogs.length} logs de habitos, ${techniqueLogs.length} logs de tecnicas\n`,
+    ];
+
+    // User values
+    if (userValues && userValues.length > 0) {
+      parts.push(`Valores do usuario (ACT): ${userValues.join(", ")}\n`);
+    }
+
+    // Check-ins with full detail
+    if (checkIns.length > 0) {
+      parts.push("Check-ins:");
+      checkIns.forEach((ci) => {
+        let line = `  ${ci.date} (${ci.created_at}): energia=${ci.energy} humor=${ci.mood} ansiedade=${ci.anxiety} foco=${ci.focus} impulsividade=${ci.impulsivity}`;
+        if (ci.sleep_quality !== null && ci.sleep_quality !== undefined) {
+          line += ` sono_q=${ci.sleep_quality}`;
+        }
+        if (ci.sleep_hours !== null && ci.sleep_hours !== undefined) {
+          line += ` sono_h=${ci.sleep_hours}`;
+        }
+        parts.push(line);
+      });
+    }
+
+    // Impulses with full detail for pattern detection
+    if (impulses.length > 0) {
+      parts.push("\nImpulsos:");
+      impulses.forEach((imp) => {
+        let line = `  ${imp.created_at}: tipo=${imp.type} intensidade=${imp.intensity} ${imp.resisted ? "RESISTIU" : "CEDEU"}`;
+        if (imp.trigger) line += ` gatilho="${imp.trigger}"`;
+        if (imp.context) line += ` contexto="${imp.context}"`;
+        if (imp.emotion_before) line += ` emocao="${imp.emotion_before}"`;
+        if (imp.technique_used) line += ` tecnica="${imp.technique_used}"`;
+        if (imp.technique_effectiveness !== null && imp.technique_effectiveness !== undefined) {
+          line += ` eficacia=${imp.technique_effectiveness}/5`;
+        }
+        parts.push(line);
+      });
+    }
+
+    // Habit logs
+    if (habitLogs.length > 0) {
+      const ideal = habitLogs.filter((l) => l.version === "ideal").length;
+      const minimum = habitLogs.filter((l) => l.version === "minimum").length;
+      const skipped = habitLogs.filter((l) => l.version === "skipped").length;
+      parts.push(
+        `\nHabitos: ${ideal} ideal, ${minimum} minimo, ${skipped} pulados`
+      );
+
+      // Per-day breakdown
+      const byDate: Record<string, { ideal: number; minimum: number; skipped: number }> = {};
+      habitLogs.forEach((l) => {
+        if (!byDate[l.date]) byDate[l.date] = { ideal: 0, minimum: 0, skipped: 0 };
+        byDate[l.date][l.version]++;
+      });
+      parts.push("  Por dia:");
+      Object.entries(byDate)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .forEach(([date, counts]) => {
+          parts.push(
+            `    ${date}: ${counts.ideal}i ${counts.minimum}m ${counts.skipped}p`
+          );
+        });
+    }
+
+    // Technique logs
+    if (techniqueLogs.length > 0) {
+      parts.push("\nLogs de tecnicas:");
+      techniqueLogs.forEach((tl) => {
+        let line = `  ${tl.created_at}: tecnica="${tl.technique}" contexto=${tl.context}`;
+        if (tl.effectiveness !== null && tl.effectiveness !== undefined) {
+          line += ` eficacia=${tl.effectiveness}/5`;
+        }
+        if (tl.duration_seconds !== null && tl.duration_seconds !== undefined) {
+          line += ` duracao=${tl.duration_seconds}s`;
+        }
+        parts.push(line);
+      });
+    }
+
+    return parts.join("\n");
+  }
+
+  private buildRecoveryPrompt(input: AIRecoveryInput): string {
+    const parts: string[] = [
+      `O usuario cedeu a um impulso e precisa de apoio para se recuperar.`,
+      `\nTipo do impulso: ${input.impulseType}`,
+    ];
+
+    if (input.trigger) {
+      parts.push(`Gatilho: "${input.trigger}"`);
+    }
+    if (input.context) {
+      parts.push(`Contexto: "${input.context}"`);
+    }
+    if (input.emotionBefore) {
+      parts.push(`Emocao antes: "${input.emotionBefore}"`);
+    }
+    if (input.emotionAfter) {
+      parts.push(`Emocao depois: "${input.emotionAfter}"`);
+    }
+
+    // User values for ACT reconnection
+    if (input.userValues && input.userValues.length > 0) {
+      parts.push(`\nValores do usuario (ACT): ${input.userValues.join(", ")}`);
+    }
+
+    // Recent impulse history for context
+    if (input.recentImpulses && input.recentImpulses.length > 0) {
+      const sameType = input.recentImpulses.filter((i) => i.type === input.impulseType);
+      const resistedCount = sameType.filter((i) => i.resisted).length;
+
+      parts.push(`\nHistorico recente (mesmo tipo):`);
+      parts.push(
+        `- ${sameType.length} impulsos nos ultimos 7 dias, ${resistedCount} resistidos`
+      );
+
+      if (resistedCount > 0) {
+        parts.push(
+          `- O usuario JA RESISTIU ${resistedCount} vezes recentemente - isso e importante para a mensagem de compaixao`
+        );
+      }
     }
 
     return parts.join("\n");

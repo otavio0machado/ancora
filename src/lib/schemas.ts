@@ -21,6 +21,8 @@ export const checkInSchema = z.object({
   focus: rating1to5,
   impulsivity: rating1to5,
   notes: z.string().nullable(),
+  sleep_quality: rating1to5.nullable(),
+  sleep_hours: z.number().min(0).max(24).nullable(),
 });
 
 export const identitySchema = z.object({
@@ -30,6 +32,8 @@ export const identitySchema = z.object({
   icon: z.string().max(10).nullable(),
   active: z.boolean(),
   order_index: z.number().int().min(0),
+  linked_values: z.array(z.string()),
+  strength: z.number().int().min(0).max(100),
 });
 
 export const habitSchema = z.object({
@@ -93,6 +97,10 @@ export const impulseSchema = z.object({
   technique_used: z.string().nullable(),
   resisted: z.boolean(),
   notes: z.string().nullable(),
+  duration_minutes: z.number().min(0).nullable(),
+  technique_effectiveness: rating1to5.nullable(),
+  linked_value: z.string().nullable(),
+  recovery_entry_id: z.string().uuid().nullable(),
 });
 
 export const weeklyReviewSchema = z.object({
@@ -103,6 +111,54 @@ export const weeklyReviewSchema = z.object({
   adjustments: z.string().nullable(),
   wins: z.string().nullable(),
   ai_insights: z.string().nullable(),
+});
+
+const techniqueContextEnum = z.enum(["impulse", "rescue", "proactive"]);
+
+export const userValueSchema = z.object({
+  user_id: z.string().uuid(),
+  name: z.string().min(1).max(100),
+  description: z.string().max(500).nullable(),
+  icon: z.string().max(10).nullable(),
+  active: z.boolean(),
+  order_index: z.number().int().min(0),
+});
+
+export const techniqueLogSchema = z.object({
+  user_id: z.string().uuid(),
+  impulse_id: z.string().uuid().nullable(),
+  technique: z.string().min(1).max(200),
+  context: techniqueContextEnum,
+  effectiveness: rating1to5.nullable(),
+  duration_seconds: z.number().int().min(0).nullable(),
+  notes: z.string().nullable(),
+});
+
+export const recoveryEntrySchema = z.object({
+  user_id: z.string().uuid(),
+  impulse_id: z.string().uuid(),
+  trigger_analysis: z.string().nullable(),
+  what_to_do_differently: z.string().nullable(),
+  self_compassion_note: z.string().nullable(),
+  return_action: z.string().nullable(),
+});
+
+const overloadEventTypeEnum = z.enum([
+  "auto_reduction",
+  "rescue_activated",
+  "priority_blocked",
+  "manual",
+]);
+
+export const overloadEventSchema = z.object({
+  user_id: z.string().uuid(),
+  date: dateString,
+  type: overloadEventTypeEnum,
+  anxiety_level: rating1to5.nullable(),
+  energy_level: rating1to5.nullable(),
+  tasks_before: z.number().int().min(0),
+  tasks_after: z.number().int().min(0),
+  notes: z.string().nullable(),
 });
 
 // --------------- Full row schemas (include server-generated fields) ---------------
@@ -117,6 +173,7 @@ const habitLogRowSchema = habitLogSchema.extend(rowFields);
 const impulseRowSchema = impulseSchema.extend(rowFields);
 const focusSessionRowSchema = focusSessionSchema.extend(rowFields);
 const dayPriorityRowSchema = dayPrioritySchema.extend(rowFields);
+const techniqueLogRowSchema = techniqueLogSchema.extend(rowFields);
 
 // --------------- AI schemas ---------------
 
@@ -133,6 +190,9 @@ export const aiDayAdjustOutputSchema = z.object({
   overloadAlert: z.boolean(),
   overloadMessage: z.string().optional(),
   encouragement: z.string(),
+  habitsToSkip: z.array(z.string()),
+  valueConnection: z.string(),
+  riskPrediction: z.string().optional(),
 });
 
 // Impulse Protocol
@@ -158,6 +218,10 @@ export const aiImpulseOutputSchema = z.object({
       exhale: z.number(),
     })
     .optional(),
+  defusionExercise: z.string(),
+  valueReminder: z.string(),
+  successProbability: z.string().optional(),
+  alternativeBehaviors: z.array(z.string()),
 });
 
 // Weekly Reflection
@@ -184,8 +248,14 @@ export const aiMicrocopyInputSchema = z.object({
     "impulse_resisted",
     "impulse_gave_in",
     "habit_minimum",
+    "habit_ideal",
     "return_after_absence",
     "rescue_mode",
+    "recovery_start",
+    "overload_detected",
+    "pattern_insight",
+    "value_reminder",
+    "anti_obsession",
   ]),
   userData: z
     .object({
@@ -201,6 +271,78 @@ export const aiMicrocopyOutputSchema = z.object({
   tone: z.enum(["gentle", "grounding", "validating", "encouraging"]),
 });
 
+// Pattern Analysis
+export const aiPatternInputSchema = z.object({
+  checkIns: z.array(checkInRowSchema),
+  impulses: z.array(impulseRowSchema),
+  habitLogs: z.array(habitLogRowSchema),
+  techniqueLogs: z.array(techniqueLogRowSchema),
+  timeframe: z.enum(["week", "month"]),
+});
+
+export const aiPatternOutputSchema = z.object({
+  timePatterns: z.array(
+    z.object({
+      description: z.string(),
+      dayOfWeek: z.string().optional(),
+      timeOfDay: z.string().optional(),
+      frequency: z.string(),
+    })
+  ),
+  triggerCorrelations: z.array(
+    z.object({
+      trigger: z.string(),
+      associatedImpulseTypes: z.array(z.string()),
+      resistanceRate: z.number(),
+    })
+  ),
+  emotionalCycles: z.array(
+    z.object({
+      pattern: z.string(),
+      insight: z.string(),
+    })
+  ),
+  techniqueEffectiveness: z.array(
+    z.object({
+      technique: z.string(),
+      avgEffectiveness: z.number(),
+      bestFor: z.string(),
+    })
+  ),
+  riskWindows: z.array(
+    z.object({
+      description: z.string(),
+      severity: z.enum(["low", "medium", "high"]),
+    })
+  ),
+  progressIndicators: z.array(
+    z.object({
+      metric: z.string(),
+      trend: z.enum(["improving", "stable", "declining"]),
+      detail: z.string(),
+    })
+  ),
+});
+
+// Recovery Guidance
+export const aiRecoveryInputSchema = z.object({
+  impulseType: z.string(),
+  trigger: z.string().optional(),
+  context: z.string().optional(),
+  emotionBefore: z.string().optional(),
+  emotionAfter: z.string().optional(),
+  userValues: z.array(z.string()).optional(),
+  recentImpulses: z.array(impulseRowSchema).optional(),
+});
+
+export const aiRecoveryOutputSchema = z.object({
+  compassionMessage: z.string(),
+  triggerAnalysis: z.string(),
+  returnAction: z.string(),
+  valueReconnection: z.string(),
+  nextTimeStrategy: z.string(),
+});
+
 // --------------- Inferred types ---------------
 
 export type CheckInInput = z.infer<typeof checkInSchema>;
@@ -211,6 +353,10 @@ export type DayPriorityInput = z.infer<typeof dayPrioritySchema>;
 export type FocusSessionInput = z.infer<typeof focusSessionSchema>;
 export type ImpulseInput = z.infer<typeof impulseSchema>;
 export type WeeklyReviewInput = z.infer<typeof weeklyReviewSchema>;
+export type UserValueInput = z.infer<typeof userValueSchema>;
+export type TechniqueLogInput = z.infer<typeof techniqueLogSchema>;
+export type RecoveryEntryInput = z.infer<typeof recoveryEntrySchema>;
+export type OverloadEventInput = z.infer<typeof overloadEventSchema>;
 
 export type AIDayAdjustInputZ = z.infer<typeof aiDayAdjustInputSchema>;
 export type AIDayAdjustOutputZ = z.infer<typeof aiDayAdjustOutputSchema>;
@@ -220,3 +366,7 @@ export type AIWeeklyInputZ = z.infer<typeof aiWeeklyInputSchema>;
 export type AIWeeklyOutputZ = z.infer<typeof aiWeeklyOutputSchema>;
 export type AIMicrocopyInputZ = z.infer<typeof aiMicrocopyInputSchema>;
 export type AIMicrocopyOutputZ = z.infer<typeof aiMicrocopyOutputSchema>;
+export type AIPatternInputZ = z.infer<typeof aiPatternInputSchema>;
+export type AIPatternOutputZ = z.infer<typeof aiPatternOutputSchema>;
+export type AIRecoveryInputZ = z.infer<typeof aiRecoveryInputSchema>;
+export type AIRecoveryOutputZ = z.infer<typeof aiRecoveryOutputSchema>;

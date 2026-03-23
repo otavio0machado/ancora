@@ -1,137 +1,135 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect, useCallback } from "react";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+  ChevronLeft,
+  Droplets,
+  MapPin,
+  Phone,
+  Shield,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import { useAppStore } from "@/lib/stores/app-store";
 import { BreathingExercise } from "./breathing-exercise";
+import { Textarea } from "@/components/ui/textarea";
 
-// --------------- Sub-sections ---------------
+// --------------- Types ---------------
 
-type RescueSection = "grounding" | "breathing" | "defusion" | "impulse" | null;
+type RescuePhase =
+  | "breathing"
+  | "grounding"
+  | "actions"
+  | "defusion"
+  | "exit_check";
 
-// --------------- Grounding 5-4-3-2-1 ---------------
+interface GroundingResponse {
+  see: string;
+  touch: string;
+  hear: string;
+  smell: string;
+  taste: string;
+}
 
-function GroundingExercise() {
+// --------------- Grounding Interactive ---------------
+
+function InteractiveGrounding({ onComplete }: { onComplete: () => void }) {
+  const [step, setStep] = useState(0);
+  const [responses, setResponses] = useState<GroundingResponse>({
+    see: "",
+    touch: "",
+    hear: "",
+    smell: "",
+    taste: "",
+  });
+
   const steps = [
-    { count: 5, sense: "coisas que voce ve", icon: "\uD83D\uDC41" },
-    { count: 4, sense: "coisas que voce toca", icon: "\u270B" },
-    { count: 3, sense: "coisas que voce ouve", icon: "\uD83D\uDC42" },
-    { count: 2, sense: "coisas que voce cheira", icon: "\uD83D\uDC43" },
-    { count: 1, sense: "coisa que voce sente o gosto", icon: "\uD83D\uDC45" },
-  ];
-
-  return (
-    <div className="flex flex-col gap-4 animate-fade-in">
-      <p className="text-sm text-text-secondary leading-relaxed">
-        Nomeie devagar, sem pressa. O objetivo e trazer sua atencao para o
-        momento presente.
-      </p>
-      <ul className="flex flex-col gap-3">
-        {steps.map((step) => (
-          <li
-            key={step.count}
-            className={cn(
-              "flex items-start gap-3 rounded-xl px-4 py-3",
-              "bg-surface-sunken border border-border-subtle"
-            )}
-          >
-            <span className="text-lg mt-0.5" aria-hidden="true">
-              {step.count}
-            </span>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-text-primary">
-                {step.sense}
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-// --------------- ACT Defusion ---------------
-
-function DefusionExercise() {
-  const techniques = [
     {
-      title: "Observe o pensamento",
-      description:
-        'Diga para si: "Estou tendo o pensamento de que..." e complete. Isso cria distancia entre voce e o pensamento.',
+      count: 5,
+      key: "see" as const,
+      label: "coisas que voce ve",
+      prompt: "Olhe ao redor. Nomeie 5 coisas que voce ve.",
     },
     {
-      title: "Folhas no rio",
-      description:
-        "Imagine cada pensamento como uma folha flutuando num rio. Voce esta na margem, observando as folhas passarem. Nao precisa pegar nenhuma.",
+      count: 4,
+      key: "touch" as const,
+      label: "coisas que voce toca",
+      prompt: "Sinta 4 texturas ao redor.",
     },
     {
-      title: "Repita em voz engraçada",
-      description:
-        "Pegue o pensamento mais insistente e repita em voz de desenho animado. Ele perde a forca quando muda de forma.",
+      count: 3,
+      key: "hear" as const,
+      label: "coisas que voce ouve",
+      prompt: "Fique em silencio. 3 sons.",
+    },
+    {
+      count: 2,
+      key: "smell" as const,
+      label: "coisas que voce cheira",
+      prompt: "2 cheiros, mesmo sutis.",
+    },
+    {
+      count: 1,
+      key: "taste" as const,
+      label: "coisa que voce saboreia",
+      prompt: "1 sabor na boca.",
     },
   ];
 
+  const currentStep = steps[step];
+  const isLast = step === steps.length - 1;
+
+  const handleNext = () => {
+    if (isLast) {
+      onComplete();
+    } else {
+      setStep((prev) => prev + 1);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-4 animate-fade-in">
-      <p className="text-sm text-text-secondary leading-relaxed">
-        Defusao cognitiva: separar voce dos seus pensamentos. Voce nao e o que
-        pensa.
-      </p>
-      <ul className="flex flex-col gap-3">
-        {techniques.map((tech) => (
-          <li
-            key={tech.title}
+    <div className="space-y-4 animate-fade-in">
+      {/* Minimal progress */}
+      <div className="flex gap-1.5 justify-center">
+        {steps.map((s, i) => (
+          <div
+            key={s.count}
             className={cn(
-              "flex flex-col gap-1 rounded-xl px-4 py-3",
-              "bg-surface-sunken border border-border-subtle"
+              "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
+              "transition-all duration-300",
+              i < step
+                ? "bg-accent/10 text-accent"
+                : i === step
+                  ? "bg-accent text-white"
+                  : "bg-surface-sunken text-text-muted"
             )}
           >
-            <span className="text-sm font-medium text-text-primary">
-              {tech.title}
-            </span>
-            <span className="text-xs text-text-secondary leading-relaxed">
-              {tech.description}
-            </span>
-          </li>
+            {s.count}
+          </div>
         ))}
-      </ul>
-    </div>
-  );
-}
-
-// --------------- Impulse Quick Log ---------------
-
-function ImpulseQuickAccess() {
-  return (
-    <div className="flex flex-col gap-4 animate-fade-in">
-      <p className="text-sm text-text-secondary leading-relaxed">
-        Registrar o impulso e uma forma de observar sem agir. Voce nao precisa
-        lutar contra ele - apenas anotar.
-      </p>
-      <div
-        className={cn(
-          "rounded-xl px-4 py-4 text-center",
-          "bg-rescue-subtle border border-rescue/20"
-        )}
-      >
-        <p className="text-sm font-medium text-text-primary mb-3">
-          Vontade nao e ordem.
-        </p>
-        <p className="text-xs text-text-secondary leading-relaxed">
-          Voce pode sentir vontade e escolher nao agir. O impulso vai passar.
-          Ele sempre passa.
-        </p>
       </div>
-      <Button variant="outline" size="md" className="w-full" asChild>
-        <a href="/impulsos">Registrar impulso no diario</a>
+
+      <div className="space-y-2" key={step}>
+        <p className="text-sm font-medium text-text-primary text-center">
+          {currentStep.prompt}
+        </p>
+        <Textarea
+          value={responses[currentStep.key]}
+          onChange={(e) =>
+            setResponses((prev) => ({
+              ...prev,
+              [currentStep.key]: e.target.value,
+            }))
+          }
+          placeholder={`${currentStep.count} ${currentStep.label}...`}
+          rows={2}
+          className="text-sm"
+          autoFocus
+        />
+      </div>
+
+      <Button size="md" className="w-full" onClick={handleNext}>
+        {isLast ? "Concluir" : "Proximo"}
       </Button>
     </div>
   );
@@ -141,7 +139,30 @@ function ImpulseQuickAccess() {
 
 export function RescueMode() {
   const { rescueMode, toggleRescueMode } = useAppStore();
-  const [activeSection, setActiveSection] = useState<RescueSection>(null);
+  const [phase, setPhase] = useState<RescuePhase>("breathing");
+  // Reset phase when rescue mode is toggled on
+  useEffect(() => {
+    if (rescueMode) {
+      setPhase("breathing");
+    }
+  }, [rescueMode]);
+
+  const handleBreathingDone = useCallback(() => {
+    setPhase("grounding");
+  }, []);
+
+  const handleGroundingDone = useCallback(() => {
+    setPhase("actions");
+  }, []);
+
+  const handleExitCheck = useCallback(() => {
+    setPhase("exit_check");
+  }, []);
+
+  const handleExitConfirm = useCallback(() => {
+    setPhase("breathing");
+    toggleRescueMode();
+  }, [toggleRescueMode]);
 
   if (!rescueMode) {
     return (
@@ -151,195 +172,273 @@ export function RescueMode() {
         onClick={toggleRescueMode}
         className="w-full"
       >
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-          />
-        </svg>
+        <Shield size={16} strokeWidth={2} />
         Modo Resgate
       </Button>
     );
   }
 
-  // Rescue mode is active
+  // Rescue mode is active - FULL SCREEN, minimal content
   return (
-    <Card className="animate-scale-in border-rescue/30 bg-rescue-subtle/30">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-rescue">Modo Resgate</CardTitle>
+    <div
+      className={cn(
+        "fixed inset-0 z-50 bg-surface overflow-y-auto",
+        "animate-fade-in"
+      )}
+    >
+      <div className="min-h-screen flex flex-col px-6 py-8 max-w-lg mx-auto">
+        {/* Minimal header - no metrics, no numbers */}
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-xs font-medium text-text-muted uppercase tracking-wider">
+            Modo Resgate
+          </p>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => {
-              setActiveSection(null);
-              toggleRescueMode();
-            }}
+            onClick={handleExitCheck}
+            className="text-text-muted"
           >
-            Sair
+            Estou melhor
           </Button>
         </div>
-        <CardDescription>
-          Voce esta seguro. Uma coisa de cada vez. Escolha o que precisa agora.
-        </CardDescription>
-      </CardHeader>
 
-      <CardContent className="flex flex-col gap-4">
-        {/* Regulatory phrase - always visible */}
-        <div
-          className={cn(
-            "rounded-xl px-4 py-3 text-center",
-            "bg-surface border border-border-subtle"
-          )}
-        >
-          <p className="text-sm text-text-primary font-medium leading-relaxed">
-            Vontade nao e ordem.
-          </p>
-          <p className="text-xs text-text-muted mt-1">
-            Voce pode sentir e escolher nao agir.
-          </p>
-        </div>
+        {/* Phase content */}
+        <div className="flex-1 flex flex-col justify-center">
+          {/* Phase 1: Auto-start breathing */}
+          {phase === "breathing" && (
+            <div className="space-y-6 animate-slide-up">
+              <div className="text-center space-y-2">
+                <p className="text-base font-medium text-text-primary">
+                  Respire.
+                </p>
+                <p className="text-sm text-text-secondary">
+                  Nada mais importa agora.
+                </p>
+              </div>
 
-        {/* Section buttons */}
-        {!activeSection && (
-          <div className="grid grid-cols-2 gap-3 animate-fade-in">
-            <button
-              type="button"
-              onClick={() => setActiveSection("grounding")}
-              className={cn(
-                "flex flex-col items-center gap-2 rounded-xl p-4",
-                "bg-surface border border-border-subtle",
-                "hover:bg-surface-sunken transition-colors duration-200",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              )}
-            >
-              <span className="text-2xl">5-4-3-2-1</span>
-              <span className="text-xs text-text-secondary">Aterramento</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveSection("breathing")}
-              className={cn(
-                "flex flex-col items-center gap-2 rounded-xl p-4",
-                "bg-surface border border-border-subtle",
-                "hover:bg-surface-sunken transition-colors duration-200",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              )}
-            >
-              <span className="text-2xl">4-7-8</span>
-              <span className="text-xs text-text-secondary">Respiracao</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveSection("defusion")}
-              className={cn(
-                "flex flex-col items-center gap-2 rounded-xl p-4",
-                "bg-surface border border-border-subtle",
-                "hover:bg-surface-sunken transition-colors duration-200",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              )}
-            >
-              <span className="text-2xl opacity-70">
-                <svg
-                  className="w-7 h-7 mx-auto"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-              </span>
-              <span className="text-xs text-text-secondary">Defusao</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveSection("impulse")}
-              className={cn(
-                "flex flex-col items-center gap-2 rounded-xl p-4",
-                "bg-surface border border-border-subtle",
-                "hover:bg-surface-sunken transition-colors duration-200",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              )}
-            >
-              <span className="text-2xl opacity-70">
-                <svg
-                  className="w-7 h-7 mx-auto"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                  />
-                </svg>
-              </span>
-              <span className="text-xs text-text-secondary">Impulso</span>
-            </button>
-          </div>
-        )}
-
-        {/* Active section content */}
-        {activeSection && (
-          <div className="flex flex-col gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setActiveSection(null)}
-              className="self-start -ml-2"
-            >
-              <svg
-                className="w-4 h-4 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              Voltar
-            </Button>
-
-            {activeSection === "grounding" && <GroundingExercise />}
-            {activeSection === "breathing" && (
               <BreathingExercise
                 inhale={4}
                 hold={7}
                 exhale={8}
-                onClose={() => setActiveSection(null)}
+                onClose={handleBreathingDone}
               />
-            )}
-            {activeSection === "defusion" && <DefusionExercise />}
-            {activeSection === "impulse" && <ImpulseQuickAccess />}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-text-muted"
+                onClick={handleBreathingDone}
+              >
+                Pular para aterramento
+              </Button>
+            </div>
+          )}
+
+          {/* Phase 2: Interactive grounding */}
+          {phase === "grounding" && (
+            <div className="space-y-6 animate-slide-up">
+              <button
+                type="button"
+                onClick={() => setPhase("breathing")}
+                className="flex items-center gap-1 text-sm text-text-muted hover:text-text-secondary transition-colors -ml-1"
+              >
+                <ChevronLeft size={16} strokeWidth={1.5} />
+                Voltar
+              </button>
+
+              <div className="text-center space-y-2">
+                <p className="text-base font-medium text-text-primary">
+                  Aterramento 5-4-3-2-1
+                </p>
+                <p className="text-sm text-text-secondary">
+                  Traga sua atencao para o momento presente.
+                </p>
+              </div>
+
+              <InteractiveGrounding onComplete={handleGroundingDone} />
+            </div>
+          )}
+
+          {/* Phase 3: Simple action options */}
+          {phase === "actions" && (
+            <div className="space-y-6 animate-slide-up">
+              <button
+                type="button"
+                onClick={() => setPhase("grounding")}
+                className="flex items-center gap-1 text-sm text-text-muted hover:text-text-secondary transition-colors -ml-1"
+              >
+                <ChevronLeft size={16} strokeWidth={1.5} />
+                Voltar
+              </button>
+
+              <div className="text-center space-y-2">
+                <p className="text-base font-medium text-text-primary">
+                  Escolha uma acao simples
+                </p>
+                <p className="text-sm text-text-secondary">
+                  Uma coisa so. A menor possivel.
+                </p>
+              </div>
+
+              {/* 3 simple actions */}
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={() => setPhase("defusion")}
+                  className={cn(
+                    "w-full flex items-center gap-4 rounded-xl border border-border-subtle p-5",
+                    "text-left hover:bg-surface-sunken/50 transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "active:scale-[0.98]"
+                  )}
+                >
+                  <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                    <Droplets size={18} className="text-blue-500" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">
+                      Beber agua
+                    </p>
+                    <p className="text-xs text-text-muted">
+                      Levante, pegue um copo, beba devagar.
+                    </p>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPhase("defusion")}
+                  className={cn(
+                    "w-full flex items-center gap-4 rounded-xl border border-border-subtle p-5",
+                    "text-left hover:bg-surface-sunken/50 transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "active:scale-[0.98]"
+                  )}
+                >
+                  <div className="w-10 h-10 rounded-full bg-green-50 border border-green-100 flex items-center justify-center flex-shrink-0">
+                    <MapPin size={18} className="text-green-600" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">
+                      Mudar de lugar
+                    </p>
+                    <p className="text-xs text-text-muted">
+                      Va para outro comodo. Mude o cenario.
+                    </p>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPhase("defusion")}
+                  className={cn(
+                    "w-full flex items-center gap-4 rounded-xl border border-border-subtle p-5",
+                    "text-left hover:bg-surface-sunken/50 transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "active:scale-[0.98]"
+                  )}
+                >
+                  <div className="w-10 h-10 rounded-full bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
+                    <Phone size={18} className="text-amber-600" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">
+                      Ligar para alguem
+                    </p>
+                    <p className="text-xs text-text-muted">
+                      Nao precisa explicar. So ouvir uma voz.
+                    </p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Phase 4: ACT Defusion */}
+          {phase === "defusion" && (
+            <div className="space-y-8 animate-slide-up">
+              <button
+                type="button"
+                onClick={() => setPhase("actions")}
+                className="flex items-center gap-1 text-sm text-text-muted hover:text-text-secondary transition-colors -ml-1"
+              >
+                <ChevronLeft size={16} strokeWidth={1.5} />
+                Voltar
+              </button>
+
+              <div className="text-center space-y-6">
+                <div className="rounded-2xl border border-border-subtle bg-surface-sunken p-8 space-y-6">
+                  <p className="text-base text-text-primary leading-relaxed font-medium">
+                    Estou tendo pensamentos dificeis.
+                  </p>
+
+                  <div className="w-12 h-px bg-border-subtle mx-auto" />
+
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    Eles nao me definem.
+                  </p>
+
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    Sao pensamentos, nao fatos. Sao ondas, nao o mar.
+                    Posso observa-los sem agir.
+                  </p>
+                </div>
+
+                <div className="rounded-xl bg-accent-subtle/10 border border-accent/10 p-4">
+                  <p className="text-sm text-accent font-medium">
+                    Vontade nao e ordem.
+                  </p>
+                  <p className="text-xs text-text-secondary mt-1">
+                    Voce pode sentir e escolher nao agir.
+                  </p>
+                </div>
+              </div>
+
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={handleExitCheck}
+              >
+                Estou melhor
+              </Button>
+            </div>
+          )}
+
+          {/* Phase 5: Exit check */}
+          {phase === "exit_check" && (
+            <div className="space-y-8 animate-slide-up text-center">
+              <div className="space-y-4">
+                <p className="text-base font-medium text-text-primary">
+                  Como voce esta se sentindo?
+                </p>
+                <p className="text-sm text-text-secondary leading-relaxed">
+                  Se ainda nao estiver bem, fique aqui o tempo que precisar.
+                  Nao tem pressa.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Button
+                  size="lg"
+                  className="w-full"
+                  onClick={handleExitConfirm}
+                >
+                  Estou melhor, pode sair
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="md"
+                  className="w-full"
+                  onClick={() => setPhase("breathing")}
+                >
+                  Preciso de mais um momento
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

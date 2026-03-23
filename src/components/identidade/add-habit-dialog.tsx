@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
@@ -23,6 +23,14 @@ const SABOTEUR_OPTIONS = [
   "comparacao",
   "cansaco",
 ] as const;
+
+const SABOTEUR_EXAMPLES: Record<string, string> = {
+  perfeccionismo: "Sentir que a versao minima nao conta",
+  "tudo-ou-nada": "Se nao fizer completo, nao faz nada",
+  procrastinacao: "Achar que ainda tem tempo e adiar",
+  comparacao: "Ver o progresso dos outros e desanimar",
+  cansaco: "Usar o cansaco como desculpa para nao comecar",
+};
 
 const FREQUENCY_OPTIONS = [
   { value: "daily" as const, label: "Diario" },
@@ -39,6 +47,7 @@ interface AddHabitDialogProps {
     minimum_version: string;
     common_saboteurs: string[];
     frequency: "daily" | "weekdays" | "custom";
+    saboteur_description?: string;
   }) => void;
 }
 
@@ -52,6 +61,7 @@ export function AddHabitDialog({
   const [idealVersion, setIdealVersion] = useState("");
   const [minimumVersion, setMinimumVersion] = useState("");
   const [saboteurs, setSaboteurs] = useState<string[]>([]);
+  const [saboteurDescription, setSaboteurDescription] = useState("");
   const [frequency, setFrequency] = useState<"daily" | "weekdays" | "custom">(
     "daily"
   );
@@ -74,17 +84,23 @@ export function AddHabitDialog({
       minimum_version: minimumVersion.trim(),
       common_saboteurs: saboteurs,
       frequency,
+      saboteur_description: saboteurDescription.trim() || undefined,
     });
 
     setName("");
     setIdealVersion("");
     setMinimumVersion("");
     setSaboteurs([]);
+    setSaboteurDescription("");
     setFrequency("daily");
     setOpen(false);
   };
 
   const isValid = name.trim() && idealVersion.trim() && minimumVersion.trim();
+
+  // Build a suggestion based on selected saboteurs
+  const saboteurSuggestion =
+    saboteurs.length > 0 ? SABOTEUR_EXAMPLES[saboteurs[0]] : null;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -188,6 +204,30 @@ export function AddHabitDialog({
               })}
             </div>
           </div>
+
+          {/* Saboteur description */}
+          {saboteurs.length > 0 && (
+            <div className="space-y-2">
+              <label
+                htmlFor={`habit-saboteur-desc-${identityId}`}
+                className="text-sm font-medium text-text-primary"
+              >
+                O que o sabotador parece?
+              </label>
+              <p className="text-xs text-text-muted">
+                {saboteurSuggestion
+                  ? `Para "${saboteurs[0]}": ${saboteurSuggestion}`
+                  : "Descreva brevemente como a sabotagem aparece nesse habito."}
+              </p>
+              <Textarea
+                id={`habit-saboteur-desc-${identityId}`}
+                placeholder="Descreva como a sabotagem se manifesta..."
+                value={saboteurDescription}
+                onChange={(e) => setSaboteurDescription(e.target.value)}
+                rows={2}
+              />
+            </div>
+          )}
 
           {/* Frequency */}
           <div className="space-y-2">

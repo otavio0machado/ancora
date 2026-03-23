@@ -73,6 +73,8 @@ export const useCheckInStore = create<CheckInStore>((set, get) => ({
       focus: checkIn.focus,
       impulsivity: checkIn.impulsivity,
       notes: checkIn.notes ?? null,
+      sleep_quality: null,
+      sleep_hours: null,
       created_at: new Date().toISOString(),
     };
 
@@ -94,6 +96,8 @@ export const useCheckInStore = create<CheckInStore>((set, get) => ({
                 focus: checkIn.focus,
                 impulsivity: checkIn.impulsivity,
                 notes: checkIn.notes ?? null,
+                sleep_quality: null,
+                sleep_hours: null,
               },
               { onConflict: "user_id,date" }
             )

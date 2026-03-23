@@ -26,6 +26,8 @@ export type CheckIn = {
   focus: number; // 1-5
   impulsivity: number; // 1-5
   notes: string | null;
+  sleep_quality: number | null; // 1-5
+  sleep_hours: number | null; // approximate
   created_at: string;
 };
 
@@ -38,6 +40,8 @@ export type Identity = {
   active: boolean;
   created_at: string;
   order_index: number;
+  linked_values: string[]; // ACT values this identity supports
+  strength: number; // 0-100, calculated from habit completion
 };
 
 export type Habit = {
@@ -107,6 +111,10 @@ export type Impulse = {
   technique_used: string | null; // DBT technique
   resisted: boolean;
   notes: string | null;
+  duration_minutes: number | null; // how long the impulse lasted before decision
+  technique_effectiveness: number | null; // 1-5 how well the technique worked
+  linked_value: string | null; // which ACT value was invoked
+  recovery_entry_id: string | null; // if relapsed, link to recovery
   created_at: string;
 };
 
@@ -119,6 +127,57 @@ export type WeeklyReview = {
   adjustments: string | null;
   wins: string | null;
   ai_insights: string | null;
+  created_at: string;
+};
+
+// ACT Values - user's core values
+export type UserValue = {
+  id: string;
+  user_id: string;
+  name: string; // e.g., "Crescimento", "Saúde", "Conexão"
+  description: string | null;
+  icon: string | null; // emoji
+  active: boolean;
+  created_at: string;
+  order_index: number;
+};
+
+// Technique Log - tracks which DBT technique was used and its effectiveness
+export type TechniqueLog = {
+  id: string;
+  user_id: string;
+  impulse_id: string | null; // linked to impulse that triggered it
+  technique: string; // e.g., "tip", "stop", "grounding", "breathing", "opposite_action", "delay"
+  context: "impulse" | "rescue" | "proactive"; // when was it used
+  effectiveness: number | null; // 1-5 rating after use
+  duration_seconds: number | null; // how long they engaged
+  notes: string | null;
+  created_at: string;
+};
+
+// Recovery Entry - tracks what happens after a relapse
+export type RecoveryEntry = {
+  id: string;
+  user_id: string;
+  impulse_id: string; // which impulse led to relapse
+  trigger_analysis: string | null; // user's reflection on what caused it
+  what_to_do_differently: string | null; // commitment for next time
+  self_compassion_note: string | null; // kind message to self
+  return_action: string | null; // first small action to get back on track
+  created_at: string;
+};
+
+// Overload Event - tracks when anti-obsession system kicks in
+export type OverloadEvent = {
+  id: string;
+  user_id: string;
+  date: string;
+  type: "auto_reduction" | "rescue_activated" | "priority_blocked" | "manual";
+  anxiety_level: number | null;
+  energy_level: number | null;
+  tasks_before: number;
+  tasks_after: number;
+  notes: string | null;
   created_at: string;
 };
 
@@ -160,6 +219,22 @@ export type WeeklyReviewInsert = Omit<WeeklyReview, "id" | "created_at"> & {
   id?: string;
   created_at?: string;
 };
+export type UserValueInsert = Omit<UserValue, "id" | "created_at"> & {
+  id?: string;
+  created_at?: string;
+};
+export type TechniqueLogInsert = Omit<TechniqueLog, "id" | "created_at"> & {
+  id?: string;
+  created_at?: string;
+};
+export type RecoveryEntryInsert = Omit<RecoveryEntry, "id" | "created_at"> & {
+  id?: string;
+  created_at?: string;
+};
+export type OverloadEventInsert = Omit<OverloadEvent, "id" | "created_at"> & {
+  id?: string;
+  created_at?: string;
+};
 
 // --------------- Update types (all fields optional) ---------------
 
@@ -172,6 +247,10 @@ export type DayPriorityUpdate = Partial<DayPriority>;
 export type FocusSessionUpdate = Partial<FocusSession>;
 export type ImpulseUpdate = Partial<Impulse>;
 export type WeeklyReviewUpdate = Partial<WeeklyReview>;
+export type UserValueUpdate = Partial<UserValue>;
+export type TechniqueLogUpdate = Partial<TechniqueLog>;
+export type RecoveryEntryUpdate = Partial<RecoveryEntry>;
+export type OverloadEventUpdate = Partial<OverloadEvent>;
 
 // --------------- Supabase Database type ---------------
 
@@ -300,6 +379,70 @@ export type Database = {
           },
         ];
       };
+      user_values: {
+        Row: UserValue;
+        Insert: UserValueInsert;
+        Update: UserValueUpdate;
+        Relationships: [
+          {
+            foreignKeyName: "user_values_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      technique_logs: {
+        Row: TechniqueLog;
+        Insert: TechniqueLogInsert;
+        Update: TechniqueLogUpdate;
+        Relationships: [
+          {
+            foreignKeyName: "technique_logs_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "technique_logs_impulse_id_fkey";
+            columns: ["impulse_id"];
+            referencedRelation: "impulses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      recovery_entries: {
+        Row: RecoveryEntry;
+        Insert: RecoveryEntryInsert;
+        Update: RecoveryEntryUpdate;
+        Relationships: [
+          {
+            foreignKeyName: "recovery_entries_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "recovery_entries_impulse_id_fkey";
+            columns: ["impulse_id"];
+            referencedRelation: "impulses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      overload_events: {
+        Row: OverloadEvent;
+        Insert: OverloadEventInsert;
+        Update: OverloadEventUpdate;
+        Relationships: [
+          {
+            foreignKeyName: "overload_events_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -314,6 +457,12 @@ export type Database = {
         | "binge_eating"
         | "substance"
         | "other";
+      technique_context: "impulse" | "rescue" | "proactive";
+      overload_event_type:
+        | "auto_reduction"
+        | "rescue_activated"
+        | "priority_blocked"
+        | "manual";
     };
   };
 };

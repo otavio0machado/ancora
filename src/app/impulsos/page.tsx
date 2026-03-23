@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Zap, Plus } from "lucide-react";
+import { useState, useCallback, useMemo } from "react";
+import { Zap, Plus, Shield } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,7 @@ import { ProtocolDisplay } from "@/components/impulsos/protocol-display";
 import { ImpulseLog } from "@/components/impulsos/impulse-log";
 import { Badge } from "@/components/ui/badge";
 import { useImpulseStore } from "@/lib/stores/impulse-store";
+import { useAppStore } from "@/lib/stores/app-store";
 import { getFallbackImpulseProtocol } from "@/lib/ai/fallbacks";
 import type { AIImpulseOutput } from "@/types/ai";
 import type { Impulse } from "@/types/database";
@@ -32,29 +33,38 @@ type PageView = "home" | "form" | "protocol";
 export default function ImpulsosPage() {
   const [view, setView] = useState<PageView>("home");
   const [protocol, setProtocol] = useState<AIImpulseOutput | null>(null);
-  const [pendingFormData, setPendingFormData] = useState<ImpulseFormData | null>(null);
+  const [currentFormData, setCurrentFormData] = useState<ImpulseFormData | null>(null);
+
+  const { toggleRescueMode } = useAppStore();
 
   const {
     recentImpulses,
-    setCurrentImpulse,
-    addImpulse,
     isSubmitting,
+    saveImpulse,
+    setImpulseType,
+    setIntensity,
+    setTrigger,
+    setContext,
+    setEmotion,
+    setResisted,
+    setOutcomeNotes,
+    setTechniqueEffectiveness,
+    setRecoveryData,
+    selectTechnique,
+    resetFlow,
   } = useImpulseStore();
 
   // Handle form submission -> trigger protocol
   const handleFormSubmit = useCallback(
     async (data: ImpulseFormData) => {
-      // Store impulse data in Zustand (not yet saved to DB)
-      setCurrentImpulse({
-        type: data.type,
-        intensity: data.intensity,
-        trigger: data.trigger || undefined,
-        context: data.context || undefined,
-        emotion_before: data.emotion_before || undefined,
-        resisted: false,
-      });
+      // Store form data in Zustand
+      setEmotion(data.emotion_before);
+      setImpulseType(data.type);
+      setIntensity(data.intensity);
+      setTrigger(data.trigger);
+      setContext(data.context);
 
-      setPendingFormData(data);
+      setCurrentFormData(data);
 
       // Try AI first, fall back to local protocol
       let protocolResult: AIImpulseOutput;
@@ -86,30 +96,60 @@ export default function ImpulsosPage() {
       setProtocol(protocolResult);
       setView("protocol");
     },
-    [recentImpulses, setCurrentImpulse]
+    [recentImpulses, setEmotion, setImpulseType, setIntensity, setTrigger, setContext]
   );
 
   // Handle protocol completion -> save impulse to DB
   const handleProtocolComplete = useCallback(
-    async (resisted: boolean, notes: string, techniqueUsed?: string) => {
-      setCurrentImpulse({
-        resisted,
-        notes: notes || undefined,
-        technique_used: techniqueUsed ?? undefined,
-      });
+    async (
+      resisted: boolean,
+      notes: string,
+      techniqueUsed?: string,
+      techniqueEffectivenessVal?: number,
+      recoveryDataVal?: {
+        triggerAnalysis: string;
+        whatToDoDifferently: string;
+        selfCompassionNote: string;
+        returnAction: string;
+      }
+    ) => {
+      // Update store with outcome data
+      setResisted(resisted);
+      setOutcomeNotes(notes);
 
-      await addImpulse();
+      if (techniqueUsed) {
+        selectTechnique(techniqueUsed as any);
+      }
+
+      if (techniqueEffectivenessVal != null) {
+        setTechniqueEffectiveness(techniqueEffectivenessVal);
+      }
+
+      if (recoveryDataVal) {
+        setRecoveryData(recoveryDataVal);
+      }
+
+      await saveImpulse();
 
       // Reset view
       setProtocol(null);
-      setPendingFormData(null);
+      setCurrentFormData(null);
+      resetFlow();
       setView("home");
     },
-    [setCurrentImpulse, addImpulse]
+    [setResisted, setOutcomeNotes, selectTechnique, setTechniqueEffectiveness, setRecoveryData, saveImpulse, resetFlow]
   );
 
+  const handleCancel = useCallback(() => {
+    resetFlow();
+    setView("home");
+  }, [resetFlow]);
+
   // Compute pattern summary
-  const patternSummary = computePatternSummary(recentImpulses);
+  const patternSummary = useMemo(
+    () => computePatternSummary(recentImpulses),
+    [recentImpulses]
+  );
 
   return (
     <div className="ancora-container py-6">
@@ -137,37 +177,49 @@ export default function ImpulsosPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ImpulseForm onSubmit={handleFormSubmit} isSubmitting={isSubmitting} />
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full mt-3 text-text-muted"
-                onClick={() => setView("home")}
-              >
-                Cancelar
-              </Button>
+              <ImpulseForm
+                onSubmit={handleFormSubmit}
+                onCancel={handleCancel}
+                isSubmitting={isSubmitting}
+              />
             </CardContent>
           </Card>
         )}
 
-        {view === "protocol" && protocol && (
+        {view === "protocol" && protocol && currentFormData && (
           <ProtocolDisplay
             protocol={protocol}
+            impulseType={currentFormData.type}
+            intensity={currentFormData.intensity}
+            emotion={currentFormData.emotion_before}
             onComplete={handleProtocolComplete}
             isSubmitting={isSubmitting}
           />
         )}
 
-        {/* CTA button (home view) */}
+        {/* CTA buttons (home view) */}
         {view === "home" && (
-          <Button
-            size="lg"
-            className="w-full"
-            onClick={() => setView("form")}
-          >
-            <Plus size={18} strokeWidth={2} />
-            Registrar impulso
-          </Button>
+          <div className="space-y-3">
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => setView("form")}
+            >
+              <Plus size={18} strokeWidth={2} />
+              Registrar impulso
+            </Button>
+
+            {/* Rescue mode quick access */}
+            <Button
+              variant="outline"
+              size="md"
+              className="w-full text-text-secondary border-border-subtle"
+              onClick={toggleRescueMode}
+            >
+              <Shield size={16} strokeWidth={1.5} />
+              Modo Resgate
+            </Button>
+          </div>
         )}
 
         {/* Pattern summary */}

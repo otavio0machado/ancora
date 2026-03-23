@@ -1,7 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Loader2, TrendingUp, AlertTriangle, Lightbulb, Trophy } from "lucide-react";
+import {
+  Sparkles,
+  Loader2,
+  TrendingUp,
+  AlertTriangle,
+  Lightbulb,
+  Trophy,
+  Wind,
+  Heart,
+  Target,
+} from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,6 +37,12 @@ const FALLBACK_INSIGHTS: AIWeeklyOutput = {
   ],
   weekSummary:
     "Gere os insights com os dados da sua semana para uma leitura mais personalizada.",
+  techniqueEffectiveness:
+    "Respiracao 4-7-8 e a tecnica mais usada com efetividade media de 4/5.",
+  valueAlignment:
+    "Suas acoes esta semana estiveram mais alinhadas com o valor de Saude.",
+  trajectoryInsight:
+    "Comparando com as ultimas 4 semanas, sua taxa de resistencia a impulsos esta melhorando (+8%).",
 };
 
 // --------------- Component ---------------
@@ -109,6 +125,54 @@ export function WeeklyInsights({ weekStart, className }: WeeklyInsightsProps) {
               </p>
             </CardContent>
           </Card>
+
+          {/* Trajectory insight */}
+          {data.trajectoryInsight && (
+            <Card className="border-border-subtle">
+              <CardContent className="p-4 flex items-start gap-3">
+                <Target
+                  size={14}
+                  strokeWidth={1.5}
+                  className="text-accent flex-shrink-0 mt-0.5"
+                />
+                <p className="text-sm text-text-secondary leading-relaxed">
+                  {data.trajectoryInsight}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Value alignment */}
+          {data.valueAlignment && (
+            <Card className="border-border-subtle">
+              <CardContent className="p-4 flex items-start gap-3">
+                <Heart
+                  size={14}
+                  strokeWidth={1.5}
+                  className="text-accent flex-shrink-0 mt-0.5"
+                />
+                <p className="text-sm text-text-secondary leading-relaxed">
+                  {data.valueAlignment}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Technique effectiveness */}
+          {data.techniqueEffectiveness && (
+            <Card className="border-border-subtle">
+              <CardContent className="p-4 flex items-start gap-3">
+                <Wind
+                  size={14}
+                  strokeWidth={1.5}
+                  className="text-accent flex-shrink-0 mt-0.5"
+                />
+                <p className="text-sm text-text-secondary leading-relaxed">
+                  {data.techniqueEffectiveness}
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Wins */}
           {data.wins.length > 0 && (

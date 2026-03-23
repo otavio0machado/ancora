@@ -22,6 +22,13 @@ create type impulse_type as enum (
   'substance',
   'other'
 );
+create type technique_context as enum ('impulse', 'rescue', 'proactive');
+create type overload_event_type as enum (
+  'auto_reduction',
+  'rescue_activated',
+  'priority_blocked',
+  'manual'
+);
 
 -- ============================================================
 -- TABLES
@@ -49,9 +56,23 @@ create table check_ins (
   focus smallint not null check (focus between 1 and 5),
   impulsivity smallint not null check (impulsivity between 1 and 5),
   notes text,
+  sleep_quality smallint check (sleep_quality is null or sleep_quality between 1 and 5),
+  sleep_hours numeric(3,1) check (sleep_hours is null or sleep_hours between 0 and 24),
   created_at timestamptz not null default now(),
 
   unique (user_id, date)
+);
+
+-- ACT Values - user's core values
+create table user_values (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references users(id) on delete cascade,
+  name text not null,
+  description text,
+  icon text,
+  active boolean not null default true,
+  order_index integer not null default 0,
+  created_at timestamptz not null default now()
 );
 
 -- Identities (e.g. "Estudioso equilibrado", "Não fumante em construção")
@@ -63,6 +84,8 @@ create table identities (
   icon text,
   active boolean not null default true,
   order_index integer not null default 0,
+  linked_values text[] not null default '{}',
+  strength integer not null default 0 check (strength between 0 and 100),
   created_at timestamptz not null default now()
 );
 
@@ -134,6 +157,54 @@ create table impulses (
   technique_used text,
   resisted boolean not null default false,
   notes text,
+  duration_minutes numeric(6,1) check (duration_minutes is null or duration_minutes >= 0),
+  technique_effectiveness smallint check (technique_effectiveness is null or technique_effectiveness between 1 and 5),
+  linked_value text,
+  recovery_entry_id uuid,
+  created_at timestamptz not null default now()
+);
+
+-- Technique logs - tracks which DBT technique was used and its effectiveness
+create table technique_logs (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references users(id) on delete cascade,
+  impulse_id uuid references impulses(id) on delete set null,
+  technique text not null,
+  context technique_context not null,
+  effectiveness smallint check (effectiveness is null or effectiveness between 1 and 5),
+  duration_seconds integer check (duration_seconds is null or duration_seconds >= 0),
+  notes text,
+  created_at timestamptz not null default now()
+);
+
+-- Recovery entries - tracks what happens after a relapse
+create table recovery_entries (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references users(id) on delete cascade,
+  impulse_id uuid not null references impulses(id) on delete cascade,
+  trigger_analysis text,
+  what_to_do_differently text,
+  self_compassion_note text,
+  return_action text,
+  created_at timestamptz not null default now()
+);
+
+-- Add foreign key from impulses to recovery_entries (after both tables exist)
+alter table impulses
+  add constraint impulses_recovery_entry_id_fkey
+  foreign key (recovery_entry_id) references recovery_entries(id) on delete set null;
+
+-- Overload events - tracks when anti-obsession system kicks in
+create table overload_events (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references users(id) on delete cascade,
+  date date not null,
+  type overload_event_type not null,
+  anxiety_level smallint check (anxiety_level is null or anxiety_level between 1 and 5),
+  energy_level smallint check (energy_level is null or energy_level between 1 and 5),
+  tasks_before integer not null default 0,
+  tasks_after integer not null default 0,
+  notes text,
   created_at timestamptz not null default now()
 );
 
@@ -159,6 +230,9 @@ create table weekly_reviews (
 -- Check-ins: query by user + date range
 create index idx_check_ins_user_date on check_ins (user_id, date desc);
 
+-- User values: ordered listing per user
+create index idx_user_values_user_order on user_values (user_id, order_index);
+
 -- Identities: ordered listing per user
 create index idx_identities_user_order on identities (user_id, order_index);
 
@@ -180,6 +254,19 @@ create index idx_focus_sessions_status on focus_sessions (user_id, status);
 -- Impulses: query by user + date range
 create index idx_impulses_user_created on impulses (user_id, created_at desc);
 create index idx_impulses_type on impulses (user_id, type);
+
+-- Technique logs: query by user + technique
+create index idx_technique_logs_user_created on technique_logs (user_id, created_at desc);
+create index idx_technique_logs_impulse on technique_logs (impulse_id);
+create index idx_technique_logs_technique on technique_logs (user_id, technique);
+
+-- Recovery entries: query by user + impulse
+create index idx_recovery_entries_user on recovery_entries (user_id, created_at desc);
+create index idx_recovery_entries_impulse on recovery_entries (impulse_id);
+
+-- Overload events: query by user + date
+create index idx_overload_events_user_date on overload_events (user_id, date desc);
+create index idx_overload_events_type on overload_events (user_id, type);
 
 -- Weekly reviews: query by user + week
 create index idx_weekly_reviews_user_week on weekly_reviews (user_id, week_start desc);
@@ -208,12 +295,16 @@ create trigger users_updated_at
 -- Enable RLS on all tables
 alter table users enable row level security;
 alter table check_ins enable row level security;
+alter table user_values enable row level security;
 alter table identities enable row level security;
 alter table habits enable row level security;
 alter table habit_logs enable row level security;
 alter table day_priorities enable row level security;
 alter table focus_sessions enable row level security;
 alter table impulses enable row level security;
+alter table technique_logs enable row level security;
+alter table recovery_entries enable row level security;
+alter table overload_events enable row level security;
 alter table weekly_reviews enable row level security;
 
 -- Users: can only read/update own profile
@@ -244,6 +335,23 @@ create policy "Users can update own check-ins"
 
 create policy "Users can delete own check-ins"
   on check_ins for delete
+  using (auth.uid() = user_id);
+
+-- User Values
+create policy "Users can view own values"
+  on user_values for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own values"
+  on user_values for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own values"
+  on user_values for update
+  using (auth.uid() = user_id);
+
+create policy "Users can delete own values"
+  on user_values for delete
   using (auth.uid() = user_id);
 
 -- Identities
@@ -346,6 +454,57 @@ create policy "Users can update own impulses"
 
 create policy "Users can delete own impulses"
   on impulses for delete
+  using (auth.uid() = user_id);
+
+-- Technique logs
+create policy "Users can view own technique logs"
+  on technique_logs for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own technique logs"
+  on technique_logs for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own technique logs"
+  on technique_logs for update
+  using (auth.uid() = user_id);
+
+create policy "Users can delete own technique logs"
+  on technique_logs for delete
+  using (auth.uid() = user_id);
+
+-- Recovery entries
+create policy "Users can view own recovery entries"
+  on recovery_entries for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own recovery entries"
+  on recovery_entries for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own recovery entries"
+  on recovery_entries for update
+  using (auth.uid() = user_id);
+
+create policy "Users can delete own recovery entries"
+  on recovery_entries for delete
+  using (auth.uid() = user_id);
+
+-- Overload events
+create policy "Users can view own overload events"
+  on overload_events for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own overload events"
+  on overload_events for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own overload events"
+  on overload_events for update
+  using (auth.uid() = user_id);
+
+create policy "Users can delete own overload events"
+  on overload_events for delete
   using (auth.uid() = user_id);
 
 -- Weekly reviews

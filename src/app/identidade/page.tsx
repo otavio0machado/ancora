@@ -10,6 +10,183 @@ import type { Identity, Habit, HabitLog } from "@/types/database";
 
 const today = new Date().toISOString().split("T")[0];
 
+// Generate 30 days of mock habit logs for strength/streak calculations
+function generateMockLogs(): HabitLog[] {
+  const logs: HabitLog[] = [];
+  const now = new Date();
+
+  // hab-1 (Estudar): 22 ideal, 4 minimum over 30 days = strong
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const date = d.toISOString().split("T")[0];
+    if (i < 7) {
+      // Last 7 days: all ideal (current streak = 7)
+      logs.push({
+        id: `log-h1-${i}`,
+        habit_id: "hab-1",
+        user_id: "user-1",
+        date,
+        version: "ideal",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    } else if (i < 11) {
+      // days 7-10: minimum
+      logs.push({
+        id: `log-h1-${i}`,
+        habit_id: "hab-1",
+        user_id: "user-1",
+        date,
+        version: "minimum",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    } else if (i < 26 && i % 3 !== 0) {
+      // days 11-25: most ideal, skip every 3rd
+      logs.push({
+        id: `log-h1-${i}`,
+        habit_id: "hab-1",
+        user_id: "user-1",
+        date,
+        version: "ideal",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    }
+  }
+
+  // hab-2 (Ler): moderate - 15 days, mix of ideal/min
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const date = d.toISOString().split("T")[0];
+    if (i < 3) {
+      logs.push({
+        id: `log-h2-${i}`,
+        habit_id: "hab-2",
+        user_id: "user-1",
+        date,
+        version: "ideal",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    } else if (i >= 3 && i < 5) {
+      // break streak
+    } else if (i < 20 && i % 2 === 0) {
+      logs.push({
+        id: `log-h2-${i}`,
+        habit_id: "hab-2",
+        user_id: "user-1",
+        date,
+        version: i % 4 === 0 ? "minimum" : "ideal",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    }
+  }
+
+  // hab-3 (Treinar): good consistency
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const date = d.toISOString().split("T")[0];
+    const dayOfWeek = d.getDay();
+    // Only weekdays
+    if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+    if (i < 12) {
+      logs.push({
+        id: `log-h3-${i}`,
+        habit_id: "hab-3",
+        user_id: "user-1",
+        date,
+        version: i % 5 === 0 ? "minimum" : "ideal",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    } else if (i < 25 && i % 2 === 0) {
+      logs.push({
+        id: `log-h3-${i}`,
+        habit_id: "hab-3",
+        user_id: "user-1",
+        date,
+        version: "ideal",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    }
+  }
+
+  // hab-4 (Skincare): consistent
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const date = d.toISOString().split("T")[0];
+    if (i < 20) {
+      logs.push({
+        id: `log-h4-${i}`,
+        habit_id: "hab-4",
+        user_id: "user-1",
+        date,
+        version: i % 3 === 0 ? "minimum" : "ideal",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    }
+  }
+
+  // hab-5 (Nao fumar): lower, with some skipped days
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const date = d.toISOString().split("T")[0];
+    if (i < 4) {
+      logs.push({
+        id: `log-h5-${i}`,
+        habit_id: "hab-5",
+        user_id: "user-1",
+        date,
+        version: "ideal",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    } else if (i >= 4 && i < 6) {
+      logs.push({
+        id: `log-h5-${i}`,
+        habit_id: "hab-5",
+        user_id: "user-1",
+        date,
+        version: "skipped",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    } else if (i < 20 && i % 3 !== 0) {
+      logs.push({
+        id: `log-h5-${i}`,
+        habit_id: "hab-5",
+        user_id: "user-1",
+        date,
+        version: i % 4 === 0 ? "minimum" : "ideal",
+        notes: null,
+        created_at: d.toISOString(),
+      });
+    }
+  }
+
+  return logs;
+}
+
+const MOCK_LOGS = generateMockLogs();
+
+// Mock user values
+const MOCK_USER_VALUES = [
+  { id: "val-1", name: "Crescimento" },
+  { id: "val-2", name: "Saude" },
+  { id: "val-3", name: "Conhecimento" },
+  { id: "val-4", name: "Conexao" },
+  { id: "val-5", name: "Presenca" },
+];
+
 const MOCK_IDENTITIES: Identity[] = [
   {
     id: "id-1",
@@ -20,6 +197,8 @@ const MOCK_IDENTITIES: Identity[] = [
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 0,
+    linked_values: ["Crescimento", "Conhecimento"],
+    strength: 72,
   },
   {
     id: "id-2",
@@ -30,6 +209,8 @@ const MOCK_IDENTITIES: Identity[] = [
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 1,
+    linked_values: ["Saude", "Presenca"],
+    strength: 61,
   },
   {
     id: "id-3",
@@ -40,6 +221,8 @@ const MOCK_IDENTITIES: Identity[] = [
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 2,
+    linked_values: ["Saude"],
+    strength: 38,
   },
 ];
 
@@ -122,9 +305,14 @@ export default function IdentidadePage() {
   const [identities, setIdentities] = useState<Identity[]>(MOCK_IDENTITIES);
   const [habits, setHabits] = useState<Habit[]>(MOCK_HABITS);
   const [todayLogs, setTodayLogs] = useState<HabitLog[]>([]);
+  const [allLogs] = useState<HabitLog[]>(MOCK_LOGS);
 
   // Add identity
-  const handleAddIdentity = (name: string, description: string | null) => {
+  const handleAddIdentity = (
+    name: string,
+    description: string | null,
+    linkedValues: string[]
+  ) => {
     const newIdentity: Identity = {
       id: `id-${Date.now()}`,
       user_id: "user-1",
@@ -134,6 +322,8 @@ export default function IdentidadePage() {
       active: true,
       created_at: new Date().toISOString(),
       order_index: identities.length,
+      linked_values: linkedValues,
+      strength: 0,
     };
     setIdentities((prev) => [...prev, newIdentity]);
   };
@@ -147,6 +337,7 @@ export default function IdentidadePage() {
       minimum_version: string;
       common_saboteurs: string[];
       frequency: "daily" | "weekdays" | "custom";
+      saboteur_description?: string;
     }
   ) => {
     const newHabit: Habit = {
@@ -190,15 +381,15 @@ export default function IdentidadePage() {
   return (
     <div className="ancora-container py-6 space-y-6">
       {/* Header */}
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <div className="flex items-center gap-2">
           <Fingerprint className="w-5 h-5 text-accent" />
           <h1 className="text-xl font-semibold text-text-primary">
-            Identidade
+            Quem voce esta construindo
           </h1>
         </div>
-        <p className="text-sm text-text-secondary">
-          Quem voce esta construindo ser, um habito por vez.
+        <p className="text-sm text-text-secondary leading-relaxed">
+          Suas identidades sao construidas acao por acao, nao pela perfeicao.
         </p>
       </div>
 
@@ -208,12 +399,16 @@ export default function IdentidadePage() {
           const identityHabits = habits.filter(
             (h) => h.identity_id === identity.id && h.active
           );
+          const identityLogs = allLogs.filter((log) =>
+            identityHabits.some((h) => h.id === log.habit_id)
+          );
           return (
             <IdentityCard
               key={identity.id}
               identity={identity}
               habits={identityHabits}
               todayLogs={todayLogs}
+              allLogs={identityLogs}
               onLogVersion={handleLogVersion}
               onAddHabit={handleAddHabit}
             />
@@ -222,7 +417,10 @@ export default function IdentidadePage() {
       </div>
 
       {/* Add identity */}
-      <AddIdentityDialog onAdd={handleAddIdentity} />
+      <AddIdentityDialog
+        onAdd={handleAddIdentity}
+        availableValues={MOCK_USER_VALUES.map((v) => v.name)}
+      />
     </div>
   );
 }

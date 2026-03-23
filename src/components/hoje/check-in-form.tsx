@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Moon, AlertTriangle } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils/cn";
 import { useCheckInStore } from "@/lib/stores/checkin-store";
+import { detectOverloadRisk, type OverloadRisk } from "@/lib/utils/patterns";
 
 // --------------- Slider dimension config ---------------
 
@@ -69,6 +72,16 @@ const DIMENSIONS: SliderDimension[] = [
   },
 ];
 
+// --------------- Sleep quality labels ---------------
+
+const SLEEP_QUALITY_LABELS: Record<number, string> = {
+  1: "Pessimo",
+  2: "Ruim",
+  3: "Regular",
+  4: "Bom",
+  5: "Otimo",
+};
+
 // --------------- Value label ---------------
 
 const VALUE_LABELS: Record<number, string> = {
@@ -92,16 +105,25 @@ function getValueColor(value: number, reverse: boolean): string {
   return "text-success";
 }
 
+function getSleepQualityColor(value: number): string {
+  if (value <= 2) return "text-alert";
+  if (value === 3) return "text-text-secondary";
+  return "text-success";
+}
+
 // --------------- Component ---------------
 
 interface CheckInFormProps {
-  onComplete?: () => void;
+  onComplete?: (overloadRisk: OverloadRisk) => void;
 }
 
 export function CheckInForm({ onComplete }: CheckInFormProps) {
   const { checkIn, setCheckIn, isSubmitting } = useCheckInStore();
   const [notes, setNotes] = useState(checkIn?.notes ?? "");
+  const [sleepQuality, setSleepQuality] = useState(3);
+  const [sleepHours, setSleepHours] = useState("7");
   const [submitted, setSubmitted] = useState(false);
+  const [overloadWarning, setOverloadWarning] = useState<OverloadRisk | null>(null);
 
   const values = checkIn ?? {
     energy: 3,
@@ -112,11 +134,9 @@ export function CheckInForm({ onComplete }: CheckInFormProps) {
   };
 
   const handleSubmit = async () => {
-    setCheckIn({ notes: notes.trim() || undefined });
+    const parsedHours = Math.min(16, Math.max(0, parseFloat(sleepHours) || 0));
 
-    // For MVP, simulate a local submit instead of Supabase
-    // The store's submitCheckIn calls Supabase; here we do a local-only approach
-    const { todayCheckIn } = useCheckInStore.getState();
+    setCheckIn({ notes: notes.trim() || undefined });
 
     // Build a mock check-in for local state
     const mockCheckIn = {
@@ -129,15 +149,64 @@ export function CheckInForm({ onComplete }: CheckInFormProps) {
       focus: values.focus,
       impulsivity: values.impulsivity,
       notes: notes.trim() || null,
+      sleep_quality: sleepQuality,
+      sleep_hours: parsedHours,
       created_at: new Date().toISOString(),
     };
 
     // Set it directly in the store as todayCheckIn
     useCheckInStore.setState({ todayCheckIn: mockCheckIn, isSubmitting: false });
 
+    // Detect overload risk
+    const risk = detectOverloadRisk({
+      energy: values.energy,
+      anxiety: values.anxiety,
+      impulsivity: values.impulsivity,
+      focus: values.focus,
+    });
+
     setSubmitted(true);
-    onComplete?.();
+
+    // Show overload warning if high or critical
+    if (risk.risk === "high" || risk.risk === "critical") {
+      setOverloadWarning(risk);
+    }
+
+    onComplete?.(risk);
   };
+
+  if (submitted && overloadWarning && (overloadWarning.risk === "high" || overloadWarning.risk === "critical")) {
+    return (
+      <Card className="animate-scale-in border-0">
+        <CardContent className="p-6">
+          <div className="flex flex-col items-center text-center gap-4">
+            <div
+              className={cn(
+                "w-12 h-12 rounded-2xl",
+                "flex items-center justify-center",
+                "bg-warning-subtle border border-warning/20"
+              )}
+            >
+              <AlertTriangle size={20} className="text-warning" strokeWidth={1.5} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-base font-semibold text-text-primary">
+                Alerta de sobrecarga detectado
+              </h3>
+              <p className="text-sm text-text-secondary leading-relaxed max-w-xs mx-auto">
+                {overloadWarning.risk === "critical"
+                  ? "Seu sistema esta sobrecarregado. Considere ativar o modo resgate ou reduzir ao minimo."
+                  : "Sobrecarga alta detectada. Considere reduzir suas prioridades e focar no basico."}
+              </p>
+            </div>
+            <p className="text-xs text-text-muted">
+              Registrado. Nomear o que se sente ja e uma forma de regulacao.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (submitted) {
     return (
@@ -161,56 +230,130 @@ export function CheckInForm({ onComplete }: CheckInFormProps) {
       </CardHeader>
 
       <CardContent className="flex flex-col gap-8 pt-6">
-        {/* Slider dimensions */}
-        {DIMENSIONS.map((dim) => {
-          const val = values[dim.key];
-          return (
-            <div key={dim.key} className="flex flex-col gap-3">
-              {/* Label row */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-base opacity-60" aria-hidden="true">
-                    {dim.icon}
-                  </span>
-                  <span className="text-sm font-medium text-text-primary">
-                    {dim.label}
+        {/* ===== SLEEP SECTION ===== */}
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center gap-2">
+            <Moon size={16} className="text-text-muted" strokeWidth={1.5} />
+            <p className="text-xs font-medium text-text-secondary uppercase tracking-wider">
+              Sono
+            </p>
+          </div>
+
+          {/* Sleep quality slider */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-text-primary">
+                Como foi seu sono?
+              </span>
+              <span
+                className={cn(
+                  "text-sm font-semibold transition-colors duration-200",
+                  getSleepQualityColor(sleepQuality)
+                )}
+              >
+                {SLEEP_QUALITY_LABELS[sleepQuality]}
+              </span>
+            </div>
+
+            <Slider
+              min={1}
+              max={5}
+              step={1}
+              value={[sleepQuality]}
+              onValueChange={([v]) => setSleepQuality(v)}
+              aria-label="Qualidade do sono"
+            />
+
+            <div className="flex justify-between">
+              <span className="text-[11px] text-text-muted">Pessimo</span>
+              <span className="text-[11px] text-text-muted">Otimo</span>
+            </div>
+          </div>
+
+          {/* Sleep hours input */}
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="sleep-hours"
+              className="text-sm font-medium text-text-primary"
+            >
+              Quantas horas dormiu?
+            </label>
+            <Input
+              id="sleep-hours"
+              type="number"
+              min={0}
+              max={16}
+              step={0.5}
+              value={sleepHours}
+              onChange={(e) => setSleepHours(e.target.value)}
+              placeholder="7"
+              className="w-24"
+            />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="h-px bg-border-subtle" />
+
+        {/* ===== EMOTIONAL DIMENSIONS ===== */}
+        <div className="flex flex-col gap-6">
+          <p className="text-xs font-medium text-text-secondary uppercase tracking-wider">
+            Estado emocional
+          </p>
+
+          {DIMENSIONS.map((dim) => {
+            const val = values[dim.key];
+            return (
+              <div key={dim.key} className="flex flex-col gap-3">
+                {/* Label row */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base opacity-60" aria-hidden="true">
+                      {dim.icon}
+                    </span>
+                    <span className="text-sm font-medium text-text-primary">
+                      {dim.label}
+                    </span>
+                  </div>
+                  <span
+                    className={cn(
+                      "text-sm font-semibold tabular-nums transition-colors duration-200",
+                      getValueColor(val, dim.reverseColor)
+                    )}
+                  >
+                    {VALUE_LABELS[val]}
                   </span>
                 </div>
-                <span
-                  className={cn(
-                    "text-sm font-semibold tabular-nums transition-colors duration-200",
-                    getValueColor(val, dim.reverseColor)
-                  )}
-                >
-                  {VALUE_LABELS[val]}
-                </span>
+
+                {/* Slider */}
+                <Slider
+                  min={1}
+                  max={5}
+                  step={1}
+                  value={[val]}
+                  onValueChange={([v]) => setCheckIn({ [dim.key]: v })}
+                  aria-label={dim.label}
+                />
+
+                {/* Extreme labels */}
+                <div className="flex justify-between">
+                  <span className="text-[11px] text-text-muted">
+                    {dim.lowLabel}
+                  </span>
+                  <span className="text-[11px] text-text-muted">
+                    {dim.highLabel}
+                  </span>
+                </div>
               </div>
+            );
+          })}
+        </div>
 
-              {/* Slider */}
-              <Slider
-                min={1}
-                max={5}
-                step={1}
-                value={[val]}
-                onValueChange={([v]) => setCheckIn({ [dim.key]: v })}
-                aria-label={dim.label}
-              />
+        {/* Divider */}
+        <div className="h-px bg-border-subtle" />
 
-              {/* Extreme labels */}
-              <div className="flex justify-between">
-                <span className="text-[11px] text-text-muted">
-                  {dim.lowLabel}
-                </span>
-                <span className="text-[11px] text-text-muted">
-                  {dim.highLabel}
-                </span>
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Notes */}
-        <div className="flex flex-col gap-2 pt-2">
+        {/* ===== NOTES ===== */}
+        <div className="flex flex-col gap-2">
           <label
             htmlFor="checkin-notes"
             className="text-sm text-text-secondary"

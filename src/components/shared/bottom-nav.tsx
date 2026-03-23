@@ -7,6 +7,7 @@ import {
   Fingerprint,
   Target,
   Zap,
+  Heart,
   BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
@@ -16,6 +17,7 @@ const NAV_ITEMS = [
   { href: "/identidade", label: "Identidade", icon: Fingerprint },
   { href: "/foco", label: "Foco", icon: Target },
   { href: "/impulsos", label: "Impulsos", icon: Zap },
+  { href: "/valores", label: "Valores", icon: Heart },
   { href: "/semana", label: "Semana", icon: BarChart3 },
 ] as const;
 
