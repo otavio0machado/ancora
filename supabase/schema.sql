@@ -223,6 +223,52 @@ create table weekly_reviews (
   unique (user_id, week_start)
 );
 
+-- --------------- Forest mini-game ---------------
+
+-- Forest state per user
+create table forest_state (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references users(id) on delete cascade,
+  grid_width smallint not null default 10,
+  grid_height smallint not null default 10,
+  ground_level smallint not null default 0 check (ground_level between 0 and 4),
+  total_trees integer not null default 0,
+  unlocked_milestones text[] not null default '{}',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  unique (user_id)
+);
+
+-- Individual trees planted
+create table forest_trees (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references users(id) on delete cascade,
+  habit_log_id uuid references habit_logs(id) on delete set null,
+  grid_x smallint not null,
+  grid_y smallint not null,
+  species text not null, -- 'oak', 'pine', 'birch', 'cherry', 'golden'
+  growth_stage smallint not null default 0 check (growth_stage between 0 and 3),
+  version text not null default 'ideal', -- 'ideal' or 'minimum'
+  planted_at timestamptz not null default now(),
+  created_at timestamptz not null default now()
+);
+
+-- Avatar customization
+create table forest_avatar (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references users(id) on delete cascade,
+  skin_tone smallint not null default 0,
+  hair_style smallint not null default 0,
+  hair_color smallint not null default 0,
+  outfit smallint not null default 0,
+  accessory smallint not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  unique (user_id)
+);
+
 -- ============================================================
 -- INDEXES
 -- ============================================================
@@ -271,6 +317,10 @@ create index idx_overload_events_type on overload_events (user_id, type);
 -- Weekly reviews: query by user + week
 create index idx_weekly_reviews_user_week on weekly_reviews (user_id, week_start desc);
 
+-- Forest: state and trees per user
+create index idx_forest_trees_user on forest_trees (user_id);
+create index idx_forest_trees_planted on forest_trees (user_id, planted_at desc);
+
 -- ============================================================
 -- UPDATED_AT TRIGGER (for users table)
 -- ============================================================
@@ -288,6 +338,16 @@ create trigger users_updated_at
   for each row
   execute function update_updated_at();
 
+create trigger forest_state_updated_at
+  before update on forest_state
+  for each row
+  execute function update_updated_at();
+
+create trigger forest_avatar_updated_at
+  before update on forest_avatar
+  for each row
+  execute function update_updated_at();
+
 -- ============================================================
 -- ROW LEVEL SECURITY (RLS)
 -- ============================================================
@@ -295,6 +355,9 @@ create trigger users_updated_at
 -- Enable RLS on all tables
 alter table users enable row level security;
 alter table check_ins enable row level security;
+alter table forest_state enable row level security;
+alter table forest_trees enable row level security;
+alter table forest_avatar enable row level security;
 alter table user_values enable row level security;
 alter table identities enable row level security;
 alter table habits enable row level security;
@@ -522,4 +585,43 @@ create policy "Users can update own weekly reviews"
 
 create policy "Users can delete own weekly reviews"
   on weekly_reviews for delete
+  using (auth.uid() = user_id);
+
+-- Forest state
+create policy "Users can view own forest state"
+  on forest_state for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own forest state"
+  on forest_state for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own forest state"
+  on forest_state for update
+  using (auth.uid() = user_id);
+
+-- Forest trees
+create policy "Users can view own forest trees"
+  on forest_trees for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own forest trees"
+  on forest_trees for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete own forest trees"
+  on forest_trees for delete
+  using (auth.uid() = user_id);
+
+-- Forest avatar
+create policy "Users can view own forest avatar"
+  on forest_avatar for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own forest avatar"
+  on forest_avatar for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own forest avatar"
+  on forest_avatar for update
   using (auth.uid() = user_id);

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Fingerprint } from "lucide-react";
 import { IdentityCard } from "@/components/identidade/identity-card";
 import { AddIdentityDialog } from "@/components/identidade/add-identity-dialog";
+import { useForestStore } from "@/lib/stores/forest-store";
 import type { Identity, Habit, HabitLog } from "@/types/database";
 
 // --------------- Mock data ---------------
@@ -376,6 +377,9 @@ export default function IdentidadePage() {
       const filtered = prev.filter((log) => log.habit_id !== habitId);
       return [...filtered, newLog];
     });
+
+    // Plant a tree in the forest
+    useForestStore.getState().plantTree(newLog.id, version);
   };
 
   return (

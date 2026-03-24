@@ -161,6 +161,39 @@ export const overloadEventSchema = z.object({
   notes: z.string().nullable(),
 });
 
+// --------------- Forest schemas ---------------
+
+const treeSpeciesEnum = z.enum(["oak", "pine", "birch", "cherry", "golden"]);
+
+export const forestStateSchema = z.object({
+  user_id: z.string().uuid(),
+  grid_width: z.number().int().min(1).default(10),
+  grid_height: z.number().int().min(1).default(10),
+  ground_level: z.number().int().min(0).max(4),
+  total_trees: z.number().int().min(0),
+  unlocked_milestones: z.array(z.string()),
+});
+
+export const forestTreeSchema = z.object({
+  user_id: z.string().uuid(),
+  habit_log_id: z.string().uuid().nullable(),
+  grid_x: z.number().int().min(0),
+  grid_y: z.number().int().min(0),
+  species: treeSpeciesEnum,
+  growth_stage: z.number().int().min(0).max(3),
+  version: z.enum(["ideal", "minimum"]),
+  planted_at: z.string(),
+});
+
+export const forestAvatarSchema = z.object({
+  user_id: z.string().uuid(),
+  skin_tone: z.number().int().min(0),
+  hair_style: z.number().int().min(0),
+  hair_color: z.number().int().min(0),
+  outfit: z.number().int().min(0),
+  accessory: z.number().int().min(0),
+});
+
 // --------------- Full row schemas (include server-generated fields) ---------------
 
 const rowFields = {
@@ -357,6 +390,9 @@ export type UserValueInput = z.infer<typeof userValueSchema>;
 export type TechniqueLogInput = z.infer<typeof techniqueLogSchema>;
 export type RecoveryEntryInput = z.infer<typeof recoveryEntrySchema>;
 export type OverloadEventInput = z.infer<typeof overloadEventSchema>;
+export type ForestStateInput = z.infer<typeof forestStateSchema>;
+export type ForestTreeInput = z.infer<typeof forestTreeSchema>;
+export type ForestAvatarInput = z.infer<typeof forestAvatarSchema>;
 
 export type AIDayAdjustInputZ = z.infer<typeof aiDayAdjustInputSchema>;
 export type AIDayAdjustOutputZ = z.infer<typeof aiDayAdjustOutputSchema>;

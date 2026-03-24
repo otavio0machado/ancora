@@ -167,6 +167,45 @@ export type RecoveryEntry = {
   created_at: string;
 };
 
+// --------------- Forest mini-game ---------------
+
+export type ForestState = {
+  id: string;
+  user_id: string;
+  grid_width: number;
+  grid_height: number;
+  ground_level: number; // 0-4
+  total_trees: number;
+  unlocked_milestones: string[];
+  created_at: string;
+  updated_at: string;
+};
+
+export type ForestTree = {
+  id: string;
+  user_id: string;
+  habit_log_id: string | null;
+  grid_x: number;
+  grid_y: number;
+  species: string; // 'oak' | 'pine' | 'birch' | 'cherry' | 'golden'
+  growth_stage: number; // 0-3
+  version: "ideal" | "minimum";
+  planted_at: string;
+  created_at: string;
+};
+
+export type ForestAvatar = {
+  id: string;
+  user_id: string;
+  skin_tone: number;
+  hair_style: number;
+  hair_color: number;
+  outfit: number;
+  accessory: number;
+  created_at: string;
+  updated_at: string;
+};
+
 // Overload Event - tracks when anti-obsession system kicks in
 export type OverloadEvent = {
   id: string;
@@ -235,6 +274,20 @@ export type OverloadEventInsert = Omit<OverloadEvent, "id" | "created_at"> & {
   id?: string;
   created_at?: string;
 };
+export type ForestStateInsert = Omit<ForestState, "id" | "created_at" | "updated_at"> & {
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+export type ForestTreeInsert = Omit<ForestTree, "id" | "created_at"> & {
+  id?: string;
+  created_at?: string;
+};
+export type ForestAvatarInsert = Omit<ForestAvatar, "id" | "created_at" | "updated_at"> & {
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+};
 
 // --------------- Update types (all fields optional) ---------------
 
@@ -251,6 +304,9 @@ export type UserValueUpdate = Partial<UserValue>;
 export type TechniqueLogUpdate = Partial<TechniqueLog>;
 export type RecoveryEntryUpdate = Partial<RecoveryEntry>;
 export type OverloadEventUpdate = Partial<OverloadEvent>;
+export type ForestStateUpdate = Partial<ForestState>;
+export type ForestTreeUpdate = Partial<ForestTree>;
+export type ForestAvatarUpdate = Partial<ForestAvatar>;
 
 // --------------- Supabase Database type ---------------
 
@@ -437,6 +493,51 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "overload_events_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      forest_state: {
+        Row: ForestState;
+        Insert: ForestStateInsert;
+        Update: ForestStateUpdate;
+        Relationships: [
+          {
+            foreignKeyName: "forest_state_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      forest_trees: {
+        Row: ForestTree;
+        Insert: ForestTreeInsert;
+        Update: ForestTreeUpdate;
+        Relationships: [
+          {
+            foreignKeyName: "forest_trees_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "forest_trees_habit_log_id_fkey";
+            columns: ["habit_log_id"];
+            referencedRelation: "habit_logs";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      forest_avatar: {
+        Row: ForestAvatar;
+        Insert: ForestAvatarInsert;
+        Update: ForestAvatarUpdate;
+        Relationships: [
+          {
+            foreignKeyName: "forest_avatar_user_id_fkey";
             columns: ["user_id"];
             referencedRelation: "users";
             referencedColumns: ["id"];

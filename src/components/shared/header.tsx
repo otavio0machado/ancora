@@ -1,6 +1,6 @@
 "use client";
 
-import { Anchor, Settings } from "lucide-react";
+import { Anchor, Settings, TreePine } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 
@@ -25,19 +25,35 @@ export function Header() {
           </span>
         </Link>
 
-        <Link
-          href="/configuracoes"
-          className={cn(
-            "flex items-center justify-center",
-            "w-9 h-9 rounded-lg",
-            "text-text-muted hover:text-text-secondary",
-            "hover:bg-surface-sunken",
-            "ancora-transition"
-          )}
-          aria-label="Configurações"
-        >
-          <Settings size={18} strokeWidth={1.5} />
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/floresta"
+            className={cn(
+              "flex items-center gap-1.5",
+              "px-3 h-8 rounded-lg",
+              "bg-accent/10 text-accent",
+              "hover:bg-accent/20",
+              "ancora-transition",
+              "text-xs font-medium"
+            )}
+          >
+            <TreePine size={14} strokeWidth={2} />
+            Floresta
+          </Link>
+          <Link
+            href="/configuracoes"
+            className={cn(
+              "flex items-center justify-center",
+              "w-9 h-9 rounded-lg",
+              "text-text-muted hover:text-text-secondary",
+              "hover:bg-surface-sunken",
+              "ancora-transition"
+            )}
+            aria-label="Configurações"
+          >
+            <Settings size={18} strokeWidth={1.5} />
+          </Link>
+        </div>
       </div>
     </header>
   );
