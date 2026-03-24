@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, AlertTriangle, Heart } from "lucide-react";
+import { Moon, AlertTriangle, Heart, TrendingUp } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -78,28 +78,53 @@ function getSleepQualityColor(quality: number): string {
   return "text-success";
 }
 
+// --------------- State summary label ---------------
+
+function getStateSummary(checkIn: {
+  energy: number;
+  mood: number;
+  anxiety: number;
+  focus: number;
+  impulsivity: number;
+}): { label: string; color: string } {
+  const { energy, mood, anxiety, impulsivity } = checkIn;
+
+  if (anxiety >= 4 && impulsivity >= 4 && energy <= 2) {
+    return { label: "Sistema sobrecarregado", color: "text-alert" };
+  }
+  if (anxiety >= 4) {
+    return { label: "Ansiedade elevada", color: "text-warning" };
+  }
+  if (energy <= 2 && mood <= 2) {
+    return { label: "Dia de proteção", color: "text-alert" };
+  }
+  if (energy <= 2) {
+    return { label: "Energia baixa", color: "text-warning" };
+  }
+  if (impulsivity >= 4) {
+    return { label: "Impulsividade alta", color: "text-warning" };
+  }
+  if (energy >= 4 && mood >= 4 && anxiety <= 2) {
+    return { label: "Dia favorável", color: "text-success" };
+  }
+  if (mood <= 2) {
+    return { label: "Humor baixo", color: "text-text-secondary" };
+  }
+  return { label: "Estável", color: "text-text-secondary" };
+}
+
 // --------------- Component ---------------
 
 interface DayOverviewProps {
-  /** Number of habits completed today */
   habitsCompleted?: number;
-  /** Total habits for today */
   habitsTotal?: number;
-  /** Current focus session status */
   focusStatus?: "active" | "completed" | "none";
-  /** Focus session objective */
   focusObjective?: string;
-  /** Whether there are recent impulses (last 24h) */
   hasRecentImpulses?: boolean;
-  /** Number of recent impulses */
   recentImpulseCount?: number;
-  /** Whether the current time is a historically risky window */
   isRiskyTimeWindow?: boolean;
-  /** Risk window description */
   riskyTimeDescription?: string;
-  /** Value name the day aligns with */
   alignedValueName?: string;
-  /** Value icon (emoji) */
   alignedValueIcon?: string | null;
 }
 
@@ -123,11 +148,20 @@ export function DayOverview({
     habitsTotal > 0 ? Math.round((habitsCompleted / habitsTotal) * 100) : 0;
 
   const hasSleepData = todayCheckIn.sleep_quality != null;
+  const stateSummary = getStateSummary(todayCheckIn);
 
   return (
     <Card className="animate-slide-up">
       <CardHeader>
-        <CardTitle>Visão do dia</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Visão do dia</CardTitle>
+          <Badge
+            variant={stateSummary.color.includes("success") ? "success" : "default"}
+            className={cn("text-[10px]", stateSummary.color)}
+          >
+            {stateSummary.label}
+          </Badge>
+        </div>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-6">
@@ -162,6 +196,12 @@ export function DayOverview({
                   </div>
                 )}
               </div>
+              {/* Sleep impact message */}
+              {todayCheckIn.sleep_quality! <= 2 && (
+                <p className="text-xs text-warning leading-relaxed">
+                  Sono ruim afeta foco, humor e resistência a impulsos. Ajuste suas expectativas.
+                </p>
+              )}
             </div>
             <div className="h-px bg-border-subtle" />
           </>
@@ -303,6 +343,7 @@ export function DayOverview({
             </div>
           ) : focusStatus === "completed" ? (
             <div className="flex items-center gap-2">
+              <TrendingUp size={14} className="text-success" strokeWidth={1.5} />
               <span className="text-sm text-text-secondary">
                 Sessão concluída
               </span>

@@ -7,12 +7,16 @@ import { useCheckInStore } from "@/lib/stores/checkin-store";
 import { useAppStore } from "@/lib/stores/app-store";
 import { getFallbackMicrocopy } from "@/lib/ai/fallbacks";
 import { CheckInForm } from "@/components/hoje/check-in-form";
+import { DayMission } from "@/components/hoje/day-mission";
+import { QuickActions } from "@/components/hoje/quick-actions";
+import { EmotionalFeedback } from "@/components/hoje/emotional-feedback";
+import { IdentityFeedback } from "@/components/hoje/identity-feedback";
+import { StateInsight } from "@/components/hoje/state-insight";
 import { DayPriorities } from "@/components/hoje/day-priorities";
 import { DayOverview } from "@/components/hoje/day-overview";
 import { RescueMode } from "@/components/hoje/rescue-mode";
 import { AIDayAdjust } from "@/components/hoje/ai-day-adjust";
 import { OverloadAlert } from "@/components/hoje/overload-alert";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import type { OverloadRisk } from "@/lib/utils/patterns";
 
@@ -90,7 +94,7 @@ export default function HojePage() {
 
   return (
     <main className="ancora-container py-8 pb-24">
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6">
         {/* ---- Greeting ---- */}
         <header className="flex flex-col gap-2 animate-fade-in">
           <h1 className="text-xl font-semibold text-text-primary">
@@ -116,11 +120,21 @@ export default function HojePage() {
           </section>
         )}
 
-        {/* ---- Post check-in content ---- */}
-        {hasCheckIn && !rescueMode && (
+        {/* ---- Post check-in: THE REAL EXPERIENCE ---- */}
+        {hasCheckIn && !rescueMode && todayCheckIn && (
           <>
-            {/* Overload Alert - shown first if detected */}
-            {showOverloadAlert && (
+            {/* 1. MISSION OF THE DAY - Dominant focus */}
+            <section aria-label="Missão do dia">
+              <DayMission checkIn={todayCheckIn} />
+            </section>
+
+            {/* 2. EMOTIONAL FEEDBACK - The app "understands" */}
+            <section aria-label="Feedback emocional">
+              <EmotionalFeedback checkIn={todayCheckIn} />
+            </section>
+
+            {/* 3. Overload Alert - shown if detected */}
+            {showOverloadAlert && overloadRisk && (
               <section aria-label="Alerta de sobrecarga" className="animate-scale-in">
                 <OverloadAlert
                   overloadRisk={overloadRisk}
@@ -130,16 +144,17 @@ export default function HojePage() {
               </section>
             )}
 
-            {/* Day Overview with patterns */}
-            <section aria-label="Visão do dia">
-              <DayOverview
-                habitsCompleted={0}
-                habitsTotal={0}
-                focusStatus="none"
-              />
+            {/* 4. QUICK ACTIONS - Operational, not informational */}
+            <section aria-label="Ações imediatas">
+              <QuickActions />
             </section>
 
-            {/* Day Priorities with anti-obsession */}
+            {/* 5. STATE INSIGHTS - Smart observations */}
+            <section aria-label="Insights do estado">
+              <StateInsight checkIn={todayCheckIn} />
+            </section>
+
+            {/* 6. Day Priorities with anti-obsession */}
             {(!overloadRisk || overloadRisk.risk !== "critical" || overloadAccepted) && (
               <section aria-label="Prioridades do dia">
                 <DayPriorities
@@ -149,13 +164,27 @@ export default function HojePage() {
               </section>
             )}
 
-            {/* AI Day Adjustment */}
+            {/* 7. Day Overview - State summary */}
+            <section aria-label="Visão do dia">
+              <DayOverview
+                habitsCompleted={0}
+                habitsTotal={0}
+                focusStatus="none"
+              />
+            </section>
+
+            {/* 8. IDENTITY FEEDBACK - "You're becoming X" */}
+            <section aria-label="Feedback de identidade">
+              <IdentityFeedback checkIn={todayCheckIn} />
+            </section>
+
+            {/* 9. AI Day Adjustment */}
             <section aria-label="Sugestão da IA">
               <AIDayAdjust />
             </section>
 
-            {/* Quick access to impulse log if needed */}
-            {(anxietyLevel >= 4 || (todayCheckIn?.impulsivity ?? 3) >= 4) && (
+            {/* 10. Quick access to impulse log if needed */}
+            {(anxietyLevel >= 4 || (todayCheckIn.impulsivity ?? 3) >= 4) && (
               <section aria-label="Acesso rápido a impulsos" className="animate-fade-in">
                 <Link href="/impulsos">
                   <div

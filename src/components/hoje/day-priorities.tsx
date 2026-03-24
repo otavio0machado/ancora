@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Heart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +12,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils/cn";
+import { matchPriorityToValue } from "./identity-feedback";
 import type { OverloadRisk } from "@/lib/utils/patterns";
 
 // --------------- Types ---------------
@@ -21,11 +22,11 @@ interface LocalPriority {
   text: string;
   completed: boolean;
   order_index: number;
+  valueMatch: { value: string; icon: string } | null;
 }
 
 interface DayPrioritiesProps {
   overloadRisk?: OverloadRisk;
-  /** Current anxiety level from check-in (1-5) */
   anxietyLevel?: number;
 }
 
@@ -36,6 +37,7 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
   const [inputValue, setInputValue] = useState("");
   const [anxietyWarningDismissed, setAnxietyWarningDismissed] = useState(false);
   const [showThirdWarning, setShowThirdWarning] = useState(false);
+  const [showEscapeCheck, setShowEscapeCheck] = useState(false);
 
   // Calculate effective max priorities based on overload risk
   const maxPriorities = useMemo(() => {
@@ -51,12 +53,22 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
     const text = inputValue.trim();
     if (!text || priorities.length >= maxPriorities) return;
 
-    // If high anxiety and trying to add 3rd priority, show warning first
+    // Smart friction: if high anxiety and trying to add 3rd priority, show warning
     if (isHighAnxiety && priorities.length === 2 && !anxietyWarningDismissed) {
       setShowThirdWarning(true);
       return;
     }
 
+    // Smart friction: detect potential escape/avoidance behavior
+    // If it's night (21+) and anxiety is high, ask "descanso ou fuga?"
+    const hour = new Date().getHours();
+    if ((hour >= 21 || hour < 5) && anxietyLevel >= 3 && priorities.length === 0) {
+      setShowEscapeCheck(true);
+      return;
+    }
+
+    const valueMatch = matchPriorityToValue(text);
+
     setPriorities((prev) => [
       ...prev,
       {
@@ -64,16 +76,20 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
         text,
         completed: false,
         order_index: prev.length,
+        valueMatch,
       },
     ]);
     setInputValue("");
     setShowThirdWarning(false);
-  }, [inputValue, priorities.length, maxPriorities, isHighAnxiety, anxietyWarningDismissed]);
+    setShowEscapeCheck(false);
+  }, [inputValue, priorities.length, maxPriorities, isHighAnxiety, anxietyWarningDismissed, anxietyLevel]);
 
-  const confirmThirdPriority = useCallback(() => {
+  const confirmAdd = useCallback(() => {
     const text = inputValue.trim();
     if (!text) return;
 
+    const valueMatch = matchPriorityToValue(text);
+
     setPriorities((prev) => [
       ...prev,
       {
@@ -81,10 +97,12 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
         text,
         completed: false,
         order_index: prev.length,
+        valueMatch,
       },
     ]);
     setInputValue("");
     setShowThirdWarning(false);
+    setShowEscapeCheck(false);
     setAnxietyWarningDismissed(true);
   }, [inputValue]);
 
@@ -215,17 +233,28 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
                   )}
                 </button>
 
-                {/* Text */}
-                <span
-                  className={cn(
-                    "flex-1 text-sm transition-all duration-200",
-                    priority.completed
-                      ? "text-text-muted"
-                      : "text-text-primary"
+                {/* Text + value tag */}
+                <div className="flex-1 min-w-0">
+                  <span
+                    className={cn(
+                      "text-sm transition-all duration-200",
+                      priority.completed
+                        ? "text-text-muted line-through"
+                        : "text-text-primary"
+                    )}
+                  >
+                    {priority.text}
+                  </span>
+                  {/* Value connection tag */}
+                  {priority.valueMatch && !priority.completed && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <Heart size={10} className="text-accent" strokeWidth={1.5} />
+                      <span className="text-[10px] text-accent">
+                        {priority.valueMatch.icon} {priority.valueMatch.value}
+                      </span>
+                    </div>
                   )}
-                >
-                  {priority.text}
-                </span>
+                </div>
 
                 {/* Remove button */}
                 <button
@@ -267,8 +296,23 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
           </p>
         )}
 
+        {/* Completed all priorities feedback */}
+        {priorities.length > 0 && completedCount === priorities.length && (
+          <div
+            className={cn(
+              "rounded-xl px-4 py-3",
+              "bg-success/5 border border-success/15",
+              "animate-scale-in"
+            )}
+          >
+            <p className="text-xs text-success leading-relaxed font-medium">
+              Todas as prioridades feitas. Você cumpriu o que importava hoje. Isso é consistência.
+            </p>
+          </div>
+        )}
+
         {/* High anxiety + 3 priorities gentle message */}
-        {isHighAnxiety && priorities.length >= 3 && (
+        {isHighAnxiety && priorities.length >= 3 && completedCount < priorities.length && (
           <div
             className={cn(
               "rounded-xl px-4 py-3",
@@ -282,7 +326,7 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
           </div>
         )}
 
-        {/* Third priority warning for high anxiety */}
+        {/* Third priority warning for high anxiety - SMART FRICTION */}
         {showThirdWarning && (
           <div
             className={cn(
@@ -292,13 +336,13 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
             )}
           >
             <p className="text-xs text-text-secondary leading-relaxed mb-3">
-              Sua ansiedade está alta. Tem certeza que precisa de uma terceira prioridade?
+              Sua ansiedade está alta. Tem certeza que precisa de uma terceira prioridade? Mais tarefas com ansiedade alta costumam gerar paralisia, não produtividade.
             </p>
             <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={confirmThirdPriority}
+                onClick={confirmAdd}
                 className="text-xs"
               >
                 Sim, adicionar
@@ -318,8 +362,47 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
           </div>
         )}
 
+        {/* Escape check - SMART FRICTION (night + anxiety) */}
+        {showEscapeCheck && (
+          <div
+            className={cn(
+              "rounded-xl px-4 py-3",
+              "bg-surface-sunken border border-border-subtle",
+              "animate-fade-in"
+            )}
+          >
+            <p className="text-sm text-text-primary font-medium mb-1">
+              Isso é descanso ou fuga?
+            </p>
+            <p className="text-xs text-text-secondary leading-relaxed mb-3">
+              É tarde e sua ansiedade está alta. Planejar agora pode ser uma forma de controle, não de cuidado. Está tudo bem descansar sem produzir.
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={confirmAdd}
+                className="text-xs"
+              >
+                Preciso fazer isso
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setShowEscapeCheck(false);
+                  setInputValue("");
+                }}
+                className="text-xs"
+              >
+                Vou descansar
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Input to add new priority */}
-        {priorities.length < maxPriorities && maxPriorities > 0 && !showThirdWarning && (
+        {priorities.length < maxPriorities && maxPriorities > 0 && !showThirdWarning && !showEscapeCheck && (
           <div className="flex items-center gap-2">
             <Input
               value={inputValue}
