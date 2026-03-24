@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { SpeciesPicker } from "@/components/floresta/species-picker";
+import { SPECIES_CATALOG } from "@/lib/floresta/constants";
 import type { SpeciesId } from "@/types/forest";
 
 const SABOTEUR_OPTIONS = [
@@ -89,7 +90,7 @@ export function AddHabitDialog({
       common_saboteurs: saboteurs,
       frequency,
       saboteur_description: saboteurDescription.trim() || undefined,
-      species_id: speciesId ?? undefined,
+      species_id: speciesId ?? SPECIES_CATALOG[Math.floor(Math.random() * SPECIES_CATALOG.length)].id,
     });
 
     setName("");

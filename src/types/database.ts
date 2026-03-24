@@ -183,6 +183,7 @@ export type ForestPlant = {
   id: string;
   user_id: string;
   habit_id: string; // one persistent plant per habit
+  habit_name: string; // human-readable habit name for display
   species_id: string; // references species catalog
   zone: string; // zone theme
   grid_x: number;

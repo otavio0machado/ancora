@@ -74,6 +74,43 @@ export const DECORATION_COLORS = {
   lantern: { post: "#5D4037", light: "#FFE082" },
 };
 
+// --------------- Avatar palettes ---------------
+
+export const AVATAR_SKIN_COLORS = [0xFDBB97, 0xD4956B, 0xA0674B, 0x6B3F2E, 0x3D2317, 0xF5D6BA];
+
+export const AVATAR_HAIR_COLORS = [
+  0x3E2723, // castanho escuro
+  0x212121, // preto
+  0xF9A825, // loiro
+  0xD84315, // ruivo
+  0x5D4037, // marrom
+  0x9E9E9E, // grisalho
+  0xE91E63, // rosa
+  0x2196F3, // azul
+];
+
+export const AVATAR_OUTFIT_COLORS = [
+  0x5C6BC0, // casual (indigo)
+  0x43A047, // esportivo (verde)
+  0x6D4C41, // florestal (marrom)
+  0xFF7043, // aventureiro (laranja)
+  0x1565C0, // estudante (azul)
+  0xAB47BC, // artista (roxo)
+  0x2E7D32, // jardineiro (verde escuro)
+  0x795548, // explorador (marrom)
+  0x78909C, // tranquilo (cinza)
+  0xFFB74D, // cozy (amarelo)
+];
+
+export const AVATAR_ACCESSORY_COLORS: Record<number, { color: number; type: string }> = {
+  0: { color: 0, type: "none" },
+  1: { color: 0x90CAF9, type: "glasses" },    // oculos
+  2: { color: 0x8D6E63, type: "hat" },        // chapeu
+  3: { color: 0xE57373, type: "scarf" },       // cachecol
+  4: { color: 0x795548, type: "backpack" },    // mochila
+  5: { color: 0xFF7043, type: "bandana" },     // bandana
+};
+
 // --------------- Weather particles ---------------
 
 export const WEATHER_PARTICLES: Record<ForestWeather, { color: string; count: number; speed: number } | null> = {

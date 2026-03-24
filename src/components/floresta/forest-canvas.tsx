@@ -4,14 +4,14 @@ import { useRef, useEffect, useCallback, useState } from "react";
 import type { Application } from "pixi.js";
 import type { ForestPlant } from "@/types/database";
 import type { GroundLevel, ForestWeather } from "@/types/forest";
-import type { ForestRenderState } from "@/lib/floresta/renderer";
+import type { ForestRenderState, AvatarRenderData } from "@/lib/floresta/renderer";
 
 interface ForestCanvasProps {
   groundLevel: GroundLevel;
   plants: ForestPlant[];
   milestones: string[];
   weather: ForestWeather;
-  skinTone: number;
+  avatar: AvatarRenderData;
   selectedPlantId: string | null;
   companion: string;
   timeOfDay: string;
@@ -23,7 +23,7 @@ export function ForestCanvas({
   plants,
   milestones,
   weather,
-  skinTone,
+  avatar,
   selectedPlantId,
   companion,
   timeOfDay,
@@ -49,14 +49,14 @@ export function ForestCanvas({
       weather,
       avatarGridX: 5,
       avatarGridY: 4,
-      skinTone,
+      avatar,
       selectedPlantId,
       companion,
       timeOfDay,
     };
 
     renderFullScene(appRef.current, state);
-  }, [groundLevel, plants, milestones, weather, skinTone, selectedPlantId, companion, timeOfDay]);
+  }, [groundLevel, plants, milestones, weather, avatar, selectedPlantId, companion, timeOfDay]);
 
   // Handle canvas tap/click
   const handleCanvasClick = useCallback(async (e: MouseEvent | TouchEvent) => {

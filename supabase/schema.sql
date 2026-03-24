@@ -242,6 +242,7 @@ create table forest_plants (
   id uuid primary key default uuid_generate_v4(),
   user_id uuid not null references users(id) on delete cascade,
   habit_id uuid not null references habits(id) on delete cascade,
+  habit_name text not null default '',
   species_id text not null,
   zone text not null default 'general',
   grid_x smallint not null,

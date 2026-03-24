@@ -19,18 +19,13 @@ export default function FlorestaPage() {
     if (!forestState) initializeForest();
   }, [forestState, initializeForest]);
 
-  // Find habit name for selected plant
-  const selectedPlant = plants.find((p) => p.id === selectedPlantId);
-
   return (
     <div className="fixed inset-0 pt-14 pb-[calc(4rem+env(safe-area-inset-bottom))] flex flex-col bg-background">
       <div className="flex-1 relative overflow-hidden">
         <ForestScene />
 
         {/* Plant inspector overlay */}
-        {selectedPlant && (
-          <PlantInspector habitName={selectedPlant.habit_id} />
-        )}
+        {selectedPlantId && <PlantInspector />}
 
         {/* Floating action buttons */}
         <div className="absolute top-3 right-3 flex items-center gap-2 z-10">

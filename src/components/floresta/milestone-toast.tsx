@@ -1,35 +1,59 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useForestStore } from "@/lib/stores/forest-store";
 import { getMilestoneById } from "@/lib/floresta/constants";
+import type { MilestoneId } from "@/types/forest";
 
 export function MilestoneToast() {
   const { newMilestones, clearNewMilestones } = useForestStore();
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState<{ name: string; description: string } | null>(null);
+  const queueRef = useRef<MilestoneId[]>([]);
+  const showingRef = useRef(false);
 
   useEffect(() => {
     if (newMilestones.length > 0) {
-      const milestone = getMilestoneById(newMilestones[0]);
-      if (milestone) {
-        setCurrent({ name: milestone.name, description: milestone.description });
-        setVisible(true);
+      // Add to queue
+      queueRef.current = [...queueRef.current, ...newMilestones];
+      clearNewMilestones();
 
-        const timeout = setTimeout(() => {
-          setVisible(false);
-          setTimeout(() => {
-            clearNewMilestones();
-            setCurrent(null);
-          }, 400);
-        }, 4000);
-
-        return () => clearTimeout(timeout);
+      // Start showing if not already
+      if (!showingRef.current) {
+        showNext();
       }
     }
-  }, [newMilestones, clearNewMilestones]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newMilestones]);
+
+  function showNext() {
+    const next = queueRef.current.shift();
+    if (!next) {
+      showingRef.current = false;
+      return;
+    }
+
+    showingRef.current = true;
+    const milestone = getMilestoneById(next);
+    if (!milestone) {
+      showNext();
+      return;
+    }
+
+    setCurrent({ name: milestone.name, description: milestone.description });
+    setVisible(true);
+
+    // Auto-hide after 3.5s, then show next
+    setTimeout(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setCurrent(null);
+        showNext();
+      }, 400);
+    }, 3500);
+  }
 
   if (!current) return null;
 

@@ -393,6 +393,7 @@ export default function IdentidadePage() {
       const zone = identity ? inferZoneFromValues(identity.linked_values) : "general";
       useForestStore.getState().growHabitPlant({
         habitId,
+        habitName: habit.name,
         habitLogId: newLog.id,
         completionType: version,
         speciesId: habit.species_id,

@@ -173,6 +173,7 @@ export const forestStateSchema = z.object({
 export const forestPlantSchema = z.object({
   user_id: z.string().uuid(),
   habit_id: z.string().uuid(),
+  habit_name: z.string(),
   species_id: z.string().min(1),
   zone: z.string().min(1),
   grid_x: z.number().int().min(0),

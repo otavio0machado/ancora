@@ -2,9 +2,13 @@
 
 import { Anchor, Settings, TreePine } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
 
 export function Header() {
+  const pathname = usePathname();
+  const isForestActive = pathname === "/floresta";
+
   return (
     <header
       className={cn(
@@ -31,10 +35,11 @@ export function Header() {
             className={cn(
               "flex items-center gap-1.5",
               "px-3 h-8 rounded-lg",
-              "bg-accent/10 text-accent",
-              "hover:bg-accent/20",
               "ancora-transition",
-              "text-xs font-medium"
+              "text-xs font-medium",
+              isForestActive
+                ? "bg-accent text-white shadow-sm"
+                : "bg-accent/10 text-accent hover:bg-accent/20"
             )}
           >
             <TreePine size={14} strokeWidth={2} />

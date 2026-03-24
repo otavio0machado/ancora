@@ -7,7 +7,7 @@ import { Application, Container, Graphics } from "pixi.js";
 import type { ForestPlant } from "@/types/database";
 import type { GroundLevel, ForestWeather, GrowthStage, PlantCategory } from "@/types/forest";
 import { GRID_WIDTH, GRID_HEIGHT, getSpecies } from "./constants";
-import { GROUND_COLORS, PLANT_PALETTES, DECORATION_COLORS, WEATHER_PARTICLES } from "./sprites";
+import { GROUND_COLORS, PLANT_PALETTES, DECORATION_COLORS, WEATHER_PARTICLES, AVATAR_SKIN_COLORS, AVATAR_HAIR_COLORS, AVATAR_OUTFIT_COLORS, AVATAR_ACCESSORY_COLORS } from "./sprites";
 import { calculateGrowthStage } from "@/lib/utils/forest-engine";
 
 // --------------- Dynamic tile sizing ---------------
@@ -496,42 +496,69 @@ export function renderDecorations(
 
 // --------------- Avatar ---------------
 
+export interface AvatarRenderData {
+  skinTone: number;
+  hairColor: number;
+  outfit: number;
+  accessory: number;
+}
+
 export function renderAvatar(
   container: Container, ax: number, ay: number,
   tileW: number, tileH: number, ox: number, oy: number,
-  skinTone: number
+  avatar: AvatarRenderData
 ) {
   container.removeChildren();
   const { sx, sy } = gts(ax, ay, tileW, tileH, ox, oy);
-  const skins = [0xFDBB97, 0xD4956B, 0xA0674B, 0x6B3F2E, 0x3D2317, 0xF5D6BA];
-  const skin = skins[skinTone % skins.length];
+
+  const skin = AVATAR_SKIN_COLORS[avatar.skinTone % AVATAR_SKIN_COLORS.length];
+  const hairColor = AVATAR_HAIR_COLORS[avatar.hairColor % AVATAR_HAIR_COLORS.length];
+  const outfitColor = AVATAR_OUTFIT_COLORS[avatar.outfit % AVATAR_OUTFIT_COLORS.length];
+  const acc = AVATAR_ACCESSORY_COLORS[avatar.accessory % Object.keys(AVATAR_ACCESSORY_COLORS).length];
   const s = tileW / 64;
 
   const g = new Graphics();
+
   // Shadow
   g.ellipse(sx, sy + 3 * s, 8 * s, 4 * s).fill({ color: 0x000000, alpha: 0.1 });
-  // Legs
-  g.rect(sx - 3 * s, sy - 4 * s, 2.5 * s, 6 * s).fill(0x3949AB);
-  g.rect(sx + 0.5 * s, sy - 4 * s, 2.5 * s, 6 * s).fill(0x3949AB);
-  // Body
-  g.rect(sx - 5 * s, sy - 18 * s, 10 * s, 14 * s).fill(0x5C6BC0);
-  // Body highlight
+  // Legs (darker shade of outfit)
+  const legColor = Math.max(0, outfitColor - 0x1A1A1A);
+  g.rect(sx - 3 * s, sy - 4 * s, 2.5 * s, 6 * s).fill(legColor);
+  g.rect(sx + 0.5 * s, sy - 4 * s, 2.5 * s, 6 * s).fill(legColor);
+  // Body (outfit color)
+  g.rect(sx - 5 * s, sy - 18 * s, 10 * s, 14 * s).fill(outfitColor);
   g.rect(sx - 5 * s, sy - 18 * s, 3 * s, 14 * s).fill({ color: 0xFFFFFF, alpha: 0.08 });
   // Arms
-  g.rect(sx - 7 * s, sy - 16 * s, 2.5 * s, 10 * s).fill(0x5C6BC0);
-  g.rect(sx + 4.5 * s, sy - 16 * s, 2.5 * s, 10 * s).fill(0x5C6BC0);
+  g.rect(sx - 7 * s, sy - 16 * s, 2.5 * s, 10 * s).fill(outfitColor);
+  g.rect(sx + 4.5 * s, sy - 16 * s, 2.5 * s, 10 * s).fill(outfitColor);
   // Head
   g.circle(sx, sy - 24 * s, 6 * s).fill(skin);
-  // Hair
-  g.rect(sx - 6 * s, sy - 31 * s, 12 * s, 5 * s).fill(0x3E2723);
-  g.rect(sx - 6 * s, sy - 28 * s, 2 * s, 4 * s).fill(0x3E2723); // sideburns
-  g.rect(sx + 4 * s, sy - 28 * s, 2 * s, 4 * s).fill(0x3E2723);
+  // Hair (user's color)
+  g.rect(sx - 6 * s, sy - 31 * s, 12 * s, 5 * s).fill(hairColor);
+  g.rect(sx - 6 * s, sy - 28 * s, 2 * s, 4 * s).fill(hairColor);
+  g.rect(sx + 4 * s, sy - 28 * s, 2 * s, 4 * s).fill(hairColor);
   // Eyes
   g.circle(sx - 2.5 * s, sy - 24 * s, 1.2 * s).fill(0x212121);
   g.circle(sx + 2.5 * s, sy - 24 * s, 1.2 * s).fill(0x212121);
-  // Eye shine
   g.circle(sx - 2 * s, sy - 24.5 * s, 0.5 * s).fill(0xFFFFFF);
   g.circle(sx + 3 * s, sy - 24.5 * s, 0.5 * s).fill(0xFFFFFF);
+
+  // Accessories
+  if (acc.type === "glasses") {
+    g.circle(sx - 2.5 * s, sy - 24 * s, 2 * s).stroke({ width: 0.8 * s, color: acc.color });
+    g.circle(sx + 2.5 * s, sy - 24 * s, 2 * s).stroke({ width: 0.8 * s, color: acc.color });
+    g.moveTo(sx - 0.5 * s, sy - 24 * s);
+    g.lineTo(sx + 0.5 * s, sy - 24 * s);
+    g.stroke({ width: 0.5 * s, color: acc.color });
+  } else if (acc.type === "hat") {
+    g.rect(sx - 8 * s, sy - 32 * s, 16 * s, 2 * s).fill(acc.color);
+    g.rect(sx - 5 * s, sy - 37 * s, 10 * s, 5 * s).fill(acc.color);
+  } else if (acc.type === "scarf") {
+    g.rect(sx - 5 * s, sy - 19 * s, 10 * s, 3 * s).fill(acc.color);
+    g.rect(sx + 3 * s, sy - 19 * s, 2 * s, 6 * s).fill(acc.color);
+  } else if (acc.type === "bandana") {
+    g.rect(sx - 6 * s, sy - 28 * s, 12 * s, 2 * s).fill(acc.color);
+  }
 
   container.addChild(g);
 }
@@ -732,7 +759,7 @@ export interface ForestRenderState {
   weather: ForestWeather;
   avatarGridX: number;
   avatarGridY: number;
-  skinTone: number;
+  avatar: AvatarRenderData;
   selectedPlantId: string | null;
   companion: string;
   timeOfDay: string;
@@ -758,7 +785,7 @@ export function renderFullScene(app: Application, state: ForestRenderState) {
   renderGround(layers[1], state.groundLevel, tileW, tileH, ox, oy);
   renderDecorations(layers[2], state.milestones, tileW, tileH, ox, oy);
   renderPlants(layers[3], state.plants, tileW, tileH, ox, oy, state.selectedPlantId);
-  renderAvatar(layers[4], state.avatarGridX, state.avatarGridY, tileW, tileH, ox, oy, state.skinTone);
+  renderAvatar(layers[4], state.avatarGridX, state.avatarGridY, tileW, tileH, ox, oy, state.avatar);
   renderCompanion(layers[5], state.companion, tileW, tileH, ox, oy);
   renderParticles(layers[6], state.weather, width, height);
   renderTimeOverlay(layers[7], width, height, state.timeOfDay);

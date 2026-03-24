@@ -61,7 +61,12 @@ export function ForestScene() {
         plants={plants}
         milestones={forestState.unlocked_milestones}
         weather={weather}
-        skinTone={avatar?.skin_tone ?? 0}
+        avatar={{
+          skinTone: avatar?.skin_tone ?? 0,
+          hairColor: avatar?.hair_color ?? 0,
+          outfit: avatar?.outfit ?? 0,
+          accessory: avatar?.accessory ?? 0,
+        }}
         selectedPlantId={selectedPlantId}
         companion={companion}
         timeOfDay={timeOfDay}
