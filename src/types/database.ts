@@ -57,6 +57,7 @@ export type Habit = {
   active: boolean;
   created_at: string;
   order_index: number;
+  species_id: string | null; // linked plant species for the forest
 };
 
 export type HabitLog = {
@@ -167,30 +168,29 @@ export type RecoveryEntry = {
   created_at: string;
 };
 
-// --------------- Forest mini-game ---------------
+// --------------- Forest - Jardim Terapêutico Vivo ---------------
 
 export type ForestState = {
   id: string;
   user_id: string;
-  grid_width: number;
-  grid_height: number;
-  ground_level: number; // 0-4
-  total_trees: number;
+  total_growth_xp: number; // sum of all plant growth
   unlocked_milestones: string[];
   created_at: string;
   updated_at: string;
 };
 
-export type ForestTree = {
+export type ForestPlant = {
   id: string;
   user_id: string;
-  habit_log_id: string | null;
+  habit_id: string; // one persistent plant per habit
+  species_id: string; // references species catalog
+  zone: string; // zone theme
   grid_x: number;
   grid_y: number;
-  species: string; // 'oak' | 'pine' | 'birch' | 'cherry' | 'golden'
-  growth_stage: number; // 0-3
-  version: "ideal" | "minimum";
+  growth_xp: number; // accumulated from completions
+  total_completions: number;
   planted_at: string;
+  last_grown_at: string | null;
   created_at: string;
 };
 
@@ -279,7 +279,7 @@ export type ForestStateInsert = Omit<ForestState, "id" | "created_at" | "updated
   created_at?: string;
   updated_at?: string;
 };
-export type ForestTreeInsert = Omit<ForestTree, "id" | "created_at"> & {
+export type ForestPlantInsert = Omit<ForestPlant, "id" | "created_at"> & {
   id?: string;
   created_at?: string;
 };
@@ -305,7 +305,7 @@ export type TechniqueLogUpdate = Partial<TechniqueLog>;
 export type RecoveryEntryUpdate = Partial<RecoveryEntry>;
 export type OverloadEventUpdate = Partial<OverloadEvent>;
 export type ForestStateUpdate = Partial<ForestState>;
-export type ForestTreeUpdate = Partial<ForestTree>;
+export type ForestPlantUpdate = Partial<ForestPlant>;
 export type ForestAvatarUpdate = Partial<ForestAvatar>;
 
 // --------------- Supabase Database type ---------------
@@ -512,21 +512,21 @@ export type Database = {
           },
         ];
       };
-      forest_trees: {
-        Row: ForestTree;
-        Insert: ForestTreeInsert;
-        Update: ForestTreeUpdate;
+      forest_plants: {
+        Row: ForestPlant;
+        Insert: ForestPlantInsert;
+        Update: ForestPlantUpdate;
         Relationships: [
           {
-            foreignKeyName: "forest_trees_user_id_fkey";
+            foreignKeyName: "forest_plants_user_id_fkey";
             columns: ["user_id"];
             referencedRelation: "users";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "forest_trees_habit_log_id_fkey";
-            columns: ["habit_log_id"];
-            referencedRelation: "habit_logs";
+            foreignKeyName: "forest_plants_habit_id_fkey";
+            columns: ["habit_id"];
+            referencedRelation: "habits";
             referencedColumns: ["id"];
           },
         ];

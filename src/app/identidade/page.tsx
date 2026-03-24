@@ -5,6 +5,7 @@ import { Fingerprint } from "lucide-react";
 import { IdentityCard } from "@/components/identidade/identity-card";
 import { AddIdentityDialog } from "@/components/identidade/add-identity-dialog";
 import { useForestStore } from "@/lib/stores/forest-store";
+import { inferZoneFromValues } from "@/lib/utils/forest-engine";
 import type { Identity, Habit, HabitLog } from "@/types/database";
 
 // --------------- Mock data ---------------
@@ -241,6 +242,7 @@ const MOCK_HABITS: Habit[] = [
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 0,
+    species_id: "ipe_amarelo",
   },
   {
     id: "hab-2",
@@ -255,6 +257,7 @@ const MOCK_HABITS: Habit[] = [
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 1,
+    species_id: "lavanda",
   },
   {
     id: "hab-3",
@@ -269,6 +272,7 @@ const MOCK_HABITS: Habit[] = [
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 0,
+    species_id: "bambu",
   },
   {
     id: "hab-4",
@@ -283,6 +287,7 @@ const MOCK_HABITS: Habit[] = [
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 1,
+    species_id: "camelia",
   },
   {
     id: "hab-5",
@@ -297,6 +302,7 @@ const MOCK_HABITS: Habit[] = [
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 0,
+    species_id: "araucaria",
   },
 ];
 
@@ -339,6 +345,7 @@ export default function IdentidadePage() {
       common_saboteurs: string[];
       frequency: "daily" | "weekdays" | "custom";
       saboteur_description?: string;
+      species_id?: string;
     }
   ) => {
     const newHabit: Habit = {
@@ -354,6 +361,7 @@ export default function IdentidadePage() {
       active: true,
       created_at: new Date().toISOString(),
       order_index: habits.filter((h) => h.identity_id === identityId).length,
+      species_id: habit.species_id ?? null,
     };
     setHabits((prev) => [...prev, newHabit]);
   };
@@ -378,8 +386,19 @@ export default function IdentidadePage() {
       return [...filtered, newLog];
     });
 
-    // Plant a tree in the forest
-    useForestStore.getState().plantTree(newLog.id, version);
+    // Grow the habit's plant in the forest
+    const habit = habits.find((h) => h.id === habitId);
+    if (habit?.species_id) {
+      const identity = identities.find((i) => i.id === habit.identity_id);
+      const zone = identity ? inferZoneFromValues(identity.linked_values) : "general";
+      useForestStore.getState().growHabitPlant({
+        habitId,
+        habitLogId: newLog.id,
+        completionType: version,
+        speciesId: habit.species_id,
+        zone,
+      });
+    }
   };
 
   return (

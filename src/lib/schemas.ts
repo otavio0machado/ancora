@@ -47,6 +47,7 @@ export const habitSchema = z.object({
   custom_days: z.array(z.number().int().min(0).max(6)).nullable(),
   active: z.boolean(),
   order_index: z.number().int().min(0),
+  species_id: z.string().nullable(),
 });
 
 export const habitLogSchema = z.object({
@@ -163,26 +164,23 @@ export const overloadEventSchema = z.object({
 
 // --------------- Forest schemas ---------------
 
-const treeSpeciesEnum = z.enum(["oak", "pine", "birch", "cherry", "golden"]);
-
 export const forestStateSchema = z.object({
   user_id: z.string().uuid(),
-  grid_width: z.number().int().min(1).default(10),
-  grid_height: z.number().int().min(1).default(10),
-  ground_level: z.number().int().min(0).max(4),
-  total_trees: z.number().int().min(0),
+  total_growth_xp: z.number().int().min(0),
   unlocked_milestones: z.array(z.string()),
 });
 
-export const forestTreeSchema = z.object({
+export const forestPlantSchema = z.object({
   user_id: z.string().uuid(),
-  habit_log_id: z.string().uuid().nullable(),
+  habit_id: z.string().uuid(),
+  species_id: z.string().min(1),
+  zone: z.string().min(1),
   grid_x: z.number().int().min(0),
   grid_y: z.number().int().min(0),
-  species: treeSpeciesEnum,
-  growth_stage: z.number().int().min(0).max(3),
-  version: z.enum(["ideal", "minimum"]),
+  growth_xp: z.number().int().min(0),
+  total_completions: z.number().int().min(0),
   planted_at: z.string(),
+  last_grown_at: z.string().nullable(),
 });
 
 export const forestAvatarSchema = z.object({
@@ -391,7 +389,7 @@ export type TechniqueLogInput = z.infer<typeof techniqueLogSchema>;
 export type RecoveryEntryInput = z.infer<typeof recoveryEntrySchema>;
 export type OverloadEventInput = z.infer<typeof overloadEventSchema>;
 export type ForestStateInput = z.infer<typeof forestStateSchema>;
-export type ForestTreeInput = z.infer<typeof forestTreeSchema>;
+export type ForestPlantInput = z.infer<typeof forestPlantSchema>;
 export type ForestAvatarInput = z.infer<typeof forestAvatarSchema>;
 
 export type AIDayAdjustInputZ = z.infer<typeof aiDayAdjustInputSchema>;

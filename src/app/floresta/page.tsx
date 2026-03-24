@@ -1,67 +1,64 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TreePine, User, BarChart3 } from "lucide-react";
+import { BarChart3, User } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useForestStore } from "@/lib/stores/forest-store";
 import { ForestScene } from "@/components/floresta/forest-scene";
 import { AvatarCustomizer } from "@/components/floresta/avatar-customizer";
 import { ForestStatsPanel } from "@/components/floresta/forest-stats-panel";
 import { MilestoneToast } from "@/components/floresta/milestone-toast";
+import { PlantInspector } from "@/components/floresta/plant-inspector";
 
 export default function FlorestaPage() {
-  const { forestState, initializeForest } = useForestStore();
+  const { forestState, plants, selectedPlantId, initializeForest } = useForestStore();
   const [showAvatar, setShowAvatar] = useState(false);
   const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
-    if (!forestState) {
-      initializeForest();
-    }
+    if (!forestState) initializeForest();
   }, [forestState, initializeForest]);
 
+  // Find habit name for selected plant
+  const selectedPlant = plants.find((p) => p.id === selectedPlantId);
+
   return (
-    <div className="flex flex-col h-[calc(100dvh-3.5rem-4rem)] relative">
-      {/* Header */}
-      <div className="px-4 py-3 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-2">
-          <TreePine className="w-5 h-5 text-accent" />
-          <h1 className="text-xl font-semibold text-text-primary">
-            Minha Floresta
-          </h1>
-        </div>
-        <div className="flex items-center gap-2">
+    <div className="fixed inset-0 pt-14 pb-[calc(4rem+env(safe-area-inset-bottom))] flex flex-col bg-background">
+      <div className="flex-1 relative overflow-hidden">
+        <ForestScene />
+
+        {/* Plant inspector overlay */}
+        {selectedPlant && (
+          <PlantInspector habitName={selectedPlant.habit_id} />
+        )}
+
+        {/* Floating action buttons */}
+        <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
           <button
             onClick={() => setShowStats(true)}
             className={cn(
-              "w-8 h-8 rounded-lg flex items-center justify-center",
-              "text-text-muted hover:text-text-secondary",
-              "hover:bg-surface-sunken ancora-transition"
+              "w-10 h-10 rounded-full flex items-center justify-center",
+              "bg-background/80 backdrop-blur-md shadow-md",
+              "text-text-secondary hover:text-text-primary",
+              "active:scale-95 ancora-transition"
             )}
-            aria-label="Estatisticas"
           >
-            <BarChart3 size={16} />
+            <BarChart3 size={18} />
           </button>
           <button
             onClick={() => setShowAvatar(true)}
             className={cn(
-              "w-8 h-8 rounded-lg flex items-center justify-center",
-              "text-text-muted hover:text-text-secondary",
-              "hover:bg-surface-sunken ancora-transition"
+              "w-10 h-10 rounded-full flex items-center justify-center",
+              "bg-background/80 backdrop-blur-md shadow-md",
+              "text-text-secondary hover:text-text-primary",
+              "active:scale-95 ancora-transition"
             )}
-            aria-label="Personalizar avatar"
           >
-            <User size={16} />
+            <User size={18} />
           </button>
         </div>
       </div>
 
-      {/* Forest Canvas */}
-      <div className="flex-1 relative overflow-hidden">
-        <ForestScene />
-      </div>
-
-      {/* Panels */}
       <AvatarCustomizer open={showAvatar} onClose={() => setShowAvatar(false)} />
       <ForestStatsPanel open={showStats} onClose={() => setShowStats(false)} />
       <MilestoneToast />

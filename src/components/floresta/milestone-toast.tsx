@@ -23,7 +23,7 @@ export function MilestoneToast() {
           setTimeout(() => {
             clearNewMilestones();
             setCurrent(null);
-          }, 300);
+          }, 400);
         }, 4000);
 
         return () => clearTimeout(timeout);
@@ -36,20 +36,23 @@ export function MilestoneToast() {
   return (
     <div
       className={cn(
-        "fixed top-20 left-1/2 -translate-x-1/2 z-50",
+        "fixed z-[60] left-4 right-4 max-w-sm mx-auto",
+        "top-[calc(4rem+env(safe-area-inset-top))]",
         "bg-accent text-white",
-        "rounded-xl px-4 py-3 shadow-lg",
+        "rounded-2xl px-4 py-3.5 shadow-lg",
         "flex items-center gap-3",
-        "transition-all duration-300",
+        "transition-all duration-400 ease-out",
         visible
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 -translate-y-4 pointer-events-none"
+          ? "opacity-100 translate-y-0 scale-100"
+          : "opacity-0 -translate-y-3 scale-95 pointer-events-none"
       )}
     >
-      <Sparkles size={20} className="shrink-0" />
+      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+        <Sparkles size={20} />
+      </div>
       <div>
         <div className="text-sm font-semibold">{current.name}</div>
-        <div className="text-xs opacity-90">{current.description}</div>
+        <div className="text-xs opacity-85 leading-snug">{current.description}</div>
       </div>
     </div>
   );

@@ -1,51 +1,87 @@
 // ============================================================
 // Sprite definitions for isometric forest rendering
-// Procedural pixel art generation (no external assets needed)
+// Procedural pixel art - supports trees, shrubs, flowers
 // ============================================================
 
-import type { GroundLevel, TreeSpecies, GrowthStage, ForestWeather } from "@/types/forest";
+import type { GroundLevel, ForestWeather, PlantCategory, GrowthStage } from "@/types/forest";
 
-// --------------- Color palettes ---------------
+// --------------- Ground colors ---------------
 
 export const GROUND_COLORS: Record<GroundLevel, { fill: string; stroke: string; detail?: string }> = {
-  0: { fill: "#3D3028", stroke: "#2A211B", detail: "#4A3A2F" },   // burned
-  1: { fill: "#6B5B4E", stroke: "#54473C", detail: "#7D6D5F" },   // dry earth
-  2: { fill: "#6B8C42", stroke: "#5A7A35", detail: "#8BAA5A" },   // sparse grass
-  3: { fill: "#4CAF50", stroke: "#388E3C", detail: "#66BB6A" },   // grass
-  4: { fill: "#2E7D32", stroke: "#1B5E20", detail: "#43A047" },   // lush
+  0: { fill: "#3D3028", stroke: "#2A211B", detail: "#4A3A2F" },
+  1: { fill: "#6B5B4E", stroke: "#54473C", detail: "#7D6D5F" },
+  2: { fill: "#6B8C42", stroke: "#5A7A35", detail: "#8BAA5A" },
+  3: { fill: "#4CAF50", stroke: "#388E3C", detail: "#66BB6A" },
+  4: { fill: "#2E7D32", stroke: "#1B5E20", detail: "#43A047" },
 };
 
-export const TREE_COLORS: Record<TreeSpecies, { trunk: string; foliage: string; highlight: string }> = {
-  oak:    { trunk: "#5D4037", foliage: "#2E7D32", highlight: "#43A047" },
-  pine:   { trunk: "#4E342E", foliage: "#1B5E20", highlight: "#2E7D32" },
-  birch:  { trunk: "#D7CCC8", foliage: "#66BB6A", highlight: "#81C784" },
-  cherry: { trunk: "#5D4037", foliage: "#E91E63", highlight: "#F06292" },
-  golden: { trunk: "#5D4037", foliage: "#FFD700", highlight: "#FFEB3B" },
+// --------------- Plant color palettes by species ---------------
+
+export const PLANT_PALETTES: Record<string, { trunk: string; foliage: string; highlight: string; bloom?: string }> = {
+  // Trees
+  ipe_amarelo:  { trunk: "#5D4037", foliage: "#2E7D32", highlight: "#43A047", bloom: "#FFD600" },
+  araucaria:    { trunk: "#4E342E", foliage: "#1B5E20", highlight: "#2E7D32" },
+  cerejeira:    { trunk: "#5D4037", foliage: "#C62828", highlight: "#E91E63", bloom: "#F48FB1" },
+  jacaranda:    { trunk: "#5D4037", foliage: "#4A148C", highlight: "#7B1FA2", bloom: "#CE93D8" },
+  carvalho:     { trunk: "#5D4037", foliage: "#2E7D32", highlight: "#43A047" },
+  pinheiro:     { trunk: "#4E342E", foliage: "#1B5E20", highlight: "#2E7D32" },
+  // Shrubs
+  lavanda:      { trunk: "#6D4C41", foliage: "#4CAF50", highlight: "#66BB6A", bloom: "#9C27B0" },
+  alecrim:      { trunk: "#6D4C41", foliage: "#558B2F", highlight: "#7CB342", bloom: "#81D4FA" },
+  hortensia:    { trunk: "#5D4037", foliage: "#388E3C", highlight: "#4CAF50", bloom: "#E91E63" },
+  bambu:        { trunk: "#8BC34A", foliage: "#4CAF50", highlight: "#66BB6A" },
+  // Flowers
+  girassol:     { trunk: "#558B2F", foliage: "#7CB342", highlight: "#8BC34A", bloom: "#FFD600" },
+  lirio:        { trunk: "#558B2F", foliage: "#66BB6A", highlight: "#81C784", bloom: "#FFFFFF" },
+  camelia:      { trunk: "#558B2F", foliage: "#4CAF50", highlight: "#66BB6A", bloom: "#F44336" },
+  margarida:    { trunk: "#558B2F", foliage: "#7CB342", highlight: "#8BC34A", bloom: "#FFFFFF" },
 };
 
-// Tree sizes per growth stage (width, height in pixels)
-export const TREE_SIZES: Record<GrowthStage, { w: number; h: number }> = {
-  0: { w: 8, h: 12 },   // sapling
-  1: { w: 16, h: 24 },  // small
-  2: { w: 24, h: 36 },  // medium
-  3: { w: 32, h: 48 },  // large
+// --------------- Plant sizes per category and growth stage ---------------
+
+export const PLANT_SIZES: Record<PlantCategory, Record<GrowthStage, { w: number; h: number }>> = {
+  tree: {
+    0: { w: 6, h: 10 },
+    1: { w: 14, h: 22 },
+    2: { w: 22, h: 34 },
+    3: { w: 30, h: 46 },
+    4: { w: 34, h: 52 },
+  },
+  shrub: {
+    0: { w: 6, h: 8 },
+    1: { w: 12, h: 14 },
+    2: { w: 18, h: 20 },
+    3: { w: 24, h: 24 },
+    4: { w: 28, h: 28 },
+  },
+  flower: {
+    0: { w: 4, h: 6 },
+    1: { w: 8, h: 12 },
+    2: { w: 12, h: 16 },
+    3: { w: 14, h: 20 },
+    4: { w: 16, h: 24 },
+  },
 };
 
-// --------------- Decoration data ---------------
+// --------------- Decoration colors ---------------
 
 export const DECORATION_COLORS = {
   rock: { fill: "#78909C", stroke: "#546E7A", highlight: "#90A4AE" },
-  stump: { fill: "#5D4037", stroke: "#4E342E", highlight: "#6D4C41" },
+  path: { fill: "#A1887F", stroke: "#8D6E63" },
   pond: { fill: "#4FC3F7", stroke: "#29B6F6", highlight: "#81D4FA" },
+  bench: { fill: "#8D6E63", seat: "#A1887F" },
   cabin: { wall: "#8D6E63", roof: "#5D4037", door: "#3E2723", window: "#FFF9C4" },
+  lantern: { post: "#5D4037", light: "#FFE082" },
 };
 
-// --------------- Weather particle configs ---------------
+// --------------- Weather particles ---------------
 
 export const WEATHER_PARTICLES: Record<ForestWeather, { color: string; count: number; speed: number } | null> = {
   sunny: null,
   clear: null,
   overcast: null,
   rain: { color: "#90CAF9", count: 40, speed: 6 },
-  storm: { color: "#64B5F6", count: 80, speed: 10 },
+  wind: { color: "#A5D6A7", count: 20, speed: 3 }, // leaves
+  dawn: null,
+  fireflies: { color: "#FFEB3B", count: 15, speed: 0.5 },
 };

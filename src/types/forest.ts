@@ -1,36 +1,86 @@
 // ============================================================
-// Forest mini-game types
+// Forest types - Jardim Terapêutico Vivo
 // ============================================================
 
-export type TreeSpecies = "oak" | "pine" | "birch" | "cherry" | "golden";
+// --------------- Species catalog ---------------
+
+export type PlantCategory = "tree" | "shrub" | "flower";
+
+export type SpeciesId =
+  // Trees - hábitos estruturantes
+  | "ipe_amarelo"
+  | "araucaria"
+  | "cerejeira"
+  | "jacaranda"
+  | "carvalho"
+  | "pinheiro"
+  // Shrubs - hábitos de manutenção
+  | "lavanda"
+  | "alecrim"
+  | "hortensia"
+  | "bambu"
+  // Flowers - microvitórias e autocuidado
+  | "girassol"
+  | "lirio"
+  | "camelia"
+  | "margarida";
+
+export type PlantSpecies = {
+  id: SpeciesId;
+  name: string;
+  category: PlantCategory;
+  symbolism: string; // short emotional description
+  description: string; // why choose this plant
+  growthStages: number; // how many visual stages (typically 5)
+};
+
+// --------------- Growth system ---------------
+
+export type GrowthStage = 0 | 1 | 2 | 3 | 4;
+// 0 = seed/muda, 1 = sprout, 2 = young, 3 = adult, 4 = flourishing (rare variant)
+
+export const GROWTH_THRESHOLDS: { minCompletions: number; stage: GrowthStage }[] = [
+  { minCompletions: 50, stage: 4 }, // flourishing - rare variant
+  { minCompletions: 21, stage: 3 }, // adult
+  { minCompletions: 7, stage: 2 },  // young
+  { minCompletions: 3, stage: 1 },  // sprout
+  { minCompletions: 0, stage: 0 },  // seed
+];
+
+// --------------- Ground & weather ---------------
+
+export type GroundLevel = 0 | 1 | 2 | 3 | 4;
 
 export type ForestWeather =
-  | "sunny"
-  | "clear"
-  | "overcast"
-  | "rain"
-  | "storm";
+  | "sunny"       // abertura
+  | "clear"       // tranquilidade
+  | "overcast"    // sobrecarga
+  | "rain"        // recolhimento
+  | "wind"        // agitação
+  | "dawn"        // esperança
+  | "fireflies";  // gentileza consigo
 
-export type GrowthStage = 0 | 1 | 2 | 3; // sapling, small, medium, large
+// --------------- Zones ---------------
 
-export type GroundLevel = 0 | 1 | 2 | 3 | 4; // burned, dry, sparse, grass, lush
+export type ZoneTheme =
+  | "study"     // Clareira do Estudo
+  | "body"      // Jardim do Corpo
+  | "calm"      // Bosque da Calma
+  | "courage"   // Trilha da Coragem
+  | "presence"  // Lago da Presença
+  | "rest"      // Refúgio do Sono
+  | "general";  // Área livre
 
-export type GridCell = {
-  x: number;
-  y: number;
-  occupied: boolean;
-};
-
-export type IsometricPosition = {
-  screenX: number;
-  screenY: number;
-};
+// --------------- Milestones ---------------
 
 export type MilestoneId =
-  | "rocks_stumps"
+  | "first_plant"
+  | "garden_path"
   | "pond"
   | "animals"
+  | "bench"
   | "cabin"
+  | "lantern"
   | "rainbow"
   | "fireflies"
   | "restored";
@@ -39,13 +89,17 @@ export type Milestone = {
   id: MilestoneId;
   name: string;
   description: string;
-  requiredTrees: number;
+  requiredTotalGrowth: number; // sum of all plant growth XP
 };
 
-export type AvatarConfig = {
-  skinTone: number;
-  hairStyle: number;
-  hairColor: number;
-  outfit: number;
-  accessory: number;
+// --------------- Plant instance ---------------
+
+export type PlantInspection = {
+  speciesName: string;
+  habitName: string;
+  totalCompletions: number;
+  currentStage: GrowthStage;
+  plantedAt: string;
+  lastGrownAt: string | null;
+  symbolism: string;
 };

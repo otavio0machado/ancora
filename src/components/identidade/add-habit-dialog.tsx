@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { SpeciesPicker } from "@/components/floresta/species-picker";
+import type { SpeciesId } from "@/types/forest";
 
 const SABOTEUR_OPTIONS = [
   "perfeccionismo",
@@ -48,6 +50,7 @@ interface AddHabitDialogProps {
     common_saboteurs: string[];
     frequency: "daily" | "weekdays" | "custom";
     saboteur_description?: string;
+    species_id?: string;
   }) => void;
 }
 
@@ -65,6 +68,7 @@ export function AddHabitDialog({
   const [frequency, setFrequency] = useState<"daily" | "weekdays" | "custom">(
     "daily"
   );
+  const [speciesId, setSpeciesId] = useState<SpeciesId | null>(null);
 
   const toggleSaboteur = (saboteur: string) => {
     setSaboteurs((prev) =>
@@ -85,6 +89,7 @@ export function AddHabitDialog({
       common_saboteurs: saboteurs,
       frequency,
       saboteur_description: saboteurDescription.trim() || undefined,
+      species_id: speciesId ?? undefined,
     });
 
     setName("");
@@ -93,6 +98,7 @@ export function AddHabitDialog({
     setSaboteurs([]);
     setSaboteurDescription("");
     setFrequency("daily");
+    setSpeciesId(null);
     setOpen(false);
   };
 
@@ -228,6 +234,12 @@ export function AddHabitDialog({
               />
             </div>
           )}
+
+          {/* Species picker for forest */}
+          <SpeciesPicker
+            selectedId={speciesId}
+            onSelect={setSpeciesId}
+          />
 
           {/* Frequency */}
           <div className="space-y-2">

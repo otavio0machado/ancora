@@ -77,25 +77,25 @@ const MOCK_HABITS: Habit[] = [
     id: "hab-1", user_id: "user-1", identity_id: "id-1", name: "Estudar",
     ideal_version: "2h de estudo focado", minimum_version: "Abrir o livro por 10 min",
     common_saboteurs: ["perfeccionismo"], frequency: "daily", custom_days: null,
-    active: true, created_at: "2026-01-01T00:00:00Z", order_index: 0,
+    active: true, created_at: "2026-01-01T00:00:00Z", order_index: 0, species_id: "ipe_amarelo",
   },
   {
     id: "hab-2", user_id: "user-1", identity_id: "id-1", name: "Ler",
     ideal_version: "30 páginas", minimum_version: "1 página",
     common_saboteurs: ["cansaço"], frequency: "daily", custom_days: null,
-    active: true, created_at: "2026-01-01T00:00:00Z", order_index: 1,
+    active: true, created_at: "2026-01-01T00:00:00Z", order_index: 1, species_id: "lavanda",
   },
   {
     id: "hab-3", user_id: "user-1", identity_id: "id-2", name: "Treinar",
     ideal_version: "Treino completo", minimum_version: "15 min em casa",
     common_saboteurs: ["cansaço"], frequency: "weekdays", custom_days: null,
-    active: true, created_at: "2026-01-01T00:00:00Z", order_index: 0,
+    active: true, created_at: "2026-01-01T00:00:00Z", order_index: 0, species_id: "bambu",
   },
   {
     id: "hab-5", user_id: "user-1", identity_id: "id-3", name: "Não fumar",
     ideal_version: "Dia inteiro sem cigarro", minimum_version: "Não fumar nas primeiras 4h",
     common_saboteurs: ["cansaço"], frequency: "daily", custom_days: null,
-    active: true, created_at: "2026-01-01T00:00:00Z", order_index: 0,
+    active: true, created_at: "2026-01-01T00:00:00Z", order_index: 0, species_id: "araucaria",
   },
 ];
 

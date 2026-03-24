@@ -223,16 +223,13 @@ create table weekly_reviews (
   unique (user_id, week_start)
 );
 
--- --------------- Forest mini-game ---------------
+-- --------------- Forest - Jardim Terapêutico Vivo ---------------
 
 -- Forest state per user
 create table forest_state (
   id uuid primary key default uuid_generate_v4(),
   user_id uuid not null references users(id) on delete cascade,
-  grid_width smallint not null default 10,
-  grid_height smallint not null default 10,
-  ground_level smallint not null default 0 check (ground_level between 0 and 4),
-  total_trees integer not null default 0,
+  total_growth_xp integer not null default 0,
   unlocked_milestones text[] not null default '{}',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -240,18 +237,22 @@ create table forest_state (
   unique (user_id)
 );
 
--- Individual trees planted
-create table forest_trees (
+-- Persistent plants (one per habit)
+create table forest_plants (
   id uuid primary key default uuid_generate_v4(),
   user_id uuid not null references users(id) on delete cascade,
-  habit_log_id uuid references habit_logs(id) on delete set null,
+  habit_id uuid not null references habits(id) on delete cascade,
+  species_id text not null,
+  zone text not null default 'general',
   grid_x smallint not null,
   grid_y smallint not null,
-  species text not null, -- 'oak', 'pine', 'birch', 'cherry', 'golden'
-  growth_stage smallint not null default 0 check (growth_stage between 0 and 3),
-  version text not null default 'ideal', -- 'ideal' or 'minimum'
+  growth_xp integer not null default 0,
+  total_completions integer not null default 0,
   planted_at timestamptz not null default now(),
-  created_at timestamptz not null default now()
+  last_grown_at timestamptz,
+  created_at timestamptz not null default now(),
+
+  unique (user_id, habit_id)
 );
 
 -- Avatar customization
@@ -317,9 +318,9 @@ create index idx_overload_events_type on overload_events (user_id, type);
 -- Weekly reviews: query by user + week
 create index idx_weekly_reviews_user_week on weekly_reviews (user_id, week_start desc);
 
--- Forest: state and trees per user
-create index idx_forest_trees_user on forest_trees (user_id);
-create index idx_forest_trees_planted on forest_trees (user_id, planted_at desc);
+-- Forest: plants per user
+create index idx_forest_plants_user on forest_plants (user_id);
+create index idx_forest_plants_habit on forest_plants (user_id, habit_id);
 
 -- ============================================================
 -- UPDATED_AT TRIGGER (for users table)
@@ -356,7 +357,7 @@ create trigger forest_avatar_updated_at
 alter table users enable row level security;
 alter table check_ins enable row level security;
 alter table forest_state enable row level security;
-alter table forest_trees enable row level security;
+alter table forest_plants enable row level security;
 alter table forest_avatar enable row level security;
 alter table user_values enable row level security;
 alter table identities enable row level security;
@@ -600,17 +601,21 @@ create policy "Users can update own forest state"
   on forest_state for update
   using (auth.uid() = user_id);
 
--- Forest trees
-create policy "Users can view own forest trees"
-  on forest_trees for select
+-- Forest plants
+create policy "Users can view own forest plants"
+  on forest_plants for select
   using (auth.uid() = user_id);
 
-create policy "Users can insert own forest trees"
-  on forest_trees for insert
+create policy "Users can insert own forest plants"
+  on forest_plants for insert
   with check (auth.uid() = user_id);
 
-create policy "Users can delete own forest trees"
-  on forest_trees for delete
+create policy "Users can update own forest plants"
+  on forest_plants for update
+  using (auth.uid() = user_id);
+
+create policy "Users can delete own forest plants"
+  on forest_plants for delete
   using (auth.uid() = user_id);
 
 -- Forest avatar

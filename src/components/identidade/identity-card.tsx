@@ -34,6 +34,7 @@ interface IdentityCardProps {
       common_saboteurs: string[];
       frequency: "daily" | "weekdays" | "custom";
       saboteur_description?: string;
+      species_id?: string;
     }
   ) => void;
 }
