@@ -746,8 +746,10 @@ export function renderFullScene(app: Application, state: ForestRenderState) {
   lastLayout = { tileW, tileH, ox, oy };
 
   // 8 layers: sky, ground, deco, plants, avatar, companion, particles, timeOverlay
-  if (app.stage.children.length === 0) {
-    for (let i = 0; i < 8; i++) app.stage.addChild(new Container());
+  const LAYER_COUNT = 8;
+  if (app.stage.children.length !== LAYER_COUNT) {
+    app.stage.removeChildren();
+    for (let i = 0; i < LAYER_COUNT; i++) app.stage.addChild(new Container());
   }
 
   const layers = app.stage.children as Container[];
