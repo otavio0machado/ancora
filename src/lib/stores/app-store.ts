@@ -23,7 +23,7 @@ interface AppStore {
   // User preferences
   preferences: {
     notifications: boolean;
-    darkMode: boolean;
+    theme: "system" | "light" | "dark";
     language: "pt-BR" | "en";
   };
   setPreferences: (prefs: Partial<AppStore["preferences"]>) => void;
@@ -54,7 +54,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   preferences: {
     notifications: true,
-    darkMode: false,
+    theme: "system",
     language: "pt-BR",
   },
   setPreferences: (prefs) => {

@@ -67,9 +67,9 @@
   --ring-offset: #FAFAF8;
 }
 
-/* --- Dark Mode --- */
+/* --- Dark Mode (system preference) --- */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #141413;
     --surface: #1E1E1C;
     --surface-raised: #252523;
@@ -108,6 +108,47 @@
     --ring: #8FA280;
     --ring-offset: #141413;
   }
+}
+
+/* --- Dark Mode (explicit class toggle) --- */
+:root.dark {
+  --background: #141413;
+  --surface: #1E1E1C;
+  --surface-raised: #252523;
+  --surface-sunken: #0F0F0E;
+
+  --border: #2E2E2B;
+  --border-subtle: #232321;
+
+  --text-primary: #E8E5E0;
+  --text-secondary: #9B978E;
+  --text-muted: #6B6960;
+  --text-inverse: #1A1A18;
+
+  --accent: #8FA280;
+  --accent-hover: #9DB38E;
+  --accent-subtle: #1E261A;
+  --accent-foreground: #1A1A18;
+
+  --warning: #D4A017;
+  --warning-subtle: #2A2210;
+  --alert: #D4918A;
+  --alert-subtle: #2A1A18;
+  --success: #8FA280;
+  --success-subtle: #1E261A;
+
+  --rescue: #C0A580;
+  --rescue-hover: #D0B590;
+  --rescue-subtle: #2A2218;
+  --rescue-foreground: #1A1A18;
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.25), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+
+  --ring: #8FA280;
+  --ring-offset: #141413;
 }
 
 /* --- Tailwind v4 Theme --- */
