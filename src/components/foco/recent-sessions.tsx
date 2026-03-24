@@ -23,7 +23,7 @@ function formatDate(dateString: string): string {
 
   if (diffDays === 0) return "Hoje";
   if (diffDays === 1) return "Ontem";
-  if (diffDays < 7) return `${diffDays} dias atras`;
+  if (diffDays < 7) return `${diffDays} dias atrás`;
 
   return date.toLocaleDateString("pt-BR", {
     day: "numeric",
@@ -57,7 +57,7 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
     <Card>
       <CardHeader>
         <CardTitle className="text-sm font-medium text-text-secondary">
-          Sessoes recentes
+          Sessões recentes
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-1 -mt-2">

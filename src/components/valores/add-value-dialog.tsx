@@ -36,13 +36,13 @@ export interface SuggestedValue {
 }
 
 const SUGGESTED_VALUES: SuggestedValue[] = [
-  { name: "Crescimento", description: "Buscar evolucao pessoal e aprender constantemente", icon: "\uD83C\uDF31" },
-  { name: "Saude", description: "Cuidar do corpo e da mente com intencionalidade", icon: "\uD83D\uDCAA" },
-  { name: "Conexao", description: "Construir e nutrir relacionamentos significativos", icon: "\uD83E\uDD1D" },
+  { name: "Crescimento", description: "Buscar evolução pessoal e aprender constantemente", icon: "\uD83C\uDF31" },
+  { name: "Saúde", description: "Cuidar do corpo e da mente com intencionalidade", icon: "\uD83D\uDCAA" },
+  { name: "Conexão", description: "Construir e nutrir relacionamentos significativos", icon: "\uD83E\uDD1D" },
   { name: "Autonomia", description: "Fazer escolhas alinhadas com quem eu quero ser", icon: "\u2B50" },
-  { name: "Presenca", description: "Viver o momento com atencao e abertura", icon: "\uD83E\uDDD8" },
-  { name: "Integridade", description: "Agir de acordo com meus principios, mesmo quando e dificil", icon: "\u2764\uFE0F" },
-  { name: "Conhecimento", description: "Explorar ideias e expandir minha compreensao do mundo", icon: "\uD83D\uDCDA" },
+  { name: "Presença", description: "Viver o momento com atenção e abertura", icon: "\uD83E\uDDD8" },
+  { name: "Integridade", description: "Agir de acordo com meus princípios, mesmo quando é difícil", icon: "\u2764\uFE0F" },
+  { name: "Conhecimento", description: "Explorar ideias e expandir minha compreensão do mundo", icon: "\uD83D\uDCDA" },
 ];
 
 // --------------- Types ---------------
@@ -117,8 +117,8 @@ export function AddValueDialog({
           </DialogTitle>
           <DialogDescription>
             {isEditing
-              ? "Ajuste este valor para refletir melhor o que e importante para voce."
-              : "Valores sao os principios que guiam suas escolhas. O que importa pra voce?"}
+              ? "Ajuste este valor para refletir melhor o que é importante para você."
+              : "Valores são os princípios que guiam suas escolhas. O que importa pra você?"}
           </DialogDescription>
         </DialogHeader>
 
@@ -126,7 +126,7 @@ export function AddValueDialog({
           {/* Emoji selector */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-              Icone
+              Ícone
             </label>
             <div className="flex flex-wrap gap-2">
               {EMOJI_OPTIONS.map((emoji) => (
@@ -164,7 +164,7 @@ export function AddValueDialog({
               id="value-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ex: Crescimento, Saude, Conexao..."
+              placeholder="Ex: Crescimento, Saúde, Conexão..."
               maxLength={50}
               autoFocus
             />
@@ -176,13 +176,13 @@ export function AddValueDialog({
               htmlFor="value-description"
               className="text-xs font-medium text-text-secondary uppercase tracking-wider"
             >
-              Descricao (opcional)
+              Descrição (opcional)
             </label>
             <Textarea
               id="value-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="O que esse valor significa pra voce..."
+              placeholder="O que esse valor significa pra você..."
               rows={2}
               maxLength={200}
             />
@@ -192,7 +192,7 @@ export function AddValueDialog({
           {!isEditing && filteredSuggestions.length > 0 && (
             <div className="flex flex-col gap-2">
               <p className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-                Sugestoes
+                Sugestões
               </p>
               <div className="flex flex-wrap gap-2">
                 {filteredSuggestions.map((suggestion) => (

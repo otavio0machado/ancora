@@ -160,7 +160,7 @@ export default function ImpulsosPage() {
             Impulsos
           </h1>
           <p className="text-sm text-text-secondary leading-relaxed">
-            Um espaco seguro para observar e responder a impulsos.
+            Um espaço seguro para observar e responder a impulsos.
           </p>
         </div>
 
@@ -173,7 +173,7 @@ export default function ImpulsosPage() {
                 Registrar impulso
               </CardTitle>
               <CardDescription>
-                Nomeie o que esta sentindo. Sem pressa.
+                Nomeie o que está sentindo. Sem pressa.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -226,7 +226,7 @@ export default function ImpulsosPage() {
         {view === "home" && patternSummary.length > 0 && (
           <Card className="border-border-subtle">
             <CardHeader className="pb-0">
-              <CardTitle className="text-sm">Padroes recentes</CardTitle>
+              <CardTitle className="text-sm">Padrões recentes</CardTitle>
             </CardHeader>
             <CardContent className="pt-3">
               <div className="space-y-2">
@@ -275,8 +275,8 @@ const TYPE_LABELS: Record<Impulse["type"], string> = {
   smoking: "Cigarro",
   social_media: "Redes sociais",
   pornography: "Pornografia",
-  binge_eating: "Compulsao alimentar",
-  substance: "Substancia",
+  binge_eating: "Compulsão alimentar",
+  substance: "Substância",
   other: "Outro",
 };
 

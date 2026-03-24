@@ -32,7 +32,7 @@ export function RescueModeBanner() {
             Modo Resgate ativo
           </p>
           <p className="text-xs text-text-secondary mt-0.5">
-            Respire. Sinta os pes no chao. Voce esta seguro.
+            Respire. Sinta os pés no chão. Você está seguro.
           </p>
         </div>
 

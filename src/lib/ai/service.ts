@@ -140,14 +140,14 @@ class AIService {
   async weeklyReflection(input: AIWeeklyInput): Promise<AIWeeklyOutput> {
     const fallback: AIWeeklyOutput = {
       patterns: [
-        "Sem dados suficientes para analise de IA esta semana.",
+        "Sem dados suficientes para análise de IA esta semana.",
       ],
       triggers: [],
       adjustments: [
-        "Continue registrando check-ins e impulsos para que a analise semanal fique mais precisa.",
+        "Continue registrando check-ins e impulsos para que a análise semanal fique mais precisa.",
       ],
       wins: [
-        "Voce completou mais uma semana de registro. Consistencia importa.",
+        "Você completou mais uma semana de registro. Consistência importa.",
       ],
       weekSummary:
         "Semana registrada. Cada semana de dados melhora o autoconhecimento. Continue observando sem julgar.",
@@ -293,7 +293,7 @@ class AIService {
     const { checkIn, priorities, recentHabitLogs, userValues, habits } = input;
 
     const parts: string[] = [
-      `Estado atual do usuario:`,
+      `Estado atual do usuário:`,
       `- Energia: ${checkIn.energy}/5`,
       `- Humor: ${checkIn.mood}/5`,
       `- Ansiedade: ${checkIn.anxiety}/5`,
@@ -310,12 +310,12 @@ class AIService {
     }
 
     if (checkIn.notes) {
-      parts.push(`- Observacoes: "${checkIn.notes}"`);
+      parts.push(`- Observações: "${checkIn.notes}"`);
     }
 
     // User values (ACT connection)
     if (userValues && userValues.length > 0) {
-      parts.push(`\nValores do usuario (ACT): ${userValues.join(", ")}`);
+      parts.push(`\nValores do usuário (ACT): ${userValues.join(", ")}`);
     }
 
     if (priorities.length > 0) {
@@ -326,9 +326,9 @@ class AIService {
 
     // Habits with names for skip suggestions
     if (habits && habits.length > 0) {
-      parts.push(`\nHabitos configurados:`);
+      parts.push(`\nHábitos configurados:`);
       habits.forEach((h) => {
-        parts.push(`  - ${h.name} (ideal: ${h.ideal_version} | minimo: ${h.minimum_version})`);
+        parts.push(`  - ${h.name} (ideal: ${h.ideal_version} | mínimo: ${h.minimum_version})`);
       });
     }
 
@@ -337,7 +337,7 @@ class AIService {
       const minimum = recentHabitLogs.filter((l) => l.version === "minimum").length;
       const skipped = recentHabitLogs.filter((l) => l.version === "skipped").length;
       parts.push(
-        `\nUltimos logs de habitos (7 dias): ${ideal} ideal, ${minimum} minimo, ${skipped} pulados`
+        `\nÚltimos logs de hábitos (7 dias): ${ideal} ideal, ${minimum} mínimo, ${skipped} pulados`
       );
     }
 
@@ -360,12 +360,12 @@ class AIService {
       parts.push(`- Contexto: "${impulse.context}"`);
     }
     if (impulse.emotion_before) {
-      parts.push(`- Emocao antes: "${impulse.emotion_before}"`);
+      parts.push(`- Emoção antes: "${impulse.emotion_before}"`);
     }
 
     // User values for ACT connection
     if (userValues && userValues.length > 0) {
-      parts.push(`\nValores do usuario (ACT): ${userValues.join(", ")}`);
+      parts.push(`\nValores do usuário (ACT): ${userValues.join(", ")}`);
     }
 
     if (recentImpulses.length > 0) {
@@ -374,14 +374,14 @@ class AIService {
       const resistedSameType = sameType.filter((i) => i.resisted).length;
       const totalSameType = sameType.length;
 
-      parts.push(`\nImpulsos recentes (ultimos 7 dias):`);
+      parts.push(`\nImpulsos recentes (últimos 7 dias):`);
       parts.push(
         `- Total: ${recentImpulses.length} impulsos, ${recentImpulses.filter((i) => i.resisted).length} resistidos`
       );
 
       if (totalSameType > 0) {
         parts.push(
-          `- Mesmo tipo (${impulse.type}): ${totalSameType} impulsos, ${resistedSameType} resistidos (${Math.round((resistedSameType / totalSameType) * 100)}% de taxa de resistencia)`
+          `- Mesmo tipo (${impulse.type}): ${totalSameType} impulsos, ${resistedSameType} resistidos (${Math.round((resistedSameType / totalSameType) * 100)}% de taxa de resistência)`
         );
       }
 
@@ -390,13 +390,13 @@ class AIService {
         .filter((i) => i.technique_used)
         .map((i) => i.technique_used);
       if (techniquesUsed.length > 0) {
-        parts.push(`- Tecnicas usadas recentemente: ${[...new Set(techniquesUsed)].join(", ")}`);
+        parts.push(`- Técnicas usadas recentemente: ${[...new Set(techniquesUsed)].join(", ")}`);
       }
 
       // Recent impulse timeline
       recentImpulses.slice(0, 5).forEach((imp) => {
         parts.push(
-          `  - ${imp.type} (intensidade ${imp.intensity}/10, ${imp.resisted ? "resistiu" : "cedeu"}${imp.technique_used ? `, tecnica: ${imp.technique_used}` : ""}) em ${imp.created_at}`
+          `  - ${imp.type} (intensidade ${imp.intensity}/10, ${imp.resisted ? "resistiu" : "cedeu"}${imp.technique_used ? `, técnica: ${imp.technique_used}` : ""}) em ${imp.created_at}`
         );
       });
     }
@@ -411,7 +411,7 @@ class AIService {
 
     // User values
     if (userValues && userValues.length > 0) {
-      parts.push(`Valores do usuario (ACT): ${userValues.join(", ")}\n`);
+      parts.push(`Valores do usuário (ACT): ${userValues.join(", ")}\n`);
     }
 
     // Check-ins summary with sleep
@@ -435,7 +435,7 @@ class AIService {
       const minimum = habitLogs.filter((l) => l.version === "minimum").length;
       const skipped = habitLogs.filter((l) => l.version === "skipped").length;
       parts.push(
-        `\nHabitos: ${ideal} ideal, ${minimum} minimo, ${skipped} pulados (total: ${habitLogs.length})`
+        `\nHábitos: ${ideal} ideal, ${minimum} mínimo, ${skipped} pulados (total: ${habitLogs.length})`
       );
     }
 
@@ -472,7 +472,7 @@ class AIService {
           effectiveness: i.technique_effectiveness,
         }));
       if (techniques.length > 0) {
-        parts.push(`  Tecnicas usadas esta semana:`);
+        parts.push(`  Técnicas usadas esta semana:`);
         const techMap: Record<string, { uses: number; successes: number; avgEff: number[] }> = {};
         techniques.forEach((t) => {
           const key = t.technique ?? "desconhecida";
@@ -485,7 +485,7 @@ class AIService {
         });
         Object.entries(techMap).forEach(([tech, stats]) => {
           const effStr = stats.avgEff.length > 0
-            ? `, eficacia media: ${(stats.avgEff.reduce((a, b) => a + b, 0) / stats.avgEff.length).toFixed(1)}/5`
+            ? `, eficácia média: ${(stats.avgEff.reduce((a, b) => a + b, 0) / stats.avgEff.length).toFixed(1)}/5`
             : "";
           parts.push(
             `    ${tech}: ${stats.uses} usos, ${stats.successes} sucessos${effStr}`
@@ -503,7 +503,7 @@ class AIService {
         (s) => s.status === "abandoned"
       ).length;
       parts.push(
-        `\nSessoes de foco: ${focusSessions.length} total, ${completed} completadas, ${abandoned} abandonadas`
+        `\nSessões de foco: ${focusSessions.length} total, ${completed} completadas, ${abandoned} abandonadas`
       );
     }
 
@@ -514,7 +514,7 @@ class AIService {
     const parts: string[] = [`Contexto: ${input.context}`];
 
     if (input.userData?.name) {
-      parts.push(`Nome do usuario: ${input.userData.name}`);
+      parts.push(`Nome do usuário: ${input.userData.name}`);
     }
     if (input.userData?.mood !== undefined) {
       parts.push(`Humor atual: ${input.userData.mood}/5`);
@@ -530,13 +530,13 @@ class AIService {
     const { checkIns, impulses, habitLogs, techniqueLogs, userValues, timeframe } = input;
 
     const parts: string[] = [
-      `Periodo de analise: ${timeframe === "week" ? "ultima semana" : "ultimo mes"}`,
-      `Total de dados: ${checkIns.length} check-ins, ${impulses.length} impulsos, ${habitLogs.length} logs de habitos, ${techniqueLogs.length} logs de tecnicas\n`,
+      `Período de análise: ${timeframe === "week" ? "última semana" : "último mês"}`,
+      `Total de dados: ${checkIns.length} check-ins, ${impulses.length} impulsos, ${habitLogs.length} logs de hábitos, ${techniqueLogs.length} logs de técnicas\n`,
     ];
 
     // User values
     if (userValues && userValues.length > 0) {
-      parts.push(`Valores do usuario (ACT): ${userValues.join(", ")}\n`);
+      parts.push(`Valores do usuário (ACT): ${userValues.join(", ")}\n`);
     }
 
     // Check-ins with full detail
@@ -561,10 +561,10 @@ class AIService {
         let line = `  ${imp.created_at}: tipo=${imp.type} intensidade=${imp.intensity} ${imp.resisted ? "RESISTIU" : "CEDEU"}`;
         if (imp.trigger) line += ` gatilho="${imp.trigger}"`;
         if (imp.context) line += ` contexto="${imp.context}"`;
-        if (imp.emotion_before) line += ` emocao="${imp.emotion_before}"`;
-        if (imp.technique_used) line += ` tecnica="${imp.technique_used}"`;
+        if (imp.emotion_before) line += ` emoção="${imp.emotion_before}"`;
+        if (imp.technique_used) line += ` técnica="${imp.technique_used}"`;
         if (imp.technique_effectiveness !== null && imp.technique_effectiveness !== undefined) {
-          line += ` eficacia=${imp.technique_effectiveness}/5`;
+          line += ` eficácia=${imp.technique_effectiveness}/5`;
         }
         parts.push(line);
       });
@@ -576,7 +576,7 @@ class AIService {
       const minimum = habitLogs.filter((l) => l.version === "minimum").length;
       const skipped = habitLogs.filter((l) => l.version === "skipped").length;
       parts.push(
-        `\nHabitos: ${ideal} ideal, ${minimum} minimo, ${skipped} pulados`
+        `\nHábitos: ${ideal} ideal, ${minimum} mínimo, ${skipped} pulados`
       );
 
       // Per-day breakdown
@@ -597,14 +597,14 @@ class AIService {
 
     // Technique logs
     if (techniqueLogs.length > 0) {
-      parts.push("\nLogs de tecnicas:");
+      parts.push("\nLogs de técnicas:");
       techniqueLogs.forEach((tl) => {
-        let line = `  ${tl.created_at}: tecnica="${tl.technique}" contexto=${tl.context}`;
+        let line = `  ${tl.created_at}: técnica="${tl.technique}" contexto=${tl.context}`;
         if (tl.effectiveness !== null && tl.effectiveness !== undefined) {
-          line += ` eficacia=${tl.effectiveness}/5`;
+          line += ` eficácia=${tl.effectiveness}/5`;
         }
         if (tl.duration_seconds !== null && tl.duration_seconds !== undefined) {
-          line += ` duracao=${tl.duration_seconds}s`;
+          line += ` duração=${tl.duration_seconds}s`;
         }
         parts.push(line);
       });
@@ -615,7 +615,7 @@ class AIService {
 
   private buildRecoveryPrompt(input: AIRecoveryInput): string {
     const parts: string[] = [
-      `O usuario cedeu a um impulso e precisa de apoio para se recuperar.`,
+      `O usuário cedeu a um impulso e precisa de apoio para se recuperar.`,
       `\nTipo do impulso: ${input.impulseType}`,
     ];
 
@@ -626,15 +626,15 @@ class AIService {
       parts.push(`Contexto: "${input.context}"`);
     }
     if (input.emotionBefore) {
-      parts.push(`Emocao antes: "${input.emotionBefore}"`);
+      parts.push(`Emoção antes: "${input.emotionBefore}"`);
     }
     if (input.emotionAfter) {
-      parts.push(`Emocao depois: "${input.emotionAfter}"`);
+      parts.push(`Emoção depois: "${input.emotionAfter}"`);
     }
 
     // User values for ACT reconnection
     if (input.userValues && input.userValues.length > 0) {
-      parts.push(`\nValores do usuario (ACT): ${input.userValues.join(", ")}`);
+      parts.push(`\nValores do usuário (ACT): ${input.userValues.join(", ")}`);
     }
 
     // Recent impulse history for context
@@ -642,14 +642,14 @@ class AIService {
       const sameType = input.recentImpulses.filter((i) => i.type === input.impulseType);
       const resistedCount = sameType.filter((i) => i.resisted).length;
 
-      parts.push(`\nHistorico recente (mesmo tipo):`);
+      parts.push(`\nHistórico recente (mesmo tipo):`);
       parts.push(
-        `- ${sameType.length} impulsos nos ultimos 7 dias, ${resistedCount} resistidos`
+        `- ${sameType.length} impulsos nos últimos 7 dias, ${resistedCount} resistidos`
       );
 
       if (resistedCount > 0) {
         parts.push(
-          `- O usuario JA RESISTIU ${resistedCount} vezes recentemente - isso e importante para a mensagem de compaixao`
+          `- O usuário JÁ RESISTIU ${resistedCount} vezes recentemente - isso é importante para a mensagem de compaixão`
         );
       }
     }

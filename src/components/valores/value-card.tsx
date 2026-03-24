@@ -127,7 +127,7 @@ export function ValueCard({ value, onEdit, onDelete, onToggleActive }: ValueCard
               size="icon"
               onClick={handleDelete}
               onBlur={handleCancelDelete}
-              aria-label={confirmingDelete ? "Confirmar exclusao" : "Excluir valor"}
+              aria-label={confirmingDelete ? "Confirmar exclusão" : "Excluir valor"}
               className={cn(
                 "h-8 w-8",
                 confirmingDelete

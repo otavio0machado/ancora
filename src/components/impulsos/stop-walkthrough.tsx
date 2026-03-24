@@ -24,36 +24,36 @@ const STEPS: StopStep[] = [
   {
     letter: "S",
     word: "PARE",
-    instruction: "Pare o que esta fazendo. Congele.",
+    instruction: "Pare o que está fazendo. Congele.",
     detail:
-      "Nao faca nada. Nao pegue nada. Nao abra nada. Apenas pare onde esta.",
+      "Não faça nada. Não pegue nada. Não abra nada. Apenas pare onde está.",
     icon: Pause,
     duration: 5,
   },
   {
     letter: "T",
-    word: "PASSO ATRAS",
-    instruction: "De um passo atras. Respire.",
+    word: "PASSO ATRÁS",
+    instruction: "Dê um passo atrás. Respire.",
     detail:
-      "Literalmente ou mentalmente, crie distancia. Inspire pelo nariz, expire pela boca. Nao reaja automaticamente.",
+      "Literalmente ou mentalmente, crie distância. Inspire pelo nariz, expire pela boca. Não reaja automaticamente.",
     icon: ArrowLeft,
     duration: 10,
   },
   {
     letter: "O",
     word: "OBSERVE",
-    instruction: "Observe o que esta acontecendo dentro de voce.",
+    instruction: "Observe o que está acontecendo dentro de você.",
     detail:
-      "Que pensamentos estao passando? Que sensacoes no corpo? Que emocoes voce identifica? Apenas observe, sem julgar.",
+      "Que pensamentos estão passando? Que sensações no corpo? Que emoções você identifica? Apenas observe, sem julgar.",
     icon: Eye,
     duration: 10,
   },
   {
     letter: "P",
     word: "PROSSIGA",
-    instruction: "Prossiga com consciencia.",
+    instruction: "Prossiga com consciência.",
     detail:
-      "Agora escolha uma acao alinhada com seus valores, nao com o impulso. O que a pessoa que voce quer ser faria agora?",
+      "Agora escolha uma ação alinhada com seus valores, não com o impulso. O que a pessoa que você quer ser faria agora?",
     icon: Play,
     duration: 5,
   },
@@ -163,11 +163,11 @@ export function StopWalkthrough({ onComplete }: StopWalkthroughProps) {
 
       {!stepStarted ? (
         <Button size="lg" className="w-full" onClick={handleStart}>
-          Comecar - {step.word}
+          Começar - {step.word}
         </Button>
       ) : secondsLeft <= 0 ? (
         <Button size="lg" className="w-full" onClick={handleNext}>
-          {isLast ? "Concluir STOP" : "Proximo passo"}
+          {isLast ? "Concluir STOP" : "Próximo passo"}
           {!isLast && <ChevronRight size={16} strokeWidth={2} />}
         </Button>
       ) : (

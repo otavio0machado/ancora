@@ -38,7 +38,7 @@ const MOCK_IDENTITIES: Identity[] = [
     id: "id-1",
     user_id: "user-1",
     name: "Estudioso equilibrado",
-    description: "Aprender com constancia, sem perfeccionismo",
+    description: "Aprender com constância, sem perfeccionismo",
     icon: null,
     active: true,
     created_at: "2026-01-01T00:00:00Z",
@@ -49,25 +49,25 @@ const MOCK_IDENTITIES: Identity[] = [
   {
     id: "id-2",
     user_id: "user-1",
-    name: "Corpo em construcao",
+    name: "Corpo em construção",
     description: null,
     icon: null,
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 1,
-    linked_values: ["Saude", "Presenca"],
+    linked_values: ["Saúde", "Presença"],
     strength: 61,
   },
   {
     id: "id-3",
     user_id: "user-1",
-    name: "Nao fumante em construcao",
+    name: "Não fumante em construção",
     description: null,
     icon: null,
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 2,
-    linked_values: ["Saude"],
+    linked_values: ["Saúde"],
     strength: 38,
   },
 ];
@@ -81,20 +81,20 @@ const MOCK_HABITS: Habit[] = [
   },
   {
     id: "hab-2", user_id: "user-1", identity_id: "id-1", name: "Ler",
-    ideal_version: "30 paginas", minimum_version: "1 pagina",
-    common_saboteurs: ["cansaco"], frequency: "daily", custom_days: null,
+    ideal_version: "30 páginas", minimum_version: "1 página",
+    common_saboteurs: ["cansaço"], frequency: "daily", custom_days: null,
     active: true, created_at: "2026-01-01T00:00:00Z", order_index: 1,
   },
   {
     id: "hab-3", user_id: "user-1", identity_id: "id-2", name: "Treinar",
     ideal_version: "Treino completo", minimum_version: "15 min em casa",
-    common_saboteurs: ["cansaco"], frequency: "weekdays", custom_days: null,
+    common_saboteurs: ["cansaço"], frequency: "weekdays", custom_days: null,
     active: true, created_at: "2026-01-01T00:00:00Z", order_index: 0,
   },
   {
-    id: "hab-5", user_id: "user-1", identity_id: "id-3", name: "Nao fumar",
-    ideal_version: "Dia inteiro sem cigarro", minimum_version: "Nao fumar nas primeiras 4h",
-    common_saboteurs: ["cansaco"], frequency: "daily", custom_days: null,
+    id: "hab-5", user_id: "user-1", identity_id: "id-3", name: "Não fumar",
+    ideal_version: "Dia inteiro sem cigarro", minimum_version: "Não fumar nas primeiras 4h",
+    common_saboteurs: ["cansaço"], frequency: "daily", custom_days: null,
     active: true, created_at: "2026-01-01T00:00:00Z", order_index: 0,
   },
 ];
@@ -158,7 +158,7 @@ const MOCK_CHECK_INS: CheckIn[] = [
   {
     id: "ci-3", user_id: "user-1", date: "2026-03-18",
     energy: 2, mood: 2, anxiety: 5, focus: 1, impulsivity: 5,
-    notes: "Dia muito dificil", sleep_quality: 2, sleep_hours: 4, created_at: "2026-03-18T08:00:00Z",
+    notes: "Dia muito difícil", sleep_quality: 2, sleep_hours: 4, created_at: "2026-03-18T08:00:00Z",
   },
   {
     id: "ci-4", user_id: "user-1", date: "2026-03-19",
@@ -244,7 +244,7 @@ const MOCK_TECHNIQUE_LOGS: TechniqueLog[] = [
   {
     id: "tl-5", user_id: "user-1", impulse_id: null,
     technique: "grounding", context: "proactive", effectiveness: 5,
-    duration_seconds: 180, notes: "Manha de sabado", created_at: "2026-03-21T07:00:00Z",
+    duration_seconds: 180, notes: "Manhã de sábado", created_at: "2026-03-21T07:00:00Z",
   },
 ];
 
@@ -332,7 +332,7 @@ export default function SemanaPage() {
             Semana
           </h1>
           <p className="text-sm text-text-secondary leading-relaxed">
-            Olhe para tras com curiosidade, nao com julgamento.
+            Olhe para trás com curiosidade, não com julgamento.
           </p>
         </div>
 
@@ -368,7 +368,7 @@ export default function SemanaPage() {
             size="icon"
             onClick={handleNextWeek}
             disabled={!canGoForward}
-            aria-label="Proxima semana"
+            aria-label="Próxima semana"
           >
             <ChevronRight size={18} strokeWidth={1.5} />
           </Button>
@@ -378,7 +378,7 @@ export default function SemanaPage() {
         <div className="space-y-3">
           <h2 className="text-sm font-medium text-text-secondary flex items-center gap-2">
             <BarChart3 size={14} strokeWidth={1.5} />
-            Visao geral
+            Visão geral
           </h2>
           <WeekCharts
             checkIns={checkIns}
@@ -391,7 +391,7 @@ export default function SemanaPage() {
         <div className="space-y-3">
           <h2 className="text-sm font-medium text-text-secondary flex items-center gap-2">
             <Brain size={14} strokeWidth={1.5} />
-            Padroes detectados
+            Padrões detectados
           </h2>
           <PatternAnalysis
             checkIns={checkIns}

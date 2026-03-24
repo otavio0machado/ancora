@@ -155,10 +155,10 @@ export function OutcomeForm({
             )}
           >
             <p className="text-sm font-medium text-text-primary">
-              Nao dessa vez
+              Não dessa vez
             </p>
             <p className="text-xs text-text-muted mt-1">
-              Tudo bem. Registrar ja ajuda.
+              Tudo bem. Registrar já ajuda.
             </p>
           </button>
         </div>
@@ -175,11 +175,11 @@ export function OutcomeForm({
           <div className="flex items-center gap-2">
             <TrendingUp size={16} className="text-accent" strokeWidth={1.5} />
             <p className="text-sm font-medium text-text-primary">
-              Voce escolheu diferente.
+              Você escolheu diferente.
             </p>
           </div>
           <p className="text-sm text-text-secondary leading-relaxed">
-            Isso fortalece o caminho. Cada vez que voce resiste, a proxima vez fica um pouco mais facil.
+            Isso fortalece o caminho. Cada vez que você resiste, a próxima vez fica um pouco mais fácil.
           </p>
         </div>
 
@@ -187,7 +187,7 @@ export function OutcomeForm({
         {usedTechniquesList.length > 0 && (
           <div className="space-y-2">
             <label className="text-sm font-medium text-text-primary">
-              Qual tecnica mais ajudou?
+              Qual técnica mais ajudou?
             </label>
             <div className="flex flex-wrap gap-2">
               {usedTechniquesList.map((tech) => (
@@ -215,7 +215,7 @@ export function OutcomeForm({
         {bestTechnique && (
           <div className="space-y-3 animate-fade-in">
             <label className="text-sm font-medium text-text-primary">
-              Quao eficaz foi? (1-5)
+              Quão eficaz foi? (1-5)
             </label>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((rating) => (
@@ -253,7 +253,7 @@ export function OutcomeForm({
         {/* Notes */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-text-primary">
-            Observacoes{" "}
+            Observações{" "}
             <span className="font-normal text-text-muted">(opcional)</span>
           </label>
           <Textarea
@@ -282,15 +282,15 @@ export function OutcomeForm({
       <div className="space-y-6 animate-slide-up">
         <div className="rounded-xl border border-border-subtle bg-surface-sunken p-5 space-y-4">
           <p className="text-base font-medium text-text-primary">
-            Tudo bem. Isso e informacao, nao sentenca.
+            Tudo bem. Isso é informação, não sentença.
           </p>
 
           <div className="w-12 h-px bg-border-subtle" />
 
           <p className="text-sm text-text-secondary leading-relaxed">
-            Seu progresso nao e zerado. Uma recaida nao apaga dias de esforco.
-            Cada tentativa de resistir fortaleceu circuitos no seu cerebro, mesmo
-            quando nao deu certo.
+            Seu progresso não é zerado. Uma recaída não apaga dias de esforço.
+            Cada tentativa de resistir fortaleceu circuitos no seu cérebro, mesmo
+            quando não deu certo.
           </p>
 
           <MicrocopyDisplay context="impulse_gave_in" />
@@ -325,31 +325,31 @@ export function OutcomeForm({
     const recoverySteps = [
       {
         title: "O que te levou a ceder?",
-        description: "Tente identificar o que aconteceu. Nao para se culpar, mas para entender.",
+        description: "Tente identificar o que aconteceu. Não para se culpar, mas para entender.",
         value: triggerAnalysis,
         setter: setTriggerAnalysis,
-        placeholder: "O que voce acha que levou a essa escolha?",
+        placeholder: "O que você acha que levou a essa escolha?",
       },
       {
         title: "O que pode fazer diferente?",
-        description: "Pense em uma coisa - so uma - que poderia tentar da proxima vez.",
+        description: "Pense em uma coisa - só uma - que poderia tentar da próxima vez.",
         value: whatToDoDifferently,
         setter: setWhatToDoDifferently,
-        placeholder: "Uma coisa que posso tentar na proxima vez...",
+        placeholder: "Uma coisa que posso tentar na próxima vez...",
       },
       {
         title: "Escreva algo gentil para si",
-        description: "O que voce diria a um amigo nessa situacao? Diga a si mesmo.",
+        description: "O que você diria a um amigo nessa situação? Diga a si mesmo.",
         value: selfCompassionNote,
         setter: setSelfCompassionNote,
-        placeholder: "Voce fez o melhor que podia naquele momento...",
+        placeholder: "Você fez o melhor que podia naquele momento...",
       },
       {
-        title: "Qual e uma acao pequena para retomar?",
-        description: "Algo simples que voce pode fazer agora para se reconectar consigo.",
+        title: "Qual é uma ação pequena para retomar?",
+        description: "Algo simples que você pode fazer agora para se reconectar consigo.",
         value: returnAction,
         setter: setReturnAction,
-        placeholder: "Beber agua, caminhar, respirar, ligar para alguem...",
+        placeholder: "Beber água, caminhar, respirar, ligar para alguém...",
       },
     ];
 
@@ -399,7 +399,7 @@ export function OutcomeForm({
               ? isSubmitting
                 ? "Salvando..."
                 : "Salvar e seguir em frente"
-              : "Proximo"
+              : "Próximo"
             }
             {!isLastRecoveryStep && <ChevronRight size={16} strokeWidth={2} />}
           </Button>

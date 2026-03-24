@@ -143,7 +143,7 @@ export function HabitItem({
           </span>
           {isCompleted && (
             <Badge variant="success" className="flex-shrink-0 text-[10px]">
-              {completedVersion === "ideal" ? "Ideal" : "Minimo"}
+              {completedVersion === "ideal" ? "Ideal" : "Mínimo"}
             </Badge>
           )}
           {expanded ? (
@@ -170,7 +170,7 @@ export function HabitItem({
               onClick={() => onLogVersion(habit.id, "minimum")}
               className="text-xs h-7 px-2.5"
             >
-              Minimo
+              Mínimo
             </Button>
           </div>
         )}
@@ -185,7 +185,7 @@ export function HabitItem({
         )}
         {consistencyRate > 0 && (
           <span className="text-[10px] text-text-muted">
-            {consistencyRate}% nos ultimos 30 dias
+            {consistencyRate}% nos últimos 30 dias
           </span>
         )}
       </div>
@@ -193,7 +193,7 @@ export function HabitItem({
       {/* ACT message for minimum completion */}
       {completedVersion === "minimum" && (
         <p className="text-[10px] text-accent mt-1.5 italic leading-relaxed">
-          O minimo hoje E o maximo. Consistencia &gt; perfeicao.
+          O mínimo hoje É o máximo. Consistência &gt; perfeição.
         </p>
       )}
 
@@ -216,7 +216,7 @@ export function HabitItem({
         <div className="mt-3 pt-3 border-t border-border-subtle space-y-2">
           <div>
             <p className="text-[11px] font-medium text-text-muted uppercase tracking-wider">
-              Versao ideal
+              Versão ideal
             </p>
             <p className="text-sm text-text-secondary mt-0.5">
               {habit.ideal_version}
@@ -224,7 +224,7 @@ export function HabitItem({
           </div>
           <div>
             <p className="text-[11px] font-medium text-text-muted uppercase tracking-wider">
-              Versao minima
+              Versão mínima
             </p>
             <p className="text-sm text-text-secondary mt-0.5">
               {habit.minimum_version}
@@ -233,11 +233,11 @@ export function HabitItem({
           {habit.frequency !== "daily" && (
             <div>
               <p className="text-[11px] font-medium text-text-muted uppercase tracking-wider">
-                Frequencia
+                Frequência
               </p>
               <p className="text-sm text-text-secondary mt-0.5">
                 {habit.frequency === "weekdays"
-                  ? "Dias uteis"
+                  ? "Dias úteis"
                   : "Personalizado"}
               </p>
             </div>
@@ -247,10 +247,10 @@ export function HabitItem({
           {consistencyRate > 0 && (
             <div>
               <p className="text-[11px] font-medium text-text-muted uppercase tracking-wider">
-                Taxa de versao ideal
+                Taxa de versão ideal
               </p>
               <p className="text-sm text-text-secondary mt-0.5">
-                {bestVersionRate}% das vezes que completou, foi na versao ideal
+                {bestVersionRate}% das vezes que completou, foi na versão ideal
               </p>
             </div>
           )}

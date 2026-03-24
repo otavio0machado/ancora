@@ -181,10 +181,10 @@ const MOCK_LOGS = generateMockLogs();
 // Mock user values
 const MOCK_USER_VALUES = [
   { id: "val-1", name: "Crescimento" },
-  { id: "val-2", name: "Saude" },
+  { id: "val-2", name: "Saúde" },
   { id: "val-3", name: "Conhecimento" },
-  { id: "val-4", name: "Conexao" },
-  { id: "val-5", name: "Presenca" },
+  { id: "val-4", name: "Conexão" },
+  { id: "val-5", name: "Presença" },
 ];
 
 const MOCK_IDENTITIES: Identity[] = [
@@ -192,7 +192,7 @@ const MOCK_IDENTITIES: Identity[] = [
     id: "id-1",
     user_id: "user-1",
     name: "Estudioso equilibrado",
-    description: "Aprender com constancia, sem perfeccionismo",
+    description: "Aprender com constância, sem perfeccionismo",
     icon: null,
     active: true,
     created_at: "2026-01-01T00:00:00Z",
@@ -203,25 +203,25 @@ const MOCK_IDENTITIES: Identity[] = [
   {
     id: "id-2",
     user_id: "user-1",
-    name: "Corpo em construcao",
+    name: "Corpo em construção",
     description: "Cuidar do corpo com respeito e regularidade",
     icon: null,
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 1,
-    linked_values: ["Saude", "Presenca"],
+    linked_values: ["Saúde", "Presença"],
     strength: 61,
   },
   {
     id: "id-3",
     user_id: "user-1",
-    name: "Nao fumante em construcao",
+    name: "Não fumante em construção",
     description: null,
     icon: null,
     active: true,
     created_at: "2026-01-01T00:00:00Z",
     order_index: 2,
-    linked_values: ["Saude"],
+    linked_values: ["Saúde"],
     strength: 38,
   },
 ];
@@ -246,9 +246,9 @@ const MOCK_HABITS: Habit[] = [
     user_id: "user-1",
     identity_id: "id-1",
     name: "Ler",
-    ideal_version: "30 paginas",
-    minimum_version: "1 pagina",
-    common_saboteurs: ["cansaco", "procrastinacao"],
+    ideal_version: "30 páginas",
+    minimum_version: "1 página",
+    common_saboteurs: ["cansaço", "procrastinação"],
     frequency: "daily",
     custom_days: null,
     active: true,
@@ -261,8 +261,8 @@ const MOCK_HABITS: Habit[] = [
     identity_id: "id-2",
     name: "Treinar",
     ideal_version: "Treino completo na academia",
-    minimum_version: "15 min de exercicio em casa",
-    common_saboteurs: ["cansaco", "tudo-ou-nada"],
+    minimum_version: "15 min de exercício em casa",
+    common_saboteurs: ["cansaço", "tudo-ou-nada"],
     frequency: "weekdays",
     custom_days: null,
     active: true,
@@ -276,7 +276,7 @@ const MOCK_HABITS: Habit[] = [
     name: "Skincare",
     ideal_version: "Rotina completa",
     minimum_version: "Lavar o rosto",
-    common_saboteurs: ["procrastinacao"],
+    common_saboteurs: ["procrastinação"],
     frequency: "daily",
     custom_days: null,
     active: true,
@@ -287,10 +287,10 @@ const MOCK_HABITS: Habit[] = [
     id: "hab-5",
     user_id: "user-1",
     identity_id: "id-3",
-    name: "Nao fumar",
+    name: "Não fumar",
     ideal_version: "Dia inteiro sem cigarro",
-    minimum_version: "Nao fumar nas primeiras 4h",
-    common_saboteurs: ["cansaco", "comparacao"],
+    minimum_version: "Não fumar nas primeiras 4h",
+    common_saboteurs: ["cansaço", "comparação"],
     frequency: "daily",
     custom_days: null,
     active: true,
@@ -385,11 +385,11 @@ export default function IdentidadePage() {
         <div className="flex items-center gap-2">
           <Fingerprint className="w-5 h-5 text-accent" />
           <h1 className="text-xl font-semibold text-text-primary">
-            Quem voce esta construindo
+            Quem você está construindo
           </h1>
         </div>
         <p className="text-sm text-text-secondary leading-relaxed">
-          Suas identidades sao construidas acao por acao, nao pela perfeicao.
+          Suas identidades são construídas ação por ação, não pela perfeição.
         </p>
       </div>
 

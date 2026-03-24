@@ -63,11 +63,11 @@ function DimensionBar({ label, icon, value, reverse }: DimensionBarProps) {
 
 function getSleepQualityLabel(quality: number): string {
   switch (quality) {
-    case 1: return "Pessimo";
+    case 1: return "Péssimo";
     case 2: return "Ruim";
     case 3: return "Regular";
     case 4: return "Bom";
-    case 5: return "Otimo";
+    case 5: return "Ótimo";
     default: return "N/A";
   }
 }
@@ -127,7 +127,7 @@ export function DayOverview({
   return (
     <Card className="animate-slide-up">
       <CardHeader>
-        <CardTitle>Visao do dia</CardTitle>
+        <CardTitle>Visão do dia</CardTitle>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-6">
@@ -181,7 +181,7 @@ export function DayOverview({
                 >
                   <AlertTriangle size={13} className="text-warning flex-shrink-0" strokeWidth={1.5} />
                   <p className="text-xs text-text-secondary leading-relaxed">
-                    {recentImpulseCount} impulso{recentImpulseCount !== 1 ? "s" : ""} recente{recentImpulseCount !== 1 ? "s" : ""} registrado{recentImpulseCount !== 1 ? "s" : ""}. Atencao extra hoje.
+                    {recentImpulseCount} impulso{recentImpulseCount !== 1 ? "s" : ""} recente{recentImpulseCount !== 1 ? "s" : ""} registrado{recentImpulseCount !== 1 ? "s" : ""}. Atenção extra hoje.
                   </p>
                 </div>
               )}
@@ -195,7 +195,7 @@ export function DayOverview({
                 >
                   <AlertTriangle size={13} className="text-text-muted flex-shrink-0" strokeWidth={1.5} />
                   <p className="text-xs text-text-muted leading-relaxed">
-                    {riskyTimeDescription || "Horario historicamente mais vulneravel. Esteja atento."}
+                    {riskyTimeDescription || "Horário historicamente mais vulnerável. Esteja atento."}
                   </p>
                 </div>
               )}
@@ -220,7 +220,7 @@ export function DayOverview({
                 <Heart size={13} className="text-accent flex-shrink-0" strokeWidth={1.5} />
               )}
               <p className="text-xs text-accent leading-relaxed">
-                Hoje esta alinhado com: <span className="font-semibold">{alignedValueName}</span>
+                Hoje está alinhado com: <span className="font-semibold">{alignedValueName}</span>
               </p>
             </div>
             <div className="h-px bg-border-subtle" />
@@ -270,7 +270,7 @@ export function DayOverview({
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-              Habitos
+              Hábitos
             </p>
             <span className="text-xs text-text-muted tabular-nums">
               {habitsCompleted}/{habitsTotal}
@@ -280,7 +280,7 @@ export function DayOverview({
             <Progress value={habitsPercentage} />
           ) : (
             <p className="text-xs text-text-muted">
-              Nenhum habito configurado para hoje.
+              Nenhum hábito configurado para hoje.
             </p>
           )}
         </div>
@@ -304,7 +304,7 @@ export function DayOverview({
           ) : focusStatus === "completed" ? (
             <div className="flex items-center gap-2">
               <span className="text-sm text-text-secondary">
-                Sessao concluida
+                Sessão concluída
               </span>
               <Badge variant="success" className="ml-auto">
                 Feito
@@ -312,7 +312,7 @@ export function DayOverview({
             </div>
           ) : (
             <p className="text-xs text-text-muted">
-              Nenhuma sessao de foco ativa.
+              Nenhuma sessão de foco ativa.
             </p>
           )}
         </div>
@@ -323,7 +323,7 @@ export function DayOverview({
             <div className="h-px bg-border-subtle" />
             <div className="flex flex-col gap-1">
               <p className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-                Suas anotacoes
+                Suas anotações
               </p>
               <p className="text-sm text-text-secondary leading-relaxed">
                 {todayCheckIn.notes}

@@ -35,7 +35,7 @@ export function useMicrocopy(
         setMessage(fallback.message);
         setTone(fallback.tone);
       } catch {
-        setMessage("Voce esta aqui. Isso importa.");
+        setMessage("Você está aqui. Isso importa.");
         setTone("gentle");
       } finally {
         setIsLoading(false);

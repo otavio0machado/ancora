@@ -304,7 +304,7 @@ export function WeekCharts({
         <CardContent className="pt-4">
           {!hasRealData && (
             <p className="text-[10px] text-text-muted mb-2">
-              Dados de demonstracao
+              Dados de demonstração
             </p>
           )}
           <div className="h-48 -ml-2">
@@ -483,7 +483,7 @@ export function WeekCharts({
           {/* Correlation note */}
           {Object.keys(impulseByDay).length > 0 && (
             <p className="text-[10px] text-text-muted mt-1">
-              Circulos indicam dias com impulsos registrados
+              Círculos indicam dias com impulsos registrados
             </p>
           )}
         </CardContent>
@@ -493,7 +493,7 @@ export function WeekCharts({
       {habitCompletionRate !== undefined && (
         <Card className="border-border-subtle">
           <CardHeader className="pb-0">
-            <CardTitle className="text-sm">Habitos concluidos</CardTitle>
+            <CardTitle className="text-sm">Hábitos concluídos</CardTitle>
           </CardHeader>
           <CardContent className="pt-4">
             <div className="flex items-center gap-4">
@@ -527,8 +527,8 @@ export function WeekCharts({
                 {habitCompletionRate >= 70
                   ? "Semana consistente. Isso importa."
                   : habitCompletionRate >= 40
-                    ? "Alguns dias foram mais dificeis, e tudo bem."
-                    : "Semana de desafios. O que voce pode ajustar?"}
+                    ? "Alguns dias foram mais difíceis, e tudo bem."
+                    : "Semana de desafios. O que você pode ajustar?"}
               </p>
             </div>
           </CardContent>
@@ -587,7 +587,7 @@ const IMPULSE_TYPE_LABELS: Record<string, string> = {
   smoking: "Cigarro",
   social_media: "Redes",
   pornography: "Porn.",
-  binge_eating: "Compulsao",
+  binge_eating: "Compulsão",
   substance: "Subst.",
   other: "Outro",
 };

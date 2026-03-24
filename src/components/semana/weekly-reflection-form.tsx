@@ -69,7 +69,7 @@ export function WeeklyReflectionForm({
       <CardHeader>
         <CardTitle className="text-sm flex items-center gap-2">
           <PenLine size={14} strokeWidth={1.5} className="text-text-muted" />
-          Reflexao guiada
+          Reflexão guiada
         </CardTitle>
         <p className="text-xs text-text-muted leading-relaxed mt-1">
           Perguntas baseadas em ACT para conectar com o que importa.
@@ -84,7 +84,7 @@ export function WeeklyReflectionForm({
           <Textarea
             value={closerToValues}
             onChange={(e) => setCloserToValues(e.target.value)}
-            placeholder="Acoes, momentos ou decisoes que refletiram seus valores..."
+            placeholder="Ações, momentos ou decisões que refletiram seus valores..."
             rows={3}
           />
         </div>
@@ -97,7 +97,7 @@ export function WeeklyReflectionForm({
           <Textarea
             value={awayFromValues}
             onChange={(e) => setAwayFromValues(e.target.value)}
-            placeholder="Padroes, sabotadores ou momentos de desregulacao..."
+            placeholder="Padrões, sabotadores ou momentos de desregulação..."
             rows={3}
           />
         </div>
@@ -105,15 +105,15 @@ export function WeeklyReflectionForm({
         {/* Q3: Proud regulation moment */}
         <div className="space-y-2">
           <Label className="text-sm leading-relaxed">
-            Qual momento de regulacao te orgulhou?
+            Qual momento de regulação te orgulhou?
           </Label>
           <p className="text-[10px] text-text-muted italic">
-            Celebre a regulacao, nao a conquista.
+            Celebre a regulação, não a conquista.
           </p>
           <Textarea
             value={proudMoment}
             onChange={(e) => setProudMoment(e.target.value)}
-            placeholder="Um momento em que voce se regulou mesmo sendo dificil..."
+            placeholder="Um momento em que você se regulou mesmo sendo difícil..."
             rows={3}
           />
         </div>
@@ -121,12 +121,12 @@ export function WeeklyReflectionForm({
         {/* Q4: Adjustments (max 2) */}
         <div className="space-y-2">
           <Label className="text-sm leading-relaxed">
-            O que quer ajustar na proxima semana?
+            O que quer ajustar na próxima semana?
           </Label>
           <div className="flex items-start gap-1.5 mb-2">
             <Info size={12} className="text-accent flex-shrink-0 mt-0.5" />
             <p className="text-[10px] text-accent">
-              Maximo 2 ajustes. Menos mudancas = mais chance de acontecerem.
+              Máximo 2 ajustes. Menos mudanças = mais chance de acontecerem.
             </p>
           </div>
           <div className="space-y-2">
@@ -160,7 +160,7 @@ export function WeeklyReflectionForm({
           ) : isSaving ? (
             "Salvando..."
           ) : (
-            "Salvar reflexao"
+            "Salvar reflexão"
           )}
         </Button>
       </CardContent>

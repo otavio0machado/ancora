@@ -42,19 +42,19 @@ export const BUILTIN_TECHNIQUES: Technique[] = [
     id: "tip",
     name: "TIP (Temperatura)",
     shortInstruction:
-      "Mergulhe o rosto em agua gelada por 30s ou segure gelo nas maos",
+      "Mergulhe o rosto em água gelada por 30s ou segure gelo nas mãos",
     fullInstruction:
-      "A mudanca brusca de temperatura ativa o reflexo de mergulho, desacelerando os batimentos cardiacos e acalmando o sistema nervoso. Segure gelo nas maos, coloque agua gelada no rosto, ou segure um pano frio no pescoco por pelo menos 30 segundos. Respire devagar enquanto faz isso.",
+      "A mudança brusca de temperatura ativa o reflexo de mergulho, desacelerando os batimentos cardíacos e acalmando o sistema nervoso. Segure gelo nas mãos, coloque água gelada no rosto, ou segure um pano frio no pescoço por pelo menos 30 segundos. Respire devagar enquanto faz isso.",
     icon: "snowflake",
     hasPractice: true,
     practiceType: "breathing",
   },
   {
     id: "breathing",
-    name: "Respiracao 4-7-8",
+    name: "Respiração 4-7-8",
     shortInstruction: "Inspire 4s, segure 7s, expire 8s",
     fullInstruction:
-      "Inspire pelo nariz contando ate 4. Segure o ar contando ate 7. Expire pela boca lentamente contando ate 8. A expiracao longa ativa o sistema parassimpatico, reduzindo a ativacao do impulso. Repita pelo menos 3 ciclos.",
+      "Inspire pelo nariz contando até 4. Segure o ar contando até 7. Expire pela boca lentamente contando até 8. A expiração longa ativa o sistema parassimpático, reduzindo a ativação do impulso. Repita pelo menos 3 ciclos.",
     icon: "wind",
     hasPractice: true,
     practiceType: "breathing",
@@ -63,9 +63,9 @@ export const BUILTIN_TECHNIQUES: Technique[] = [
     id: "grounding",
     name: "Grounding 5-4-3-2-1",
     shortInstruction:
-      "5 coisas que ve, 4 que toca, 3 que ouve, 2 que cheira, 1 que saboreia",
+      "5 coisas que vê, 4 que toca, 3 que ouve, 2 que cheira, 1 que saboreia",
     fullInstruction:
-      "Olhe ao redor e nomeie: 5 coisas que voce VE (detalhes de cor, forma). 4 coisas que voce pode TOCAR (textura, temperatura). 3 coisas que voce OUVE (sons proximos e distantes). 2 coisas que voce CHEIRA. 1 coisa que voce pode SABOREAR. Isso ancora voce no presente e tira o foco do impulso.",
+      "Olhe ao redor e nomeie: 5 coisas que você VÊ (detalhes de cor, forma). 4 coisas que você pode TOCAR (textura, temperatura). 3 coisas que você OUVE (sons próximos e distantes). 2 coisas que você CHEIRA. 1 coisa que você pode SABOREAR. Isso ancora você no presente e tira o foco do impulso.",
     icon: "eye",
     hasPractice: true,
     practiceType: "grounding",
@@ -74,30 +74,30 @@ export const BUILTIN_TECHNIQUES: Technique[] = [
     id: "stop",
     name: "STOP",
     shortInstruction:
-      "Pare. De um passo atras. Observe. Prossiga com consciencia",
+      "Pare. Dê um passo atrás. Observe. Prossiga com consciência",
     fullInstruction:
-      "S - PARE o que esta fazendo. Congele. T - de um PASSO ATRAS. Respire. Nao reaja automaticamente. O - OBSERVE o que esta acontecendo dentro de voce (pensamentos, sensacoes, emocoes) e ao redor. P - PROSSIGA com consciencia. Escolha uma acao alinhada com seus valores, nao com o impulso.",
+      "S - PARE o que está fazendo. Congele. T - dê um PASSO ATRÁS. Respire. Não reaja automaticamente. O - OBSERVE o que está acontecendo dentro de você (pensamentos, sensações, emoções) e ao redor. P - PROSSIGA com consciência. Escolha uma ação alinhada com seus valores, não com o impulso.",
     icon: "hand",
     hasPractice: true,
     practiceType: "stop_walkthrough",
   },
   {
     id: "opposite_action",
-    name: "Acao oposta",
-    shortInstruction: "Faca o oposto do que o impulso pede",
+    name: "Ação oposta",
+    shortInstruction: "Faça o oposto do que o impulso pede",
     fullInstruction:
-      "Identifique o que o impulso esta pedindo (ficar parado, se isolar, consumir algo). Agora faca o OPOSTO: se o impulso pede isolamento, va ate alguem. Se pede passividade, mova o corpo. Se pede consumo, faca algo com as maos. A acao oposta interrompe o ciclo automatico do impulso.",
+      "Identifique o que o impulso está pedindo (ficar parado, se isolar, consumir algo). Agora faça o OPOSTO: se o impulso pede isolamento, vá até alguém. Se pede passividade, mova o corpo. Se pede consumo, faça algo com as mãos. A ação oposta interrompe o ciclo automático do impulso.",
     icon: "arrowLeftRight",
     hasPractice: true,
     practiceType: "opposite_action",
   },
   {
     id: "environment_change",
-    name: "Mudanca de ambiente",
+    name: "Mudança de ambiente",
     shortInstruction:
-      "Levante e mude de comodo ou saia do ambiente",
+      "Levante e mude de cômodo ou saia do ambiente",
     fullInstruction:
-      "Mude fisicamente de lugar. Saia do comodo, va para outro andar, saia de casa se possivel. A mudanca de contexto fisico interrompe a associacao entre o ambiente e o impulso. Mesmo uma mudanca pequena (mudar de cadeira, ir ate a janela) ja altera o estado interno.",
+      "Mude fisicamente de lugar. Saia do cômodo, vá para outro andar, saia de casa se possível. A mudança de contexto físico interrompe a associação entre o ambiente e o impulso. Mesmo uma mudança pequena (mudar de cadeira, ir até a janela) já altera o estado interno.",
     icon: "doorOpen",
     hasPractice: false,
   },
@@ -107,7 +107,7 @@ export const BUILTIN_TECHNIQUES: Technique[] = [
     shortInstruction:
       "Comprometa-se a esperar 10 minutos antes de decidir",
     fullInstruction:
-      "A maioria dos impulsos perde forca em 10-15 minutos. Prometa a si mesmo: 'Vou esperar 10 minutos e reavaliar.' Use esse tempo para fazer qualquer outra coisa. Se depois de 10 minutos ainda quiser, voce decide conscientemente.",
+      "A maioria dos impulsos perde força em 10-15 minutos. Prometa a si mesmo: 'Vou esperar 10 minutos e reavaliar.' Use esse tempo para fazer qualquer outra coisa. Se depois de 10 minutos ainda quiser, você decide conscientemente.",
     icon: "timer",
     hasPractice: true,
     practiceType: "timer",

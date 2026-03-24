@@ -185,7 +185,7 @@ function IdentityWeekCard({
               <span>{stats.idealCount} ideal</span>
             )}
             {stats.minimumCount > 0 && (
-              <span>{stats.minimumCount} minimo</span>
+              <span>{stats.minimumCount} mínimo</span>
             )}
             {stats.skippedCount > 0 && (
               <span>{stats.skippedCount} pulado</span>

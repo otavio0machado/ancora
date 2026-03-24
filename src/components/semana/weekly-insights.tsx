@@ -22,27 +22,27 @@ import type { AIWeeklyOutput } from "@/types/ai";
 
 const FALLBACK_INSIGHTS: AIWeeklyOutput = {
   patterns: [
-    "Observe seus check-ins ao longo da semana: ha dias em que a energia cai consistentemente?",
-    "Preste atencao ao que muda entre dias bons e dificeis.",
+    "Observe seus check-ins ao longo da semana: há dias em que a energia cai consistentemente?",
+    "Preste atenção ao que muda entre dias bons e difíceis.",
   ],
   triggers: [
-    "Identifique momentos em que impulsos ou desregulacao aparecem. Sao sempre nos mesmos horarios ou contextos?",
+    "Identifique momentos em que impulsos ou desregulação aparecem. São sempre nos mesmos horários ou contextos?",
   ],
   adjustments: [
-    "Se a semana foi pesada, considere reduzir expectativas para a proxima.",
-    "Versao minima existe por um motivo: use-a sem culpa nos dias mais dificeis.",
+    "Se a semana foi pesada, considere reduzir expectativas para a próxima.",
+    "Versão mínima existe por um motivo: use-a sem culpa nos dias mais difíceis.",
   ],
   wins: [
-    "Voce esteve presente. Registrar e refletir ja sao conquistas.",
+    "Você esteve presente. Registrar e refletir já são conquistas.",
   ],
   weekSummary:
     "Gere os insights com os dados da sua semana para uma leitura mais personalizada.",
   techniqueEffectiveness:
-    "Respiracao 4-7-8 e a tecnica mais usada com efetividade media de 4/5.",
+    "Respiração 4-7-8 é a técnica mais usada com efetividade média de 4/5.",
   valueAlignment:
-    "Suas acoes esta semana estiveram mais alinhadas com o valor de Saude.",
+    "Suas ações esta semana estiveram mais alinhadas com o valor de Saúde.",
   trajectoryInsight:
-    "Comparando com as ultimas 4 semanas, sua taxa de resistencia a impulsos esta melhorando (+8%).",
+    "Comparando com as últimas 4 semanas, sua taxa de resistência a impulsos está melhorando (+8%).",
 };
 
 // --------------- Component ---------------
@@ -188,7 +188,7 @@ export function WeeklyInsights({ weekStart, className }: WeeklyInsightsProps) {
           {data.patterns.length > 0 && (
             <InsightSection
               icon={<TrendingUp size={14} strokeWidth={1.5} />}
-              title="Padroes"
+              title="Padrões"
               items={data.patterns}
               badgeVariant="default"
             />

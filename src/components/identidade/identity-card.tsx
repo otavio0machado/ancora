@@ -194,7 +194,7 @@ export function IdentityCard({
       <CardContent className="p-0 space-y-2">
         {habits.length === 0 ? (
           <p className="text-sm text-text-muted py-2">
-            Nenhum habito adicionado ainda.
+            Nenhum hábito adicionado ainda.
           </p>
         ) : (
           habits.map((habit) => {

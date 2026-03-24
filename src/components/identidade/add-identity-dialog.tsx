@@ -65,7 +65,7 @@ export function AddIdentityDialog({
         <DialogHeader>
           <DialogTitle>Nova identidade</DialogTitle>
           <DialogDescription>
-            Quem voce quer se tornar? Defina uma identidade que represente seus
+            Quem você quer se tornar? Defina uma identidade que represente seus
             valores.
           </DialogDescription>
         </DialogHeader>
@@ -90,12 +90,12 @@ export function AddIdentityDialog({
               htmlFor="identity-description"
               className="text-sm font-medium text-text-primary"
             >
-              Descricao{" "}
+              Descrição{" "}
               <span className="text-text-muted font-normal">(opcional)</span>
             </label>
             <Input
               id="identity-description"
-              placeholder="Uma breve descricao dessa identidade..."
+              placeholder="Uma breve descrição dessa identidade..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
@@ -111,7 +111,7 @@ export function AddIdentityDialog({
               <>
                 <p className="text-xs text-text-muted">
                   Conecte essa identidade aos seus valores para entender como
-                  cada acao te aproxima do que importa.
+                  cada ação te aproxima do que importa.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {availableValues.map((value) => {
@@ -147,7 +147,7 @@ export function AddIdentityDialog({
               </>
             ) : (
               <p className="text-xs text-text-muted italic">
-                Defina seus valores primeiro em Valores para conecta-los aqui.
+                Defina seus valores primeiro em Valores para conectá-los aqui.
               </p>
             )}
           </div>

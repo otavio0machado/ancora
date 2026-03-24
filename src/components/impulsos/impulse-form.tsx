@@ -21,13 +21,13 @@ import type { Impulse } from "@/types/database";
 
 const EMOTIONS = [
   { value: "ansiedade", label: "Ansiedade", color: "bg-amber-50 border-amber-200 text-amber-800" },
-  { value: "tedio", label: "Tedio", color: "bg-slate-50 border-slate-200 text-slate-700" },
-  { value: "solidao", label: "Solidao", color: "bg-blue-50 border-blue-200 text-blue-800" },
+  { value: "tedio", label: "Tédio", color: "bg-slate-50 border-slate-200 text-slate-700" },
+  { value: "solidao", label: "Solidão", color: "bg-blue-50 border-blue-200 text-blue-800" },
   { value: "raiva", label: "Raiva", color: "bg-rose-50 border-rose-200 text-rose-800" },
   { value: "tristeza", label: "Tristeza", color: "bg-indigo-50 border-indigo-200 text-indigo-800" },
-  { value: "cansaco", label: "Cansaco", color: "bg-stone-50 border-stone-200 text-stone-700" },
+  { value: "cansaco", label: "Cansaço", color: "bg-stone-50 border-stone-200 text-stone-700" },
   { value: "estresse", label: "Estresse", color: "bg-orange-50 border-orange-200 text-orange-800" },
-  { value: "frustracao", label: "Frustracao", color: "bg-red-50 border-red-200 text-red-700" },
+  { value: "frustracao", label: "Frustração", color: "bg-red-50 border-red-200 text-red-700" },
 ] as const;
 
 const IMPULSE_TYPES: {
@@ -38,8 +38,8 @@ const IMPULSE_TYPES: {
   { value: "smoking", label: "Cigarro", icon: Cigarette },
   { value: "social_media", label: "Redes sociais", icon: Smartphone },
   { value: "pornography", label: "Pornografia", icon: EyeOff },
-  { value: "binge_eating", label: "Compulsao alimentar", icon: UtensilsCrossed },
-  { value: "substance", label: "Substancia", icon: Pill },
+  { value: "binge_eating", label: "Compulsão alimentar", icon: UtensilsCrossed },
+  { value: "substance", label: "Substância", icon: Pill },
   { value: "other", label: "Outro", icon: HelpCircle },
 ];
 
@@ -112,9 +112,9 @@ export function ImpulseForm({ onSubmit, onCancel, isSubmitting = false }: Impuls
   const intensityLabel = () => {
     if (intensity <= 2) return "Fraco (posso ignorar)";
     if (intensity <= 4) return "Leve (incomoda, mas controlo)";
-    if (intensity <= 6) return "Moderado (exige esforco)";
-    if (intensity <= 8) return "Forte (dificil resistir)";
-    return "Muito forte (dificil resistir)";
+    if (intensity <= 6) return "Moderado (exige esforço)";
+    if (intensity <= 8) return "Forte (difícil resistir)";
+    return "Muito forte (difícil resistir)";
   };
 
   const intensityColor = () => {
@@ -164,10 +164,10 @@ export function ImpulseForm({ onSubmit, onCancel, isSubmitting = false }: Impuls
           <div className="space-y-5">
             <div className="space-y-1">
               <h2 className="text-lg font-semibold text-text-primary">
-                O que voce esta sentindo agora?
+                O que você está sentindo agora?
               </h2>
               <p className="text-sm text-text-muted">
-                Nomeie a emocao. Sem pressa.
+                Nomeie a emoção. Sem pressa.
               </p>
             </div>
 
@@ -201,7 +201,7 @@ export function ImpulseForm({ onSubmit, onCancel, isSubmitting = false }: Impuls
           <div className="space-y-5">
             <div className="space-y-1">
               <h2 className="text-lg font-semibold text-text-primary">
-                Qual impulso esta sentindo?
+                Qual impulso está sentindo?
               </h2>
               <p className="text-sm text-text-muted">
                 Identifique o impulso.
@@ -250,7 +250,7 @@ export function ImpulseForm({ onSubmit, onCancel, isSubmitting = false }: Impuls
                 Qual a intensidade?
               </h2>
               <p className="text-sm text-text-muted">
-                De 1 a 10, o quanto esse impulso esta forte agora.
+                De 1 a 10, o quanto esse impulso está forte agora.
               </p>
             </div>
 
@@ -303,7 +303,7 @@ export function ImpulseForm({ onSubmit, onCancel, isSubmitting = false }: Impuls
                 Contexto
               </h2>
               <p className="text-sm text-text-muted">
-                Opcional, mas ajuda a entender padroes.
+                Opcional, mas ajuda a entender padrões.
               </p>
             </div>
 

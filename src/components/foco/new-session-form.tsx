@@ -37,9 +37,9 @@ export function NewSessionForm({ onStart }: NewSessionFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nova sessao de foco</CardTitle>
+        <CardTitle>Nova sessão de foco</CardTitle>
         <CardDescription>
-          O que voce quer trabalhar agora?
+          O que você quer trabalhar agora?
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -54,7 +54,7 @@ export function NewSessionForm({ onStart }: NewSessionFormProps) {
             </label>
             <Input
               id="focus-objective"
-              placeholder="Ex: Revisar capitulo 3 de estatistica"
+              placeholder="Ex: Revisar capítulo 3 de estatística"
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
               autoFocus
@@ -64,7 +64,7 @@ export function NewSessionForm({ onStart }: NewSessionFormProps) {
           {/* Duration */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-text-primary">
-              Duracao
+              Duração
             </label>
             <div className="grid grid-cols-4 gap-2">
               {DURATION_OPTIONS.map((option) => (
@@ -95,7 +95,7 @@ export function NewSessionForm({ onStart }: NewSessionFormProps) {
             disabled={!objective.trim()}
           >
             <Play className="w-4 h-4" />
-            Iniciar sessao
+            Iniciar sessão
           </Button>
         </form>
       </CardContent>

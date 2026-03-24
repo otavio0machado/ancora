@@ -24,7 +24,7 @@ interface SessionReviewProps {
 const FOCUS_LABELS = [
   "Muito disperso",
   "Disperso",
-  "Razoavel",
+  "Razoável",
   "Focado",
   "Muito focado",
 ];
@@ -50,7 +50,7 @@ export function SessionReview({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Como foi a sessao?</CardTitle>
+        <CardTitle>Como foi a sessão?</CardTitle>
         <CardDescription>
           {objective} &middot; {durationMinutes} min
         </CardDescription>
@@ -91,7 +91,7 @@ export function SessionReview({
               htmlFor="session-progress"
               className="text-sm font-medium text-text-primary"
             >
-              O que voce avancou?
+              O que você avançou?
             </label>
             <textarea
               id="session-progress"
@@ -116,12 +116,12 @@ export function SessionReview({
               htmlFor="session-notes"
               className="text-sm font-medium text-text-primary"
             >
-              Observacoes{" "}
+              Observações{" "}
               <span className="text-text-muted font-normal">(opcional)</span>
             </label>
             <textarea
               id="session-notes"
-              placeholder="Algo que queira registrar sobre a sessao..."
+              placeholder="Algo que queira registrar sobre a sessão..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
@@ -138,7 +138,7 @@ export function SessionReview({
 
           {/* Save */}
           <Button type="submit" size="lg" className="w-full">
-            Salvar reflexao
+            Salvar reflexão
           </Button>
         </form>
       </CardContent>

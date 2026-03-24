@@ -31,14 +31,14 @@ function getRiskContent(risk: OverloadRisk["risk"]) {
     case "high":
       return {
         title: "Sobrecarga detectada",
-        message: "Apenas 1 prioridade hoje. Cuide do basico. Voce nao precisa dar conta de tudo.",
+        message: "Apenas 1 prioridade hoje. Cuide do básico. Você não precisa dar conta de tudo.",
         icon: "bg-alert/10 border-alert/20",
         iconColor: "text-alert",
       };
     case "critical":
       return {
-        title: "Sobrecarga critica",
-        message: "Modo resgate sugerido. Sem prioridades hoje. Esse nao e o momento de produzir, e o momento de se cuidar.",
+        title: "Sobrecarga crítica",
+        message: "Modo resgate sugerido. Sem prioridades hoje. Esse não é o momento de produzir, é o momento de se cuidar.",
         icon: "bg-alert/10 border-alert/20",
         iconColor: "text-alert",
       };
@@ -94,7 +94,7 @@ export function OverloadAlert({
               )}
             >
               <ChevronDown size={12} strokeWidth={2} />
-              Maximo sugerido: {overloadRisk.suggestedMaxTasks} prioridade{overloadRisk.suggestedMaxTasks !== 1 ? "s" : ""}
+              Máximo sugerido: {overloadRisk.suggestedMaxTasks} prioridade{overloadRisk.suggestedMaxTasks !== 1 ? "s" : ""}
             </div>
           )}
 
@@ -108,7 +108,7 @@ export function OverloadAlert({
               )}
             >
               <Shield size={12} strokeWidth={2} />
-              Sem prioridades hoje. So cuidado.
+              Sem prioridades hoje. Só cuidado.
             </div>
           )}
 
@@ -119,7 +119,7 @@ export function OverloadAlert({
               onClick={onAcceptReduction}
               className="w-full"
             >
-              Aceitar reducao
+              Aceitar redução
             </Button>
 
             {overloadRisk.risk === "critical" && (

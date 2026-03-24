@@ -27,13 +27,13 @@ function getGreetingPrefix(): string {
 
 function getTimeMicrocopy(): string {
   const hour = new Date().getHours();
-  if (hour < 6) return "Ainda esta cedo. Descansou o suficiente?";
-  if (hour < 9) return "Comece o dia com intencao.";
-  if (hour < 12) return "Manha e um bom momento pra se organizar.";
-  if (hour < 14) return "Ja fez uma pausa hoje?";
-  if (hour < 18) return "Tarde e tempo de ajustar o ritmo.";
+  if (hour < 6) return "Ainda está cedo. Descansou o suficiente?";
+  if (hour < 9) return "Comece o dia com intenção.";
+  if (hour < 12) return "Manhã é um bom momento pra se organizar.";
+  if (hour < 14) return "Já fez uma pausa hoje?";
+  if (hour < 18) return "Tarde é tempo de ajustar o ritmo.";
   if (hour < 21) return "Noite chegou. Como foi o dia?";
-  return "Hora de desacelerar. Amanha e um novo dia.";
+  return "Hora de desacelerar. Amanhã é um novo dia.";
 }
 
 // --------------- Page ---------------
@@ -131,7 +131,7 @@ export default function HojePage() {
             )}
 
             {/* Day Overview with patterns */}
-            <section aria-label="Visao do dia">
+            <section aria-label="Visão do dia">
               <DayOverview
                 habitsCompleted={0}
                 habitsTotal={0}
@@ -150,13 +150,13 @@ export default function HojePage() {
             )}
 
             {/* AI Day Adjustment */}
-            <section aria-label="Sugestao da IA">
+            <section aria-label="Sugestão da IA">
               <AIDayAdjust />
             </section>
 
             {/* Quick access to impulse log if needed */}
             {(anxietyLevel >= 4 || (todayCheckIn?.impulsivity ?? 3) >= 4) && (
-              <section aria-label="Acesso rapido a impulsos" className="animate-fade-in">
+              <section aria-label="Acesso rápido a impulsos" className="animate-fade-in">
                 <Link href="/impulsos">
                   <div
                     className={cn(
@@ -180,7 +180,7 @@ export default function HojePage() {
                         Registrar impulso
                       </p>
                       <p className="text-xs text-text-muted">
-                        Se sentir um impulso, registre aqui. Nao julgue, observe.
+                        Se sentir um impulso, registre aqui. Não julgue, observe.
                       </p>
                     </div>
                   </div>

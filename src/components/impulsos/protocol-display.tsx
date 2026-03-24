@@ -67,7 +67,7 @@ const TYPE_LABELS: Record<Impulse["type"], string> = {
   social_media: "usar redes sociais",
   pornography: "acessar pornografia",
   binge_eating: "comer compulsivamente",
-  substance: "usar uma substancia",
+  substance: "usar uma substância",
   other: "agir por impulso",
 };
 
@@ -86,7 +86,7 @@ function matchTechniques(actions: string[]): Technique[] {
         grounding: ["5-4-3-2-1", "grounding", "aterramento"],
         stop: ["stop", "pare"],
         opposite_action: ["oposta", "oposto"],
-        environment_change: ["ambiente", "comodo", "saia"],
+        environment_change: ["ambiente", "cômodo", "saia"],
         delay: ["adiamento", "10 minutos", "esperar"],
       };
 
@@ -247,7 +247,7 @@ export function ProtocolDisplay({
             {selectedTechnique.id === "tip" && (
               <div className="rounded-xl border border-border-subtle bg-surface-sunken p-4">
                 <p className="text-sm text-text-secondary leading-relaxed">
-                  Enquanto aplica agua gelada ou segura gelo, acompanhe a respiracao:
+                  Enquanto aplica água gelada ou segura gelo, acompanhe a respiração:
                 </p>
               </div>
             )}
@@ -275,19 +275,19 @@ export function ProtocolDisplay({
           <div className="space-y-4">
             <div className="rounded-xl border border-border-subtle bg-surface-sunken p-5 space-y-4">
               <p className="text-sm text-text-secondary leading-relaxed">
-                O impulso de <strong>{impulseLabel}</strong> pede uma acao.
+                O impulso de <strong>{impulseLabel}</strong> pede uma ação.
               </p>
               <p className="text-sm text-text-secondary leading-relaxed">
-                Qual e o oposto dessa acao? Faca isso agora.
+                Qual é o oposto dessa ação? Faça isso agora.
               </p>
               <div className="space-y-2">
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider">
-                  Sugestoes de acao oposta:
+                  Sugestões de ação oposta:
                 </p>
                 <ul className="space-y-1.5">
                   <li className="text-sm text-text-secondary flex items-start gap-2">
                     <span className="text-accent mt-0.5">-</span>
-                    Se o impulso pede isolamento, va ate alguem
+                    Se o impulso pede isolamento, vá até alguém
                   </li>
                   <li className="text-sm text-text-secondary flex items-start gap-2">
                     <span className="text-accent mt-0.5">-</span>
@@ -295,7 +295,7 @@ export function ProtocolDisplay({
                   </li>
                   <li className="text-sm text-text-secondary flex items-start gap-2">
                     <span className="text-accent mt-0.5">-</span>
-                    Se pede consumo, faca algo com as maos
+                    Se pede consumo, faça algo com as mãos
                   </li>
                 </ul>
               </div>
@@ -305,7 +305,7 @@ export function ProtocolDisplay({
               className="w-full"
               onClick={handlePracticeComplete}
             >
-              Fiz a acao oposta
+              Fiz a ação oposta
             </Button>
           </div>
         )}
@@ -334,7 +334,7 @@ export function ProtocolDisplay({
               className="w-full"
               onClick={handlePracticeComplete}
             >
-              Concluir pratica
+              Concluir prática
             </Button>
           </div>
         )}
@@ -351,7 +351,7 @@ export function ProtocolDisplay({
       <div className="space-y-6 animate-slide-up">
         <div className="space-y-1">
           <h2 className="text-lg font-semibold text-text-primary">
-            Como esta a intensidade agora?
+            Como está a intensidade agora?
           </h2>
           <p className="text-sm text-text-muted">
             Avalie novamente. Antes estava em {intensity}.
@@ -381,7 +381,7 @@ export function ProtocolDisplay({
               A intensidade caiu de {intensity} para {postIntensity}.
             </p>
             <p className="text-sm text-text-secondary mt-1">
-              A tecnica funcionou. Registrando.
+              A técnica funcionou. Registrando.
             </p>
           </div>
         )}
@@ -403,7 +403,7 @@ export function ProtocolDisplay({
               onClick={handleTryAnotherTechnique}
             >
               <RotateCcw size={14} strokeWidth={1.5} />
-              Tentar outra tecnica
+              Tentar outra técnica
             </Button>
           )}
         </div>
@@ -422,7 +422,7 @@ export function ProtocolDisplay({
             <div className="flex items-center gap-2 text-text-muted">
               <Brain size={14} strokeWidth={1.5} />
               <span className="text-xs font-medium uppercase tracking-wider">
-                Defusao cognitiva
+                Defusão cognitiva
               </span>
             </div>
           </div>
@@ -442,11 +442,11 @@ export function ProtocolDisplay({
               <div className="w-12 h-px bg-border-subtle mx-auto" />
 
               <p className="text-sm text-text-secondary leading-relaxed">
-                Observe esse pensamento. Ele e real, mas nao e uma ordem.
+                Observe esse pensamento. Ele é real, mas não é uma ordem.
               </p>
 
               <p className="text-sm font-medium text-accent">
-                Vontade nao e necessidade.
+                Vontade não é necessidade.
               </p>
             </div>
 
@@ -470,7 +470,7 @@ export function ProtocolDisplay({
             className="w-full"
             onClick={() => setPhase("values")}
           >
-            Entendi, proximo
+            Entendi, próximo
             <ChevronRight size={16} strokeWidth={2} />
           </Button>
         </div>
@@ -492,7 +492,7 @@ export function ProtocolDisplay({
             <div className="flex items-center gap-2 text-text-muted">
               <Heart size={14} strokeWidth={1.5} />
               <span className="text-xs font-medium uppercase tracking-wider">
-                Conexao com valores
+                Conexão com valores
               </span>
             </div>
           </div>
@@ -504,14 +504,14 @@ export function ProtocolDisplay({
               </p>
             ) : (
               <p className="text-sm text-text-primary leading-relaxed">
-                Que tipo de pessoa voce quer ser nesse momento?
+                Que tipo de pessoa você quer ser nesse momento?
               </p>
             )}
 
             <div className="w-12 h-px bg-border-subtle" />
 
             <p className="text-sm text-text-secondary leading-relaxed italic">
-              Esse impulso te afasta de quem voce quer ser.
+              Esse impulso te afasta de quem você quer ser.
               Lembre por que seus valores importam.
             </p>
           </div>
@@ -533,7 +533,7 @@ export function ProtocolDisplay({
             className="w-full"
             onClick={() => setPhase("techniques")}
           >
-            Escolher uma tecnica
+            Escolher uma técnica
             <ChevronRight size={16} strokeWidth={2} />
           </Button>
         </div>
@@ -555,14 +555,14 @@ export function ProtocolDisplay({
             <div className="flex items-center gap-2 text-text-muted">
               <Sparkles size={14} strokeWidth={1.5} />
               <span className="text-xs font-medium uppercase tracking-wider">
-                Acoes imediatas
+                Ações imediatas
               </span>
             </div>
             <h2 className="text-lg font-semibold text-text-primary">
-              Escolha uma tecnica para praticar agora
+              Escolha uma técnica para praticar agora
             </h2>
             <p className="text-sm text-text-muted">
-              Toque em uma tecnica para ver os detalhes e iniciar.
+              Toque em uma técnica para ver os detalhes e iniciar.
             </p>
           </div>
 
@@ -584,7 +584,7 @@ export function ProtocolDisplay({
               <div className="flex items-center gap-2 mb-2">
                 <Brain size={14} strokeWidth={1.5} className="text-text-muted" />
                 <span className="text-xs font-medium text-text-muted uppercase tracking-wider">
-                  Leitura de padrao
+                  Leitura de padrão
                 </span>
               </div>
               <p className="text-sm text-text-secondary leading-relaxed">
@@ -608,7 +608,7 @@ export function ProtocolDisplay({
               className="w-full text-text-muted"
               onClick={() => setPhase("outcome")}
             >
-              Ja estou pronto para registrar
+              Já estou pronto para registrar
             </Button>
           </div>
         </div>

@@ -91,7 +91,7 @@ export default function ValoresPage() {
             Seus Valores
           </h1>
           <p className="text-sm text-text-secondary leading-relaxed ancora-text-balance">
-            Os principios que guiam suas escolhas
+            Os princípios que guiam suas escolhas
           </p>
         </header>
 
@@ -108,11 +108,11 @@ export default function ValoresPage() {
                 {"\uD83E\uDDED"}
               </div>
               <p className="text-sm text-text-primary font-medium mb-2">
-                Valores sao sua bussola interna
+                Valores são sua bússola interna
               </p>
               <p className="text-xs text-text-secondary leading-relaxed mb-6 max-w-xs mx-auto">
-                Na Terapia de Aceitacao e Compromisso (ACT), valores sao direcoes de vida que
-                dao sentido as suas acoes. Nao sao metas a serem atingidas, mas principios
+                Na Terapia de Aceitação e Compromisso (ACT), valores são direções de vida que
+                dão sentido às suas ações. Não são metas a serem atingidas, mas princípios
                 que orientam cada passo.
               </p>
               <Button size="lg" onClick={handleOpenDialog} className="w-full">
@@ -163,7 +163,7 @@ export default function ValoresPage() {
             {/* Max reached message */}
             {!canAdd && (
               <p className="text-xs text-text-muted text-center mt-2">
-                Maximo de {MAX_VALUES} valores. Manter o foco e parte do processo.
+                Máximo de {MAX_VALUES} valores. Manter o foco é parte do processo.
               </p>
             )}
           </div>

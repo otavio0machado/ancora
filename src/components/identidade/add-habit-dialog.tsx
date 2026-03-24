@@ -19,22 +19,22 @@ import { cn } from "@/lib/utils/cn";
 const SABOTEUR_OPTIONS = [
   "perfeccionismo",
   "tudo-ou-nada",
-  "procrastinacao",
-  "comparacao",
-  "cansaco",
+  "procrastinação",
+  "comparação",
+  "cansaço",
 ] as const;
 
 const SABOTEUR_EXAMPLES: Record<string, string> = {
-  perfeccionismo: "Sentir que a versao minima nao conta",
-  "tudo-ou-nada": "Se nao fizer completo, nao faz nada",
-  procrastinacao: "Achar que ainda tem tempo e adiar",
-  comparacao: "Ver o progresso dos outros e desanimar",
-  cansaco: "Usar o cansaco como desculpa para nao comecar",
+  perfeccionismo: "Sentir que a versão mínima não conta",
+  "tudo-ou-nada": "Se não fizer completo, não faz nada",
+  "procrastinação": "Achar que ainda tem tempo e adiar",
+  "comparação": "Ver o progresso dos outros e desanimar",
+  "cansaço": "Usar o cansaço como desculpa para não começar",
 };
 
 const FREQUENCY_OPTIONS = [
-  { value: "daily" as const, label: "Diario" },
-  { value: "weekdays" as const, label: "Dias uteis" },
+  { value: "daily" as const, label: "Diário" },
+  { value: "weekdays" as const, label: "Dias úteis" },
   { value: "custom" as const, label: "Personalizado" },
 ];
 
@@ -107,14 +107,14 @@ export function AddHabitDialog({
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
           <Plus className="w-3.5 h-3.5" />
-          Adicionar habito
+          Adicionar hábito
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Novo habito</DialogTitle>
+          <DialogTitle>Novo hábito</DialogTitle>
           <DialogDescription>
-            Adicionar habito a &quot;{identityName}&quot;
+            Adicionar hábito a &quot;{identityName}&quot;
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
@@ -124,7 +124,7 @@ export function AddHabitDialog({
               htmlFor={`habit-name-${identityId}`}
               className="text-sm font-medium text-text-primary"
             >
-              Nome do habito
+              Nome do hábito
             </label>
             <Input
               id={`habit-name-${identityId}`}
@@ -141,10 +141,10 @@ export function AddHabitDialog({
               htmlFor={`habit-ideal-${identityId}`}
               className="text-sm font-medium text-text-primary"
             >
-              Versao ideal
+              Versão ideal
             </label>
             <p className="text-xs text-text-muted">
-              Como e esse habito no seu melhor dia?
+              Como é esse hábito no seu melhor dia?
             </p>
             <Input
               id={`habit-ideal-${identityId}`}
@@ -160,10 +160,10 @@ export function AddHabitDialog({
               htmlFor={`habit-min-${identityId}`}
               className="text-sm font-medium text-text-primary"
             >
-              Versao minima
+              Versão mínima
             </label>
             <p className="text-xs text-text-muted">
-              O minimo absoluto - para os dias dificeis.
+              O mínimo absoluto - para os dias difíceis.
             </p>
             <Input
               id={`habit-min-${identityId}`}
@@ -179,7 +179,7 @@ export function AddHabitDialog({
               Sabotadores comuns
             </label>
             <p className="text-xs text-text-muted">
-              O que costuma te impedir de fazer esse habito?
+              O que costuma te impedir de fazer esse hábito?
             </p>
             <div className="flex flex-wrap gap-2">
               {SABOTEUR_OPTIONS.map((saboteur) => {
@@ -217,7 +217,7 @@ export function AddHabitDialog({
               <p className="text-xs text-text-muted">
                 {saboteurSuggestion
                   ? `Para "${saboteurs[0]}": ${saboteurSuggestion}`
-                  : "Descreva brevemente como a sabotagem aparece nesse habito."}
+                  : "Descreva brevemente como a sabotagem aparece nesse hábito."}
               </p>
               <Textarea
                 id={`habit-saboteur-desc-${identityId}`}
@@ -232,7 +232,7 @@ export function AddHabitDialog({
           {/* Frequency */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-text-primary">
-              Frequencia
+              Frequência
             </label>
             <div className="flex gap-2">
               {FREQUENCY_OPTIONS.map((option) => (

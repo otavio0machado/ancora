@@ -75,11 +75,11 @@ const DIMENSIONS: SliderDimension[] = [
 // --------------- Sleep quality labels ---------------
 
 const SLEEP_QUALITY_LABELS: Record<number, string> = {
-  1: "Pessimo",
+  1: "Péssimo",
   2: "Ruim",
   3: "Regular",
   4: "Bom",
-  5: "Otimo",
+  5: "Ótimo",
 };
 
 // --------------- Value label ---------------
@@ -195,12 +195,12 @@ export function CheckInForm({ onComplete }: CheckInFormProps) {
               </h3>
               <p className="text-sm text-text-secondary leading-relaxed max-w-xs mx-auto">
                 {overloadWarning.risk === "critical"
-                  ? "Seu sistema esta sobrecarregado. Considere ativar o modo resgate ou reduzir ao minimo."
-                  : "Sobrecarga alta detectada. Considere reduzir suas prioridades e focar no basico."}
+                  ? "Seu sistema está sobrecarregado. Considere ativar o modo resgate ou reduzir ao mínimo."
+                  : "Sobrecarga alta detectada. Considere reduzir suas prioridades e focar no básico."}
               </p>
             </div>
             <p className="text-xs text-text-muted">
-              Registrado. Nomear o que se sente ja e uma forma de regulacao.
+              Registrado. Nomear o que se sente já é uma forma de regulação.
             </p>
           </div>
         </CardContent>
@@ -213,7 +213,7 @@ export function CheckInForm({ onComplete }: CheckInFormProps) {
       <Card className="animate-scale-in">
         <CardContent className="p-6 text-center">
           <p className="text-text-secondary text-sm">
-            Registrado. Nomear o que se sente ja e uma forma de regulacao.
+            Registrado. Nomear o que se sente já é uma forma de regulação.
           </p>
         </CardContent>
       </Card>
@@ -223,7 +223,7 @@ export function CheckInForm({ onComplete }: CheckInFormProps) {
   return (
     <Card className="animate-slide-up">
       <CardHeader>
-        <CardTitle>Como voce esta agora?</CardTitle>
+        <CardTitle>Como você está agora?</CardTitle>
         <CardDescription>
           Sem certo ou errado. Apenas observe e registre.
         </CardDescription>
@@ -265,8 +265,8 @@ export function CheckInForm({ onComplete }: CheckInFormProps) {
             />
 
             <div className="flex justify-between">
-              <span className="text-[11px] text-text-muted">Pessimo</span>
-              <span className="text-[11px] text-text-muted">Otimo</span>
+              <span className="text-[11px] text-text-muted">Péssimo</span>
+              <span className="text-[11px] text-text-muted">Ótimo</span>
             </div>
           </div>
 
@@ -364,7 +364,7 @@ export function CheckInForm({ onComplete }: CheckInFormProps) {
             id="checkin-notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Como esta seu dia, o que esta sentindo..."
+            placeholder="Como está seu dia, o que está sentindo..."
             rows={3}
             maxLength={500}
           />

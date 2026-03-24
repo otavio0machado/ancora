@@ -114,15 +114,15 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
   // Determine the description based on overload risk
   const getDescription = () => {
     if (overloadRisk?.risk === "critical") {
-      return "Sem prioridades hoje. Cuide do basico.";
+      return "Sem prioridades hoje. Cuide do básico.";
     }
     if (overloadRisk?.risk === "high") {
       return "Apenas 1 coisa. O que mais importa agora?";
     }
     if (overloadRisk?.risk === "medium") {
-      return "Ate 2 coisas. Mantenha simples.";
+      return "Até 2 coisas. Mantenha simples.";
     }
-    return "Ate 3 coisas. O que realmente importa hoje?";
+    return "Até 3 coisas. O que realmente importa hoje?";
   };
 
   return (
@@ -158,10 +158,10 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
             />
             <p className="text-xs text-text-secondary leading-relaxed">
               {overloadRisk.risk === "critical"
-                ? "Prioridades desativadas. Cuide de voce primeiro."
+                ? "Prioridades desativadas. Cuide de você primeiro."
                 : overloadRisk.risk === "high"
-                  ? "Limite reduzido para 1 prioridade. Menos e mais em dias assim."
-                  : "Limite reduzido para 2 prioridades. Gentileza com voce."}
+                  ? "Limite reduzido para 1 prioridade. Menos é mais em dias assim."
+                  : "Limite reduzido para 2 prioridades. Gentileza com você."}
             </p>
           </div>
         )}
@@ -277,7 +277,7 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
             )}
           >
             <p className="text-xs text-accent leading-relaxed">
-              Considere focar em apenas uma. Menos e mais em dias assim.
+              Considere focar em apenas uma. Menos é mais em dias assim.
             </p>
           </div>
         )}
@@ -292,7 +292,7 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
             )}
           >
             <p className="text-xs text-text-secondary leading-relaxed mb-3">
-              Sua ansiedade esta alta. Tem certeza que precisa de uma terceira prioridade?
+              Sua ansiedade está alta. Tem certeza que precisa de uma terceira prioridade?
             </p>
             <div className="flex gap-2">
               <Button
@@ -312,7 +312,7 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
                 }}
                 className="text-xs"
               >
-                Nao, vou simplificar
+                Não, vou simplificar
               </Button>
             </div>
           </div>
@@ -327,7 +327,7 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
               onKeyDown={handleKeyDown}
               placeholder={
                 priorities.length === 0
-                  ? "Qual e a prioridade mais importante?"
+                  ? "Qual é a prioridade mais importante?"
                   : "Adicionar prioridade..."
               }
               maxLength={300}
@@ -359,8 +359,8 @@ export function DayPriorities({ overloadRisk, anxietyLevel = 3 }: DayPrioritiesP
         {priorities.length >= maxPriorities && maxPriorities > 0 && (
           <p className="text-xs text-text-muted text-center">
             {maxPriorities < 3
-              ? `Limite reduzido para ${maxPriorities}. Cuide de voce.`
-              : "Maximo de 3 prioridades. Menos e mais."}
+              ? `Limite reduzido para ${maxPriorities}. Cuide de você.`
+              : "Máximo de 3 prioridades. Menos é mais."}
           </p>
         )}
       </CardContent>

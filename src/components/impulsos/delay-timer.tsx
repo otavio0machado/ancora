@@ -30,99 +30,99 @@ interface DelayTimerProps {
 
 const GENERIC_MESSAGES = [
   "A maioria dos impulsos diminui em 10 minutos.",
-  "Voce nao precisa decidir agora. Apenas espere.",
+  "Você não precisa decidir agora. Apenas espere.",
   "Observe o impulso como uma onda: ele sobe, atinge o pico e desce.",
-  "Enquanto espera, respire devagar. O tempo esta ao seu lado.",
-  "Cada segundo que passa, o impulso perde forca.",
-  "Voce ja esperou ate aqui. Continue.",
-  "O desconforto e temporario. Sua escolha e permanente.",
+  "Enquanto espera, respire devagar. O tempo está ao seu lado.",
+  "Cada segundo que passa, o impulso perde força.",
+  "Você já esperou até aqui. Continue.",
+  "O desconforto é temporário. Sua escolha é permanente.",
 ];
 
 const TYPE_MESSAGES: Record<Impulse["type"], string[]> = {
   smoking: [
-    "O pico da vontade de fumar dura cerca de 3 minutos. Voce ja esta superando.",
-    "Cada impulso resistido enfraquece o proximo.",
-    "Seus pulmoes estao agradecendo por esses minutos sem fumaca.",
-    "A nicotina mente sobre o alivio. O alivio real vem de superar isso.",
+    "O pico da vontade de fumar dura cerca de 3 minutos. Você já está superando.",
+    "Cada impulso resistido enfraquece o próximo.",
+    "Seus pulmões estão agradecendo por esses minutos sem fumaça.",
+    "A nicotina mente sobre o alívio. O alívio real vem de superar isso.",
   ],
   social_media: [
-    "O que voce procura nas redes sociais pode ser encontrado de outra forma.",
-    "A dopamina das redes e breve. A satisfacao de resistir dura mais.",
-    "Nada la e urgente. Nada. Voce nao esta perdendo nada essencial.",
-    "Depois de rolar o feed, voce se sentiria melhor? Provavelmente nao.",
+    "O que você procura nas redes sociais pode ser encontrado de outra forma.",
+    "A dopamina das redes é breve. A satisfação de resistir dura mais.",
+    "Nada lá é urgente. Nada. Você não está perdendo nada essencial.",
+    "Depois de rolar o feed, você se sentiria melhor? Provavelmente não.",
   ],
   pornography: [
-    "Esse impulso nao e sobre desejo - e sobre regulacao emocional.",
-    "Voce esta buscando alivio de algo. Pode encontrar de outro jeito.",
-    "Cada vez que voce escolhe diferente, fortalece a pessoa que quer ser.",
-    "O alivio e momentaneo. O custo emocional vem depois.",
+    "Esse impulso não é sobre desejo - é sobre regulação emocional.",
+    "Você está buscando alívio de algo. Pode encontrar de outro jeito.",
+    "Cada vez que você escolhe diferente, fortalece a pessoa que quer ser.",
+    "O alívio é momentâneo. O custo emocional vem depois.",
   ],
   binge_eating: [
-    "Voce esta com fome fisica ou emocional? As duas sao validas, mas pedem respostas diferentes.",
-    "Comer agora vai resolver o que voce esta sentindo?",
-    "Voce merece cuidado. Existem formas de cuidado que nao custam depois.",
-    "Se em 10 minutos ainda quiser comer, coma com presenca. Sem pressa.",
+    "Você está com fome física ou emocional? As duas são válidas, mas pedem respostas diferentes.",
+    "Comer agora vai resolver o que você está sentindo?",
+    "Você merece cuidado. Existem formas de cuidado que não custam depois.",
+    "Se em 10 minutos ainda quiser comer, coma com presença. Sem pressa.",
   ],
   substance: [
-    "Voce ja sobreviveu a impulsos antes. Esse tambem vai passar.",
-    "O escape e temporario. A recuperacao e duradoura.",
-    "Uma substancia nao pode te dar o que voce realmente precisa.",
-    "Voce e mais forte do que esse momento. Ja provou isso antes.",
+    "Você já sobreviveu a impulsos antes. Esse também vai passar.",
+    "O escape é temporário. A recuperação é duradoura.",
+    "Uma substância não pode te dar o que você realmente precisa.",
+    "Você é mais forte do que esse momento. Já provou isso antes.",
   ],
   other: [
-    "O impulso e informacao, nao instrucao.",
-    "Voce pode sentir e escolher nao agir.",
+    "O impulso é informação, não instrução.",
+    "Você pode sentir e escolher não agir.",
     "Esse momento vai passar. Voce vai estar do outro lado.",
     "Observe o impulso sem se fundir com ele.",
   ],
 };
 
 const MILESTONE_MESSAGES: Record<number, string> = {
-  60: "1 minuto. Voce esta se regulando.",
-  180: "3 minutos. O pico do impulso provavelmente ja passou.",
-  300: "5 minutos. A intensidade provavelmente ja caiu.",
-  600: "10 minutos. Voce conseguiu. A maioria dos impulsos nao sobrevive isso.",
+  60: "1 minuto. Você está se regulando.",
+  180: "3 minutos. O pico do impulso provavelmente já passou.",
+  300: "5 minutos. A intensidade provavelmente já caiu.",
+  600: "10 minutos. Você conseguiu. A maioria dos impulsos não sobrevive isso.",
 };
 
 const MINI_ACTIVITIES = [
-  "Nomeie 3 coisas boas da ultima semana.",
-  "Pense em alguem que voce admira. O que essa pessoa faria agora?",
-  "Lembre-se de um momento em que voce se sentiu genuinamente em paz.",
-  "Descreva mentalmente o comodo onde voce esta, como se explicasse para alguem.",
-  "Conte de tras para frente de 100, de 7 em 7.",
-  "Pense em 3 coisas pelas quais voce e grato hoje.",
+  "Nomeie 3 coisas boas da última semana.",
+  "Pense em alguém que você admira. O que essa pessoa faria agora?",
+  "Lembre-se de um momento em que você se sentiu genuinamente em paz.",
+  "Descreva mentalmente o cômodo onde você está, como se explicasse para alguém.",
+  "Conte de trás para frente de 100, de 7 em 7.",
+  "Pense em 3 coisas pelas quais você é grato hoje.",
 ];
 
 const HEALTHY_ALTERNATIVES: Record<Impulse["type"], string[]> = {
   smoking: [
-    "Beber um copo de agua gelada devagar",
-    "Fazer 10 respiracoes profundas",
+    "Beber um copo de água gelada devagar",
+    "Fazer 10 respirações profundas",
     "Mascar algo (chiclete, bala de menta)",
   ],
   social_media: [
-    "Ler uma pagina de um livro",
+    "Ler uma página de um livro",
     "Fazer um alongamento de 2 minutos",
     "Escrever algo em papel",
   ],
   pornography: [
-    "Fazer exercicio intenso por 5 minutos",
-    "Tomar um banho frio rapido",
-    "Ligar para alguem",
+    "Fazer exercício intenso por 5 minutos",
+    "Tomar um banho frio rápido",
+    "Ligar para alguém",
   ],
   binge_eating: [
-    "Beber um cha ou cafe quente devagar",
+    "Beber um chá ou café quente devagar",
     "Sair para uma caminhada curta",
-    "Lavar as maos com agua fria e prestar atencao nas sensacoes",
+    "Lavar as mãos com água fria e prestar atenção nas sensações",
   ],
   substance: [
-    "Ligar para alguem de confianca",
+    "Ligar para alguém de confiança",
     "Sair de casa e caminhar",
-    "Fazer algo com as maos (desenhar, arrumar)",
+    "Fazer algo com as mãos (desenhar, arrumar)",
   ],
   other: [
-    "Beber agua",
+    "Beber água",
     "Mudar de lugar",
-    "Fazer 10 respiracoes profundas",
+    "Fazer 10 respirações profundas",
   ],
 };
 
@@ -283,7 +283,7 @@ export function DelayTimer({
         {elapsed >= 120 && (
           <div className="w-full space-y-2 animate-fade-in">
             <span className="text-xs font-medium text-text-muted uppercase tracking-wider">
-              Alternativas saudaveis
+              Alternativas saudáveis
             </span>
             <div className="flex flex-wrap gap-2">
               {alternatives.map((alt) => (
@@ -321,7 +321,7 @@ export function DelayTimer({
             <DialogTitle>Encerrar a espera?</DialogTitle>
             <DialogDescription>
               Ainda faltam {formatTime(secondsLeft)}. Impulsos geralmente perdem
-              forca com o tempo. Tem certeza que quer pular?
+              força com o tempo. Tem certeza que quer pular?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

@@ -47,31 +47,31 @@ function InteractiveGrounding({ onComplete }: { onComplete: () => void }) {
     {
       count: 5,
       key: "see" as const,
-      label: "coisas que voce ve",
-      prompt: "Olhe ao redor. Nomeie 5 coisas que voce ve.",
+      label: "coisas que você vê",
+      prompt: "Olhe ao redor. Nomeie 5 coisas que você vê.",
     },
     {
       count: 4,
       key: "touch" as const,
-      label: "coisas que voce toca",
+      label: "coisas que você toca",
       prompt: "Sinta 4 texturas ao redor.",
     },
     {
       count: 3,
       key: "hear" as const,
-      label: "coisas que voce ouve",
-      prompt: "Fique em silencio. 3 sons.",
+      label: "coisas que você ouve",
+      prompt: "Fique em silêncio. 3 sons.",
     },
     {
       count: 2,
       key: "smell" as const,
-      label: "coisas que voce cheira",
+      label: "coisas que você cheira",
       prompt: "2 cheiros, mesmo sutis.",
     },
     {
       count: 1,
       key: "taste" as const,
-      label: "coisa que voce saboreia",
+      label: "coisa que você saboreia",
       prompt: "1 sabor na boca.",
     },
   ];
@@ -129,7 +129,7 @@ function InteractiveGrounding({ onComplete }: { onComplete: () => void }) {
       </div>
 
       <Button size="md" className="w-full" onClick={handleNext}>
-        {isLast ? "Concluir" : "Proximo"}
+        {isLast ? "Concluir" : "Próximo"}
       </Button>
     </div>
   );
@@ -251,7 +251,7 @@ export function RescueMode() {
                   Aterramento 5-4-3-2-1
                 </p>
                 <p className="text-sm text-text-secondary">
-                  Traga sua atencao para o momento presente.
+                  Traga sua atenção para o momento presente.
                 </p>
               </div>
 
@@ -273,10 +273,10 @@ export function RescueMode() {
 
               <div className="text-center space-y-2">
                 <p className="text-base font-medium text-text-primary">
-                  Escolha uma acao simples
+                  Escolha uma ação simples
                 </p>
                 <p className="text-sm text-text-secondary">
-                  Uma coisa so. A menor possivel.
+                  Uma coisa só. A menor possível.
                 </p>
               </div>
 
@@ -297,7 +297,7 @@ export function RescueMode() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-text-primary">
-                      Beber agua
+                      Beber água
                     </p>
                     <p className="text-xs text-text-muted">
                       Levante, pegue um copo, beba devagar.
@@ -323,7 +323,7 @@ export function RescueMode() {
                       Mudar de lugar
                     </p>
                     <p className="text-xs text-text-muted">
-                      Va para outro comodo. Mude o cenario.
+                      Vá para outro cômodo. Mude o cenário.
                     </p>
                   </div>
                 </button>
@@ -343,10 +343,10 @@ export function RescueMode() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-text-primary">
-                      Ligar para alguem
+                      Ligar para alguém
                     </p>
                     <p className="text-xs text-text-muted">
-                      Nao precisa explicar. So ouvir uma voz.
+                      Não precisa explicar. Só ouvir uma voz.
                     </p>
                   </div>
                 </button>
@@ -369,27 +369,27 @@ export function RescueMode() {
               <div className="text-center space-y-6">
                 <div className="rounded-2xl border border-border-subtle bg-surface-sunken p-8 space-y-6">
                   <p className="text-base text-text-primary leading-relaxed font-medium">
-                    Estou tendo pensamentos dificeis.
+                    Estou tendo pensamentos difíceis.
                   </p>
 
                   <div className="w-12 h-px bg-border-subtle mx-auto" />
 
                   <p className="text-sm text-text-secondary leading-relaxed">
-                    Eles nao me definem.
+                    Eles não me definem.
                   </p>
 
                   <p className="text-sm text-text-secondary leading-relaxed">
-                    Sao pensamentos, nao fatos. Sao ondas, nao o mar.
-                    Posso observa-los sem agir.
+                    São pensamentos, não fatos. São ondas, não o mar.
+                    Posso observá-los sem agir.
                   </p>
                 </div>
 
                 <div className="rounded-xl bg-accent-subtle/10 border border-accent/10 p-4">
                   <p className="text-sm text-accent font-medium">
-                    Vontade nao e ordem.
+                    Vontade não é ordem.
                   </p>
                   <p className="text-xs text-text-secondary mt-1">
-                    Voce pode sentir e escolher nao agir.
+                    Você pode sentir e escolher não agir.
                   </p>
                 </div>
               </div>
@@ -409,11 +409,11 @@ export function RescueMode() {
             <div className="space-y-8 animate-slide-up text-center">
               <div className="space-y-4">
                 <p className="text-base font-medium text-text-primary">
-                  Como voce esta se sentindo?
+                  Como você está se sentindo?
                 </p>
                 <p className="text-sm text-text-secondary leading-relaxed">
-                  Se ainda nao estiver bem, fique aqui o tempo que precisar.
-                  Nao tem pressa.
+                  Se ainda não estiver bem, fique aqui o tempo que precisar.
+                  Não tem pressa.
                 </p>
               </div>
 

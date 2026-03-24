@@ -114,7 +114,7 @@ export function BreathingExercise({
     <Card className="overflow-hidden">
       <CardContent className="flex flex-col items-center gap-6 p-6">
         <p className="text-sm text-text-secondary">
-          Respiracao {inhale}-{hold}-{exhale}
+          Respiração {inhale}-{hold}-{exhale}
         </p>
 
         {/* Animated circle */}
@@ -178,7 +178,7 @@ export function BreathingExercise({
         {/* Technique info */}
         <p className="text-xs text-text-muted text-center max-w-[260px] leading-relaxed">
           Inspire pelo nariz, segure, expire pela boca lentamente. Foque apenas
-          na respiracao.
+          na respiração.
         </p>
       </CardContent>
     </Card>

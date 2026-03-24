@@ -100,7 +100,7 @@ export function IdentityStrength({
             isSm ? "text-[9px]" : "text-[10px]"
           )}
         >
-          Forca
+          Força
         </span>
         <TrendIcon
           className={cn(

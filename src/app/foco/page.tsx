@@ -14,21 +14,21 @@ const MOCK_SESSIONS: FocusSession[] = [
   {
     id: "fs-1",
     user_id: "user-1",
-    objective: "Revisar capitulo 3 de estatistica",
+    objective: "Revisar capítulo 3 de estatística",
     duration_planned: 25,
     duration_actual: 25,
     started_at: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), // 3h ago
     ended_at: new Date(Date.now() - 1000 * 60 * 60 * 2.5).toISOString(),
     status: "completed",
     review_focus: 4,
-    review_progress: "Consegui revisar todo o capitulo e fazer anotacoes.",
+    review_progress: "Consegui revisar todo o capítulo e fazer anotações.",
     review_notes: null,
     created_at: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
   },
   {
     id: "fs-2",
     user_id: "user-1",
-    objective: "Projeto de programacao - modulo de auth",
+    objective: "Projeto de programação - módulo de auth",
     duration_planned: 45,
     duration_actual: 45,
     started_at: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(), // yesterday
@@ -50,20 +50,20 @@ const MOCK_SESSIONS: FocusSession[] = [
     status: "abandoned",
     review_focus: 2,
     review_progress: null,
-    review_notes: "Estava muito cansado, tentei forcar e nao deu.",
+    review_notes: "Estava muito cansado, tentei forçar e não deu.",
     created_at: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
   },
   {
     id: "fs-4",
     user_id: "user-1",
-    objective: "Estudar para prova de calculo",
+    objective: "Estudar para prova de cálculo",
     duration_planned: 60,
     duration_actual: 58,
     started_at: new Date(Date.now() - 1000 * 60 * 60 * 74).toISOString(), // 3 days ago
     ended_at: new Date(Date.now() - 1000 * 60 * 60 * 73).toISOString(),
     status: "completed",
     review_focus: 3,
-    review_progress: "Fiz metade dos exercicios da lista.",
+    review_progress: "Fiz metade dos exercícios da lista.",
     review_notes: null,
     created_at: new Date(Date.now() - 1000 * 60 * 60 * 74).toISOString(),
   },
@@ -167,7 +167,7 @@ export default function FocoPage() {
             <h1 className="text-xl font-semibold text-text-primary">Foco</h1>
           </div>
           <p className="text-sm text-text-secondary">
-            Uma coisa de cada vez, com intencao.
+            Uma coisa de cada vez, com intenção.
           </p>
         </div>
       )}

@@ -28,8 +28,8 @@ const TYPE_LABELS: Record<Impulse["type"], string> = {
   smoking: "Cigarro",
   social_media: "Redes sociais",
   pornography: "Pornografia",
-  binge_eating: "Compulsao alimentar",
-  substance: "Substancia",
+  binge_eating: "Compulsão alimentar",
+  substance: "Substância",
   other: "Outro",
 };
 
@@ -84,13 +84,13 @@ function detectPatterns(impulses: Impulse[]): PatternBadge[] {
     if (topEmotion && topEmotion[1] >= 2) {
       const emotionLabels: Record<string, string> = {
         ansiedade: "ansiedade",
-        tedio: "tedio",
-        solidao: "solidao",
+        tedio: "tédio",
+        solidao: "solidão",
         raiva: "raiva",
         tristeza: "tristeza",
-        cansaco: "cansaco",
+        cansaco: "cansaço",
         estresse: "estresse",
-        frustracao: "frustracao",
+        frustracao: "frustração",
       };
       const label = emotionLabels[topEmotion[0]] || topEmotion[0];
       patterns.push({ label: `Gatilho: ${label}`, icon: Cloud });
@@ -183,7 +183,7 @@ export function ImpulseLog({ impulses, className }: ImpulseLogProps) {
           Nenhum impulso registrado recentemente.
         </p>
         <p className="text-xs text-text-muted text-center">
-          Registros aparecerao aqui.
+          Registros aparecerão aqui.
         </p>
       </div>
     );
@@ -195,7 +195,7 @@ export function ImpulseLog({ impulses, className }: ImpulseLogProps) {
       <div className="flex items-center justify-between p-3 rounded-xl bg-surface-sunken border border-border-subtle">
         <div className="flex items-center gap-2">
           <span className="text-sm text-text-secondary">
-            Taxa de resistencia
+            Taxa de resistência
           </span>
           {trend === "improving" && (
             <TrendingUp
@@ -350,7 +350,7 @@ export function ImpulseLog({ impulses, className }: ImpulseLogProps) {
                                 variant="outline"
                                 className="text-[10px] text-text-muted"
                               >
-                                Eficacia: {impulse.technique_effectiveness}/5
+                                Eficácia: {impulse.technique_effectiveness}/5
                               </Badge>
                             )}
                           </div>

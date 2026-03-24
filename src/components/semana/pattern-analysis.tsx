@@ -42,7 +42,7 @@ interface PatternAnalysisProps {
 // --------------- Translators (PT-BR) ---------------
 
 const TIME_OF_DAY_PT: Record<string, string> = {
-  morning: "Manha (5h-12h)",
+  morning: "Manhã (5h-12h)",
   afternoon: "Tarde (12h-18h)",
   evening: "Noite (18h-22h)",
   night: "Madrugada (22h-5h)",
@@ -51,19 +51,19 @@ const TIME_OF_DAY_PT: Record<string, string> = {
 const DAY_NAMES_PT: Record<string, string> = {
   Sunday: "domingos",
   Monday: "segundas-feiras",
-  Tuesday: "tercas-feiras",
+  Tuesday: "terças-feiras",
   Wednesday: "quartas-feiras",
   Thursday: "quintas-feiras",
   Friday: "sextas-feiras",
-  Saturday: "sabados",
+  Saturday: "sábados",
 };
 
 const IMPULSE_TYPE_PT: Record<string, string> = {
   smoking: "cigarro",
   social_media: "redes sociais",
   pornography: "pornografia",
-  binge_eating: "compulsao alimentar",
-  substance: "substancias",
+  binge_eating: "compulsão alimentar",
+  substance: "substâncias",
   other: "outro",
 };
 
@@ -71,8 +71,8 @@ const TECHNIQUE_NAMES_PT: Record<string, string> = {
   tip: "TIP (Temperatura)",
   stop: "STOP",
   grounding: "Ancoragem sensorial",
-  breathing: "Respiracao 4-7-8",
-  opposite_action: "Acao oposta",
+  breathing: "Respiração 4-7-8",
+  opposite_action: "Ação oposta",
   delay: "Adiamento",
 };
 
@@ -141,7 +141,7 @@ export function PatternAnalysis({
     return (
       <div className={cn("space-y-3", className)}>
         <p className="text-sm text-text-muted text-center py-4">
-          Registre mais dados ao longo da semana para revelar padroes.
+          Registre mais dados ao longo da semana para revelar padrões.
         </p>
       </div>
     );
@@ -169,7 +169,7 @@ export function PatternAnalysis({
           <PatternCard
             key={`trigger-${i}`}
             icon={<Zap size={16} strokeWidth={1.5} />}
-            text={`${corr.trigger} e o gatilho mais comum para ${types} (${resistPct}% de resistencia)`}
+            text={`${corr.trigger} é o gatilho mais comum para ${types} (${resistPct}% de resistência)`}
             severity="warning"
           />
         );
@@ -181,16 +181,16 @@ export function PatternAnalysis({
         let ptText = cycle.insight;
         if (cycle.pattern.includes("Mood drops")) {
           ptText =
-            "Quando seu humor cai, a ansiedade tende a subir. Esse ciclo e comum - reconhece-lo e o primeiro passo.";
+            "Quando seu humor cai, a ansiedade tende a subir. Esse ciclo é comum - reconhecê-lo é o primeiro passo.";
         } else if (cycle.pattern.includes("Low energy")) {
           ptText =
             "Dias de baixa energia costumam ser seguidos por alta impulsividade. Priorize descanso nesses dias.";
         } else if (cycle.pattern.includes("Anxiety tends to build")) {
           ptText =
-            "Sua ansiedade se acumula ao longo de dias consecutivos. Intervir cedo com tecnicas de ancoragem pode prevenir a escalada.";
+            "Sua ansiedade se acumula ao longo de dias consecutivos. Intervir cedo com técnicas de ancoragem pode prevenir a escalada.";
         } else if (cycle.pattern.includes("Mood is noticeably")) {
           ptText =
-            "Ha uma diferenca de humor entre dias uteis e fins de semana. O que muda entre eles?";
+            "Há uma diferença de humor entre dias úteis e fins de semana. O que muda entre eles?";
         }
         return (
           <PatternCard
@@ -209,7 +209,7 @@ export function PatternAnalysis({
           <PatternCard
             key={`tech-${i}`}
             icon={<Wind size={16} strokeWidth={1.5} />}
-            text={`${name} e sua tecnica mais efetiva (${tech.avgEffectiveness}/5)`}
+            text={`${name} é sua técnica mais efetiva (${tech.avgEffectiveness}/5)`}
             severity="positive"
           />
         );
@@ -235,12 +235,12 @@ export function PatternAnalysis({
       {impulses.length > 0 && (
         <PatternCard
           icon={<Shield size={16} strokeWidth={1.5} />}
-          text={`Taxa de resistencia a impulsos: ${Math.round(resistanceRate.rate * 100)}% (${
+          text={`Taxa de resistência a impulsos: ${Math.round(resistanceRate.rate * 100)}% (${
             resistanceRate.trend === "improving"
               ? "melhorando"
               : resistanceRate.trend === "declining"
                 ? "em queda"
-                : "estavel"
+                : "estável"
           })`}
           severity={
             resistanceRate.trend === "improving"

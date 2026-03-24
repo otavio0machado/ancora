@@ -103,7 +103,7 @@ export function FocusTimer({
             <CheckCircle2 className="w-8 h-8 text-success" />
           </div>
           <p className="text-lg font-semibold text-text-primary">
-            Sessao concluida
+            Sessão concluída
           </p>
           <p className="text-sm text-text-secondary mt-1">{objective}</p>
         </CardContent>
@@ -193,7 +193,7 @@ export function FocusTimer({
         {showAbandonConfirm && (
           <div className="mt-6 p-4 rounded-xl bg-surface-sunken border border-border-subtle text-center">
             <p className="text-sm text-text-secondary mb-3">
-              Deseja abandonar esta sessao?
+              Deseja abandonar esta sessão?
             </p>
             <div className="flex gap-2 justify-center">
               <Button
